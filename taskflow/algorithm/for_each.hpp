@@ -189,19 +189,7 @@ auto make_for_each_by_index_task(R range, C c, P part = P()){
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        // 1D ranges balance the remainder exactly across workers (no hyperplane alignment needed);
-        // N-D ranges need a single chunk size shared by all workers, snapped to the nearest 
-        // hyperplane boundary so lower_slice returns one box per inner iteration in
-        // the common case.
-        size_t chunk_size;
-        if constexpr (range_type::rank == 1) {
-          chunk_size = part.adjusted_chunk_size(N, W, w);
-        }
-        else {
-          chunk_size = r.ceil(
-            part.chunk_size() == 0 ? (N + W - 1) / W : part.chunk_size()
-          );
-        }
+        size_t chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=] () mutable { part.loop(r, N, W, curr_b, chunk_size, c); });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
       }

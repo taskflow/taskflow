@@ -126,11 +126,6 @@ $(function(){initNavTree('ParallelReduction.html',''); initResizable(true); });
   </li>
   <li class="level1">
     <a href="#ParallelReduceByIndexCreate">Create a Parallel-Reduce-by-Index Task</a>
-    <ul>
-      <li class="level2">
-        <a href="#ParallelReduceByIndexCaptureByReference">Capture IndexRange by Reference</a>
-      </li>
-    </ul>
   </li>
   <li class="level1">
     <a href="#ParallelReductionConfigureAPartitioner">Configure a Partitioner</a>
@@ -238,7 +233,7 @@ Capture Iterators by Reference</h2>
 <div class="line">assert(sum == 36);</div>
 </div><!-- fragment --><h1><a class="anchor" id="ParallelReduceByIndexCreate"></a>
 Create a Parallel-Reduce-by-Index Task</h1>
-<p>Unlike <a class="el" href="classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7" title="constructs an STL-styled parallel-reduction task">tf::Taskflow::reduce</a>, which gives each worker a single element at a time, <a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task">tf::Taskflow::reduce_by_index</a> gives each worker a contiguous <em>subrange</em> of the index space. This allows the local reduction to be written as an explicit loop over the subrange, enabling optimisations such as SIMD vectorisation, custom accumulator types, or data initialisation interleaved with reduction. The method, <a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task">tf::Taskflow::reduce_by_index</a>, represents the parallel execution of the following two-phase loop:</p>
+<p>Unlike <a class="el" href="classtf_1_1FlowBuilder.html#afb24798ebf46e253a40b01bffb1da6a7" title="constructs an STL-styled parallel-reduction task">tf::Taskflow::reduce</a>, which gives each worker a single element at a time, <a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task over a one- or multi-dimensional index range">tf::Taskflow::reduce_by_index</a> gives each worker a contiguous <em>subrange</em> of the index space. This allows the local reduction to be written as an explicit loop over the subrange, enabling optimisations such as SIMD vectorisation, custom accumulator types, or data initialisation interleaved with reduction. The method, <a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task over a one- or multi-dimensional index range">tf::Taskflow::reduce_by_index</a>, represents the parallel execution of the following two-phase loop:</p>
 <div class="fragment"><div class="line"><span class="comment">// phase 1: each worker computes a partial result over its subrange</span></div>
 <div class="line">T partial = lop(subrange, std::nullopt);    <span class="comment">// first subrange: no prior total</span></div>
 <div class="line">T partial = lop(subrange, running_total);   <span class="comment">// subsequent subranges: accumulate</span></div>
@@ -253,6 +248,7 @@ Create a Parallel-Reduce-by-Index Task</h1>
 <li>A value on subsequent subranges — the worker should continue accumulating from the provided running total.</li>
 </ul>
 <p>The global operator <code>gop</code> combines the per-worker partial results and the initial value of <code>result</code> into the final answer.</p>
+<dl class="section user"><dt>Reduce over a One-dimensional (1D) Index Range</dt><dd></dd></dl>
 <p>The example below performs a sum-reduction over a large array, initialising each element inside the local reducer:</p>
 <div class="fragment"><div class="line">std::vector&lt;double&gt; data(100000);</div>
 <div class="line"><span class="keywordtype">double</span> res = 1.0;</div>
@@ -275,10 +271,45 @@ Create a Parallel-Reduce-by-Index Task</h1>
 <div class="line"> </div>
 <div class="line">executor.run(taskflow).wait();</div>
 <div class="line">assert(res == 100001.0);  <span class="comment">// 1.0 (initial) + 100000 * 1.0</span></div>
-<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:971</div></div>
+<div class="ttc" id="anamespacetf_html_a6c928ec9248757ba8276e316ef26846b"><div class="ttname"><a href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange</a></div><div class="ttdeci">IndexRanges&lt; T, 1 &gt; IndexRange</div><div class="ttdoc">alias for the common 1D case of tf::IndexRanges</div><div class="ttdef"><b>Definition</b> iterator.hpp:612</div></div>
 </div><!-- fragment --><p>The global reducer combines all partial results with the initial value of <code>res</code> (here <code>1.0</code>), so the final answer is <code>1.0</code> + <code>100000.0</code> = <code>100001.0</code>.</p>
-<h2><a class="anchor" id="ParallelReduceByIndexCaptureByReference"></a>
-Capture IndexRange by Reference</h2>
+<dl class="section user"><dt>Reduce over a Multi-dimensional Index Range</dt><dd></dd></dl>
+<p><a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task over a one- or multi-dimensional index range">tf::Taskflow::reduce_by_index</a> also accepts an N-dimensional <code><a class="el" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;T, N&gt;</a></code>. The two-phase loop shown above is unchanged — only the type of <code>subrange</code> passed to <code>lop</code> changes: instead of a 1D subrange, <code>lop</code> receives one orthogonal <em>sub-box</em> of the partitioned Cartesian product per invocation, exactly like the callable passed to <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a>. Each dimension of a sub-box is a <code>std::tuple&lt;T, T, T&gt;</code> of (begin, end, step_size) accessible through <code>dim(d)</code>, so <code>lop</code> typically destructures it via structured bindings and accumulates over nested loops:</p>
+<div class="fragment"><div class="line"><span class="keyword">const</span> <span class="keywordtype">int</span> rows = 512, cols = 512;</div>
+<div class="line">std::vector&lt;std::vector&lt;double&gt;&gt; data(rows, std::vector&lt;double&gt;(cols, 1.0));</div>
+<div class="line"><span class="keywordtype">double</span> res = 0.0;</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_class" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;int, 2&gt;</a> range(</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, rows, 1),</div>
+<div class="line">  <a class="code hl_typedef" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b">tf::IndexRange&lt;int&gt;</a>(0, cols, 1)</div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line">taskflow.reduce_by_index(</div>
+<div class="line">  range,</div>
+<div class="line">  res,</div>
+<div class="line">  <span class="comment">// local reducer: called once per sub-box per worker</span></div>
+<div class="line">  [&amp;](<span class="keyword">const</span> <a class="code hl_class" href="classtf_1_1IndexRanges.html">tf::IndexRanges&lt;int, 2&gt;</a>&amp; sub, std::optional&lt;double&gt; running_total) {</div>
+<div class="line">    <span class="keywordtype">double</span> partial = running_total ? *running_total : 0.0;</div>
+<div class="line">    <span class="keyword">auto</span> [r0, r1, rs] = sub.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(0);</div>
+<div class="line">    <span class="keyword">auto</span> [c0, c1, cs] = sub.<a class="code hl_function" href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">dim</a>(1);</div>
+<div class="line">    <span class="keywordflow">for</span>(<span class="keywordtype">int</span> r = r0; r &lt; r1; r += rs) {</div>
+<div class="line">      <span class="keywordflow">for</span>(<span class="keywordtype">int</span> c = c0; c &lt; c1; c += cs) {</div>
+<div class="line">        partial += data[r][c];</div>
+<div class="line">      }</div>
+<div class="line">    }</div>
+<div class="line">    <span class="keywordflow">return</span> partial;</div>
+<div class="line">  },</div>
+<div class="line">  <span class="comment">// global reducer: combines partial results into res</span></div>
+<div class="line">  std::plus&lt;double&gt;()</div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line">executor.run(taskflow).wait();</div>
+<div class="line">assert(res == rows * cols);  <span class="comment">// 512 * 512 * 1.0</span></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html"><div class="ttname"><a href="classtf_1_1IndexRanges.html">tf::IndexRanges</a></div><div class="ttdoc">class to create an N-dimensional index range of integral indices</div><div class="ttdef"><b>Definition</b> iterator.hpp:188</div></div>
+<div class="ttc" id="aclasstf_1_1IndexRanges_html_a4e0162b872edd6176e9d6a308b295427"><div class="ttname"><a href="classtf_1_1IndexRanges.html#a4e0162b872edd6176e9d6a308b295427">tf::IndexRanges::dim</a></div><div class="ttdeci">const std::tuple&lt; T, T, T &gt; &amp; dim(size_t d) const</div><div class="ttdoc">returns the (begin, end, step) tuple for dimension d (read-only)</div><div class="ttdef"><b>Definition</b> iterator.hpp:297</div></div>
+</div><!-- fragment --><p>As with the 1D case, <code>lop</code> is invoked once per sub-box assigned to a worker, its running total resets to <code>std::nullopt</code> at the start of each worker, and <code>gop</code> combines every worker's partial result together with the initial value of <code>res</code>. The same pattern extends to three or more dimensions by adding one more <code><a class="el" href="namespacetf.html#a6c928ec9248757ba8276e316ef26846b" title="alias for the common 1D case of tf::IndexRanges">tf::IndexRange</a></code> to the constructor of <code><a class="el" href="classtf_1_1IndexRanges.html" title="class to create an N-dimensional index range of integral indices">tf::IndexRanges</a></code> and one more nested loop (and one more structured binding) inside <code>lop</code>.</p>
+<p>If a dimension has zero size, it and all dimensions inner to it contribute no iterations to any sub-box, following the exact same rules described in <a class="el" href="ParallelIterations.html">Parallel Iterations</a> for <a class="el" href="classtf_1_1FlowBuilder.html#a2582a216d54dacca2b7022ea7e89452a" title="constructs a parallel-for task over a one- or multi-dimensional index range">tf::Taskflow::for_each_by_index</a>. In particular, if the range is empty overall (<code>range.size() == 0</code>), <a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task over a one- or multi-dimensional index range">tf::Taskflow::reduce_by_index</a> returns without invoking <code>lop</code> or <code>gop</code> at all, leaving <code>res</code> unchanged.</p>
+<dl class="section user"><dt>Capture IndexRange by Reference</dt><dd></dd></dl>
 <p>You can pass the index range by reference using <a href="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref</a> so that an upstream task can set the bounds before the parallel-reduce-by-index runs.</p>
 <div class="fragment"><div class="line">std::vector&lt;double&gt; data;</div>
 <div class="line"><span class="keywordtype">double</span> res = 0.0;</div>
@@ -327,7 +358,7 @@ Configure a Partitioner</h1>
 <div class="line">std::vector&lt;int&gt; vec = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};</div>
 <div class="line"> </div>
 <div class="line"><a class="code hl_class" href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a> static_partitioner(0);  <span class="comment">// chunk size auto-determined</span></div>
-<div class="line"><a class="code hl_class" href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a>  guided_partitioner(0); <span class="comment">// minimum chunk size auto-determined</span></div>
+<div class="line"><a class="code hl_class" href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a> guided_partitioner(0); <span class="comment">// minimum chunk size auto-determined</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// parallel-reduction with static partitioner</span></div>
 <div class="line">taskflow.reduce(vec.begin(), vec.end(), sum1,</div>
@@ -340,8 +371,8 @@ Configure a Partitioner</h1>
 <div class="line">  [](<span class="keywordtype">int</span> l, <span class="keywordtype">int</span> r) { return l + r; },</div>
 <div class="line">  guided_partitioner</div>
 <div class="line">);</div>
-<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:417</div></div>
-<div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:262</div></div>
+<div class="ttc" id="aclasstf_1_1GuidedPartitioner_html"><div class="ttname"><a href="classtf_1_1GuidedPartitioner.html">tf::GuidedPartitioner</a></div><div class="ttdoc">class to create a guided partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:636</div></div>
+<div class="ttc" id="aclasstf_1_1StaticPartitioner_html"><div class="ttname"><a href="classtf_1_1StaticPartitioner.html">tf::StaticPartitioner</a></div><div class="ttdoc">class to construct a static partitioner for scheduling parallel algorithms</div><div class="ttdef"><b>Definition</b> partitioner.hpp:476</div></div>
 </div><!-- fragment --><p>As a rule of thumb, prefer <a class="el" href="classtf_1_1StaticPartitioner.html" title="class to construct a static partitioner for scheduling parallel algorithms">tf::StaticPartitioner</a> when every element costs the same to reduce (e.g., summation over a plain array) and <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a> for irregular workloads (e.g., reductions whose cost depends on the element value). <a class="el" href="classtf_1_1DynamicPartitioner.html" title="class to create a dynamic partitioner for scheduling parallel algorithms">tf::DynamicPartitioner</a> is a good choice when chunks must be kept small and strictly equal in size.</p>
 <dl class="section note"><dt>Note</dt><dd>By default, parallel-reduction tasks use <a class="el" href="namespacetf.html#ace2c5adcd5039483eebb6dbdbb6f33e3" title="default partitioner set to tf::GuidedPartitioner">tf::DefaultPartitioner</a> (currently <a class="el" href="classtf_1_1GuidedPartitioner.html" title="class to create a guided partitioner for scheduling parallel algorithms">tf::GuidedPartitioner</a>) if no partitioner is specified. </dd></dl>
 </div></div><!-- contents -->

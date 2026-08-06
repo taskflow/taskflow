@@ -585,6 +585,381 @@ TEST_CASE("ReduceByIndexSum.Random.8threads" * doctest::timeout(300)) {
   reduce_by_index_sum<tf::RandomPartitioner<>>(8);
 }
 
+// --------------------------------------------------------
+// Testcase: reduce_by_index_sum_nd
+// --------------------------------------------------------
+
+// 2D: sum over a di x dj grid of deterministic values, exercising every
+// combination of grid shape, chunk size, and partitioner/thread count.
+template <typename P>
+void reduce_by_index_sum_2d(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  for(int di = 1; di <= 17; di++) {
+    for(int dj = 1; dj <= 23; dj++) {
+      for(size_t c : {0, 1, 3, 7, 99}) {
+
+        tf::IndexRanges<int, 2> range(
+          tf::IndexRange<int>(0, di, 1),
+          tf::IndexRange<int>(0, dj, 1)
+        );
+
+        long long expected = 7;  // seed value participates in the reduction
+        for(int i=0; i<di; i++) {
+          for(int j=0; j<dj; j++) {
+            expected += i*1000LL + j;
+          }
+        }
+
+        taskflow.clear();
+
+        long long sol = 7;
+
+        taskflow.reduce_by_index(
+          range, sol,
+          [](const tf::IndexRanges<int, 2>& box, std::optional<long long> running) -> long long {
+            long long residual = running ? *running : 0;
+            for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+              for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
+                residual += i*1000LL + j;
+              }
+            }
+            return residual;
+          },
+          std::plus<long long>(),
+          P(c)
+        );
+
+        executor.run(taskflow).wait();
+
+        REQUIRE(sol == expected);
+      }
+    }
+  }
+}
+
+// 3D: same idea extended to three dimensions, with non-unit step sizes to
+// exercise coordinate arithmetic in the local reducer more thoroughly.
+template <typename P>
+void reduce_by_index_sum_3d(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  const int D0 = 4, D1 = 10, D2 = 9;
+  const int S0 = 1, S1 = 2, S2 = 3;
+
+  tf::IndexRanges<int, 3> range(
+    tf::IndexRange<int>(0, D0 * S0, S0),
+    tf::IndexRange<int>(0, D1 * S1, S1),
+    tf::IndexRange<int>(0, D2 * S2, S2)
+  );
+
+  long long expected = 0;
+  for(int i=0; i<D0*S0; i+=S0) {
+    for(int j=0; j<D1*S1; j+=S1) {
+      for(int k=0; k<D2*S2; k+=S2) {
+        expected += i*10000LL + j*100LL + k;
+      }
+    }
+  }
+  expected += -3;  // seed value participates in the reduction
+
+  for(size_t c : {0, 1, 3, 7, 99}) {
+
+    taskflow.clear();
+
+    long long sol = -3;
+
+    taskflow.reduce_by_index(
+      range, sol,
+      [](const tf::IndexRanges<int, 3>& box, std::optional<long long> running) -> long long {
+        long long residual = running ? *running : 0;
+        for(int i = std::get<0>(box.dim(0)); i < std::get<1>(box.dim(0)); i += std::get<2>(box.dim(0))) {
+          for(int j = std::get<0>(box.dim(1)); j < std::get<1>(box.dim(1)); j += std::get<2>(box.dim(1))) {
+            for(int k = std::get<0>(box.dim(2)); k < std::get<1>(box.dim(2)); k += std::get<2>(box.dim(2))) {
+              residual += i*10000LL + j*100LL + k;
+            }
+          }
+        }
+        return residual;
+      },
+      std::plus<long long>(),
+      P(c)
+    );
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(sol == expected);
+  }
+}
+
+// ZeroDim: exercises active_rank != N. Dims 0-3 are active (2x2x2x2 = 16
+// elements), dim4 is zero-size (forces active_rank == 4), and dims 5-8 are
+// non-zero but inactive/unreachable -- if the local reducer ever looped over
+// them, either the REQUIRE(false) inside would fire or an element would be
+// folded into the sum more than once. Also covers active_rank == 0 (the
+// very first dim is zero-size), where reduce_by_index must return without
+// touching the result at all.
+template <typename P>
+void reduce_by_index_sum_zero_dim(unsigned W) {
+
+  tf::Executor executor(W);
+  tf::Taskflow taskflow;
+
+  for(size_t c : {size_t{0}, size_t{1}, size_t{4}}) {
+
+    tf::IndexRanges<int, 9> range(
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,0,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1),
+      tf::IndexRange<int>(0,2,1), tf::IndexRange<int>(0,2,1)
+    );
+    const int N = 16;
+    REQUIRE(range.size() == static_cast<size_t>(N));
+
+    std::vector<std::atomic<int>> visited(N);
+    for(auto& v : visited) v.store(0);
+
+    long long expected = 0;
+    for(int a=0; a<2; a++) {
+      for(int b=0; b<2; b++) {
+        for(int cc=0; cc<2; cc++) {
+          for(int d=0; d<2; d++) {
+            expected += a*8+b*4+cc*2+d;
+          }
+        }
+      }
+    }
+
+    taskflow.clear();
+
+    long long sol = 0;
+
+    taskflow.reduce_by_index(
+      range, sol,
+      [&](const tf::IndexRanges<int, 9>& box, std::optional<long long> running) -> long long {
+        long long residual = running ? *running : 0;
+        for (int a = std::get<0>(box.dim(0)); a < std::get<1>(box.dim(0)); ++a) {
+          for (int b = std::get<0>(box.dim(1)); b < std::get<1>(box.dim(1)); ++b) {
+            for (int cc = std::get<0>(box.dim(2)); cc < std::get<1>(box.dim(2)); ++cc) {
+              for (int d = std::get<0>(box.dim(3)); d < std::get<1>(box.dim(3)); ++d) {
+                visited[a*8+b*4+cc*2+d].fetch_add(1, std::memory_order_relaxed);
+                residual += a*8+b*4+cc*2+d;
+                for (int e = std::get<0>(box.dim(4)); e < std::get<1>(box.dim(4)); ++e) {
+                  REQUIRE(false);  // dim4 is zero-size -- must never execute
+                }
+              }
+            }
+          }
+        }
+        return residual;
+      },
+      std::plus<long long>(),
+      P(c)
+    );
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(sol == expected);
+    for(int i=0; i<N; i++) {
+      REQUIRE(visited[i] == 1);
+    }
+  }
+
+  // active_rank == 0: the very first dim is zero-size, so the whole range
+  // is empty and reduce_by_index must return immediately without touching sol.
+  {
+    tf::IndexRanges<int, 3> range(
+      tf::IndexRange<int>(0, 0, 1),
+      tf::IndexRange<int>(0, 5, 1),
+      tf::IndexRange<int>(0, 5, 1)
+    );
+    REQUIRE(range.size() == 0);
+
+    taskflow.clear();
+
+    long long sol = 123;
+
+    taskflow.reduce_by_index(
+      range, sol,
+      [](const tf::IndexRanges<int, 3>&, std::optional<long long> running) -> long long {
+        return running ? *running : 0;
+      },
+      std::plus<long long>()
+    );
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(sol == 123);
+  }
+}
+
+// ---- 2D TEST CASES ----------------------------------------------------------
+
+TEST_CASE("ReduceByIndexSumND.2D.Guided.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::GuidedPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Guided.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::GuidedPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Guided.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Guided.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::GuidedPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.2D.Dynamic.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::DynamicPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Dynamic.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::DynamicPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Dynamic.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Dynamic.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::DynamicPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.2D.Static.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::StaticPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Static.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::StaticPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Static.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::StaticPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Static.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::StaticPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.2D.Random.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::RandomPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Random.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::RandomPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Random.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::RandomPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.2D.Random.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_2d<tf::RandomPartitioner<>>(8);
+}
+
+// ---- 3D TEST CASES ----------------------------------------------------------
+
+TEST_CASE("ReduceByIndexSumND.3D.Guided.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::GuidedPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Guided.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::GuidedPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Guided.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Guided.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::GuidedPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.3D.Dynamic.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::DynamicPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Dynamic.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::DynamicPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Dynamic.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Dynamic.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::DynamicPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.3D.Static.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::StaticPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Static.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::StaticPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Static.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::StaticPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Static.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::StaticPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.3D.Random.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::RandomPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Random.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::RandomPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Random.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::RandomPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.3D.Random.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_3d<tf::RandomPartitioner<>>(8);
+}
+
+// ---- ZERO-DIM TEST CASES -----------------------------------------------------
+
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Guided.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::GuidedPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Guided.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::GuidedPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Guided.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Guided.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::GuidedPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Dynamic.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::DynamicPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Dynamic.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::DynamicPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Dynamic.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Dynamic.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::DynamicPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Static.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::StaticPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Static.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::StaticPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Static.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::StaticPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Static.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::StaticPartitioner<>>(8);
+}
+
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Random.1thread" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::RandomPartitioner<>>(1);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Random.2threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::RandomPartitioner<>>(2);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Random.4threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::RandomPartitioner<>>(4);
+}
+TEST_CASE("ReduceByIndexSumND.ZeroDim.Random.8threads" * doctest::timeout(300)) {
+  reduce_by_index_sum_zero_dim<tf::RandomPartitioner<>>(8);
+}
+
 // ----------------------------------------------------------------------------
 // transform_reduce
 // ----------------------------------------------------------------------------

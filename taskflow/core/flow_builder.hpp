@@ -851,27 +851,34 @@ class FlowBuilder {
   Task reduce(B first, E last, T& init, O bop, P part = P());
 
   /**
-  @brief constructs an index range-based parallel-reduction task
+  @brief constructs an index range-based parallel-reduction task over a
+         one- or multi-dimensional index range
 
-  @tparam R type satisfying tf::IndexRanges1DLike
+  @tparam R type satisfying tf::IndexRangesLike (i.e., tf::IndexRanges<T, N>);
+            for @c N == 1 (equivalently, @c R is tf::IndexRange<T>) @c lop
+            receives a 1D subrange as described below, and for @c N > 1 it
+            receives a sub-box of the Cartesian product, mirroring
+            tf::FlowBuilder::for_each_by_index
   @tparam T result type
   @tparam L local reducer type
   @tparam G global reducer type
   @tparam P type satisfying tf::PartitionerLike
 
-  @param range index range 
+  @param range index range
   @param init initial value of the reduction and the storage for the reduced result
   @param lop binary operator that will be applied locally per worker
-  @param gop binary operator that will be applied globally among worker 
+  @param gop binary operator that will be applied globally among worker
   @param part partitioning algorithm to schedule parallel iterations
 
   @return a tf::Task handle
 
   The task spawns asynchronous tasks to perform parallel reduction over a range with @c init.
   The reduced result is store in @c init.
-  Unlike the iterator-based reduction, 
-  index range-based reduction is particularly useful for applications that benefit from SIMD optimizations 
+  Unlike the iterator-based reduction,
+  index range-based reduction is particularly useful for applications that benefit from SIMD optimizations
   or other range-based processing strategies.
+
+  @par One-dimensional range (`N` == 1)
 
   @code{.cpp}
   const size_t N = 1000000;
@@ -899,12 +906,48 @@ class FlowBuilder {
   assert(res = N + 1);
   @endcode
 
+  @par Multi-dimensional ranges (`N` > 1)
+
+  For @c N > 1, @c lop is invoked once per sub-box of the partitioned
+  Cartesian product, exactly like the @c callable passed to
+  tf::FlowBuilder::for_each_by_index. Each dimension of a tf::IndexRanges is
+  a <tt>std::tuple<T, T, T></tt> of (begin, end, step) accessible through
+  @c dim(d), so @c lop typically destructures it via structured bindings:
+
+  @code{.cpp}
+  // 2D range: rows x cols
+  tf::IndexRanges<int, 2> range(
+    tf::IndexRange<int>(0, rows, 1),
+    tf::IndexRange<int>(0, cols, 1)
+  );
+  double res = 0.0;
+
+  taskflow.reduce_by_index(
+    range,
+    res,
+    // local reducer
+    [&](const tf::IndexRanges<int, 2>& sub, std::optional<double> running_total) -> double {
+      double residual = running_total ? *running_total : 0.0;
+      auto [r0, r1, rs] = sub.dim(0);
+      auto [c0, c1, cs] = sub.dim(1);
+      for(auto r = r0; r < r1; r += rs) {
+        for(auto c = c0; c < c1; c += cs) {
+          residual += data[r][c];
+        }
+      }
+      return residual;
+    },
+    std::plus<double>()
+  );
+  executor.run(taskflow).wait();
+  @endcode
+
   Range can be made stateful by using std::reference_wrapper.
 
   @note
   Please refer to @ref ParallelReduction for details.
   */
-  template <IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
+  template <IndexRangesLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
   Task reduce_by_index(R range, T& init, L lop, G gop, P part = P());
   
   // ------------------------------------------------------------------------
@@ -1917,81 +1960,81 @@ class Subflow : public FlowBuilder {
 
   public:
     
-    /**
-    @brief enables the subflow to join its parent task
+  /**
+  @brief enables the subflow to join its parent task
 
-    Performs an immediate action to join the subflow. Once the subflow is joined,
-    it is considered finished and you may not modify the subflow anymore.
+  Performs an immediate action to join the subflow. Once the subflow is joined,
+  it is considered finished and you may not modify the subflow anymore.
 
-    @code{.cpp}
-    taskflow.emplace([](tf::Subflow& sf){
-      sf.emplace([](){});
-      sf.join();  // join the subflow of one task
-    });
-    @endcode
+  @code{.cpp}
+  taskflow.emplace([](tf::Subflow& sf){
+    sf.emplace([](){});
+    sf.join();  // join the subflow of one task
+  });
+  @endcode
 
-    Only the worker that spawns this subflow can join it.
-    */
-    void join();
+  Only the worker that spawns this subflow can join it.
+  */
+  void join();
 
-    /**
-    @brief queries if the subflow is joinable
+  /**
+  @brief queries if the subflow is joinable
 
-    This member function queries if the subflow is joinable.
-    When a subflow is joined, it becomes not joinable.
+  This member function queries if the subflow is joinable.
+  When a subflow is joined, it becomes not joinable.
 
-    @code{.cpp}
-    taskflow.emplace([](tf::Subflow& sf){
-      sf.emplace([](){});
-      std::cout << sf.joinable() << '\n';  // true
-      sf.join();
-      std::cout << sf.joinable() << '\n';  // false
-    });
-    @endcode
-    */
-    bool joinable() const noexcept;
+  @code{.cpp}
+  taskflow.emplace([](tf::Subflow& sf){
+    sf.emplace([](){});
+    std::cout << sf.joinable() << '\n';  // true
+    sf.join();
+    std::cout << sf.joinable() << '\n';  // false
+  });
+  @endcode
+  */
+  bool joinable() const noexcept;
 
-    /**
-    @brief acquires the associated executor
-    */
-    Executor& executor() noexcept;
-    
-    /**
-    @brief acquires the associated graph
-    */
-    Graph& graph() { return _graph; }
-    
-    /**
-    @brief specifies whether to keep the subflow after it is joined
+  /**
+  @brief acquires the associated executor
+  */
+  Executor& executor() noexcept;
+  
+  /**
+  @brief acquires the associated graph
+  */
+  Graph& graph() { return _graph; }
+  
+  /**
+  @brief specifies whether to keep the subflow after it is joined
 
-    @param flag `true` to retain the subflow after it is joined; `false` to discard it
+  @param flag `true` to retain the subflow after it is joined; `false` to discard it
 
-    By default, the runtime automatically clears a spawned subflow once it is joined.
-    Setting this flag to `true` allows the application to retain the subflow's structure 
-    for post-execution analysis like visualization.
-    */
-    void retain(bool flag) noexcept;
+  By default, the runtime automatically clears a spawned subflow once it is joined.
+  Setting this flag to `true` allows the application to retain the subflow's structure 
+  for post-execution analysis like visualization.
+  */
+  void retain(bool flag) noexcept;
 
-    /**
-    @brief queries if the subflow will be retained after it is joined
-    @return `true` if the subflow will be retained after it is joined; `false` otherwise
+  /**
+  @brief queries if the subflow will be retained after it is joined
+  @return `true` if the subflow will be retained after it is joined; `false` otherwise
 
-    By default, the runtime automatically clears a spawned subflow once it is joined.
-    Users can disable this before by explicitly calling tf::Subflow::retain.
-    */
-    bool retain() const;
+  By default, the runtime automatically clears a spawned subflow once it is joined.
+  Users can disable this before by explicitly calling tf::Subflow::retain.
+  */
+  bool retain() const;
 
   private:
     
-    Subflow(Executor&, Worker&, Node*, Graph&);
-    
-    Subflow() = delete;
-    Subflow(const Subflow&) = delete;
-    Subflow(Subflow&&) = delete;
+  Subflow(Executor&, Worker&, Node*, Graph&);
+  
+  Subflow() = delete;
+  Subflow(const Subflow&) = delete;
+  Subflow(Subflow&&) = delete;
 
-    Executor& _executor;
-    Worker& _worker;
-    Node* _node;
+  Executor& _executor;
+  Worker& _worker;
+  Node* _node;
 };
 
 // Constructor

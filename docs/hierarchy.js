@@ -31,6 +31,7 @@ var hierarchy =
     [ "hash", "structhash.html", null ],
     [ "tf::IndexRanges< T, N >", "classtf_1_1IndexRanges.html", null ],
     [ "tf::IndexRanges< T, 1 >", "classtf_1_1IndexRanges.html", null ],
+    [ "tf::IndexRanges< T, N >", "classtf_1_1IndexRanges.html", null ],
     [ "tf::NonblockingNotifier", "classtf_1_1NonblockingNotifier.html", null ],
     [ "tf::ObjectPool< T, H, LogSize >", "classtf_1_1ObjectPool.html", null ],
     [ "tf::ObserverInterface", "classtf_1_1ObserverInterface.html", null ],

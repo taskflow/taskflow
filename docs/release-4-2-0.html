@@ -171,6 +171,10 @@ Taskflow Core</h2>
 <li>must be explicitly enabled through <code>-DTF_ENABLE_TASK_PRIORITY</code></li>
 </ul>
 </li>
+<li>added the support for ND-index-range-based reduce<ul>
+<li><a class="el" href="classtf_1_1FlowBuilder.html#a3ea810696c4b29824d1aaef15342c825" title="constructs an index range-based parallel-reduction task over a one- or multi-dimensional index range">tf::Taskflow::reduce_by_index</a></li>
+</ul>
+</li>
 <li>refactored the core with several new concepts to enhance type safety and readability<ul>
 <li><a class="el" href="concepttf_1_1InputIteratorLike.html" title="concept to check if a type is a stateful input iterator">tf::InputIteratorLike</a> to check if a type is a stateful iterator</li>
 <li><a class="el" href="concepttf_1_1UnaryOperationLike.html" title="concept to check if a unary operation is valid">tf::UnaryOperationLike</a> to check if a unary operation is valid</li>
@@ -181,6 +185,7 @@ Taskflow Core</h2>
 </li>
 <li>fixed missing <a class="el" href="concepttf_1_1TaskParamsLike.html" title="concept to check if a type is a task parameter">tf::TaskParamsLike</a> concept usage in async tasking</li>
 <li>replaced generic template type in dependent async tasks with std::input_iterator</li>
+<li>improved ND parallel-for scheduling with a local recursive partition</li>
 </ul>
 <h2><a class="anchor" id="release-4-2-0_utilities"></a>
 Utilities</h2>
@@ -190,6 +195,9 @@ Bug Fixes</h1>
 Breaking Changes</h1>
 <h1><a class="anchor" id="release-4-2-0_documentation"></a>
 Documentation</h1>
+<ul>
+<li>revised <a class="el" href="ParallelReduction.html">Parallel Reduction</a></li>
+</ul>
 <h1><a class="anchor" id="release-4-2-0_miscellaneous_items"></a>
 Miscellaneous Items</h1>
 <p>If you are interested in collaborating with us on applying Taskflow to your projects, please feel free to reach out to <a href="https://tsung-wei-huang.github.io/">Dr. Tsung-Wei Huang</a>! </p>

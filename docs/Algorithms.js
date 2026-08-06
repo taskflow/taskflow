@@ -12,14 +12,7 @@ var Algorithms =
       [ "Create an Index-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexBased", [
         [ "Capture Indices by Reference", "ParallelIterations.html#ParallelForEachCaptureIndicesByReference", null ]
       ] ],
-      [ "Create an IndexRange-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexRangeBased", [
-        [ "What is an IndexRange?", "ParallelIterations.html#ParallelIterationsWhatIsIndexRange", null ],
-        [ "Create a Parallel-Iteration Task over a 1D IndexRange", "ParallelIterations.html#ParallelIterationsIndexRange1D", null ],
-        [ "Create a Parallel-Iteration Task over a Multi-dimensional IndexRange", "ParallelIterations.html#ParallelIterationsIndexRangeMD", null ],
-        [ "Zero-size Dimensions", "ParallelIterations.html#ParallelIterationsIndexRangeMDZeroSize", null ],
-        [ "Understand the Scheduling Algorithm", "ParallelIterations.html#ParallelIterationsIndexRangeScheduling", null ],
-        [ "Capture Range by Reference", "ParallelIterations.html#ParallelIterationsIndexRangeByReference", null ]
-      ] ],
+      [ "Create an IndexRange-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIndexRangeBased", null ],
       [ "Create an Iterator-based Parallel-Iteration Task", "ParallelIterations.html#ParallelIterationsIteratorBased", [
         [ "Capture Iterators by Reference", "ParallelIterations.html#ParallelForEachCaptureIteratorsByReference", null ]
       ] ],
@@ -43,9 +36,7 @@ var Algorithms =
       [ "Create a Parallel-Transform-Reduction Task", "ParallelReduction.html#ParallelTransformReductionCreate", [
         [ "Capture Iterators by Reference", "ParallelReduction.html#ParallelTransformReductionCaptureIteratorsByReference", null ]
       ] ],
-      [ "Create a Parallel-Reduce-by-Index Task", "ParallelReduction.html#ParallelReduceByIndexCreate", [
-        [ "Capture IndexRange by Reference", "ParallelReduction.html#ParallelReduceByIndexCaptureByReference", null ]
-      ] ],
+      [ "Create a Parallel-Reduce-by-Index Task", "ParallelReduction.html#ParallelReduceByIndexCreate", null ],
       [ "Configure a Partitioner", "ParallelReduction.html#ParallelReductionConfigureAPartitioner", null ]
     ] ],
     [ "Parallel Sort", "ParallelSort.html", [

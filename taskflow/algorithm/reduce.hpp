@@ -412,24 +412,26 @@ auto make_transform_reduce_task(
 
 
 // Function: make_reduce_by_index_task
-template <IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
+template <IndexRangesLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
 auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
-  
+
   using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     range_type r = range;
-    
-    // nothing to be done if the range is invalid
-    if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
-      return;
+
+    if constexpr (range_type::rank == 1) {
+      // nothing to be done if the range is invalid
+      if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
+        return;
+      }
     }
 
     size_t W = rt.executor().num_workers();
     size_t N = r.size();
-    
+
     if(N == 0) {
       return;
     }
@@ -439,7 +441,7 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
       part([=, &init] () mutable { init = lop(r, std::move(init)); })();
       return;
     }
-    
+
     if(N < W) {
       W = N;
     }
@@ -448,23 +450,23 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
 
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      
+
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        
+
         // we force chunk size to be at least two because the temporary
         // variable sum need to avoid copy at the first step
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
-        
+
         auto task = part([=, &init] () mutable {
 
           // temporary result so far
           std::optional<T> tmp;
 
           // loop reduce
-          part.loop(N, W, curr_b, chunk_size, [=, &tmp](size_t part_b, size_t part_e) mutable {
-            tmp = lop(r.unravel(part_b, part_e), std::move(tmp));
-          }); 
-          
+          part.loop(r, N, W, curr_b, chunk_size, [=, &tmp](const range_type& box) mutable {
+            tmp = lop(box, std::move(tmp));
+          });
+
           // final reduce - tmp is guaranteed to have value
           // assert(tmp.has_value());
           std::lock_guard<std::mutex> lock(*mutex);
@@ -477,19 +479,19 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
-      
+
       for(size_t w=0; w<W;) {
 
         auto task = part([=, &init] () mutable {
-          
+
           // temporary result so far
           std::optional<T> tmp;
-          
+
           // loop reduce
-          part.loop(N, W, *next, [=, &tmp](size_t part_b, size_t part_e) mutable {
-            tmp = lop(r.unravel(part_b, part_e), std::move(tmp));
-          }); 
-          
+          part.loop(r, N, W, *next, [=, &tmp](const range_type& box) mutable {
+            tmp = lop(box, std::move(tmp));
+          });
+
           // final reduce - need to check if the running total has value since
           // this is a dynamic scheduler; the worker may not actually acquire any work
           if(tmp) {
@@ -544,7 +546,7 @@ Task FlowBuilder::transform_reduce(
 // ------------------------------------------------------------------------------------------------
 
 // Function: make_index_reduce_task
-template <IndexRanges1DLike R, typename T, typename L, typename G, PartitionerLike P>
+template <IndexRangesLike R, typename T, typename L, typename G, PartitionerLike P>
 Task FlowBuilder::reduce_by_index(R range, T& init, L lop, G gop, P part) {
   return emplace(make_reduce_by_index_task(range, init, lop, gop, part));
 }
