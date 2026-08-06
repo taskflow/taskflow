@@ -25,7 +25,7 @@ body { background:var(--bg); color:var(--text); }
 
 /* toolbar */
 #toolbar { display:flex; align-items:center; gap:12px; padding:10px 16px; background:var(--surface); border-bottom:1px solid var(--border); }
-#toolbar h1 { font-size:20px; font-weight:700; color:var(--accent); text-transform:uppercase; letter-spacing:.08em; }
+#toolbar h1 { font-size:20px; font-weight:700; color:var(--accent); }
 .sep { width:1px; height:22px; background:var(--border); }
 .btn { padding:5px 14px; font-size:16px; font-family:inherit; border:1px solid var(--border); border-radius:4px; background:transparent; color:var(--muted); cursor:pointer; }
 .btn:hover { color:var(--text); border-color:var(--accent); }
@@ -52,7 +52,7 @@ body { background:var(--bg); color:var(--text); }
 .lsw { width:11px; height:11px; border-radius:2px; display:inline-block; margin-right:4px; vertical-align:middle; }
 #stats { display:flex; gap:28px; padding:6px 16px; font-size:16px; color:var(--muted); border-bottom:1px solid var(--border); }
 #stats b { color:var(--text); }
-.slabel { font-size:14px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:10px 16px 4px; }
+.slabel { font-size:14px; color:var(--muted); padding:10px 16px 4px; }
 
 /*
   TIMELINE SECTION
@@ -61,17 +61,19 @@ body { background:var(--bg); color:var(--text); }
   Inside it, everything is position:absolute:
 
     #tl-labels   left=0           top=0   width=LABEL_W  height=totalRowsH
-    #tl-canvas   left=LABEL_W px  top=0                  height=totalRowsH
+    #tl-svg      left=LABEL_W px  top=0                  height=visibleRowsH
     #tl-xsvg     left=LABEL_W px  top=totalRowsH         height=XAXIS_H
     #tl-bsvg     left=LABEL_W px  top=0   (brush, receives clicks)
 
   The page scrolls #tl-section like any normal tall element.
-  No overflow:hidden. No JS scroll handlers. Canvas drawn once.
+  The timeline SVG is virtualized to the visible row slice on very tall traces.
 */
 #tl-section  { position:relative; margin:0 16px; border:1px solid var(--border); border-radius:3px; }
 #tl-labels   { position:absolute; overflow:hidden; }
 .row-label   { position:absolute; left:4px; font-size:15px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-#tl-canvas   { position:absolute; display:block; }
+#tl-svg      { position:absolute; display:block; overflow:hidden; }
+#tl-bg rect  { shape-rendering:crispEdges; }
+#tl-segs rect { stroke:none; cursor:pointer; }
 #tl-xsvg     { position:absolute; display:block; overflow:visible; pointer-events:none; }
 #tl-bsvg     { position:absolute; display:block; overflow:visible; }
 
@@ -160,7 +162,7 @@ body { background:var(--bg); color:var(--text); }
   <button class="btn" id="btn-back"  style="display:none">← Back</button>
   <div class="sep"></div>
   <button id="theme-btn" title="Toggle light/dark mode">🌙</button>
-  <div id="status"><a href="https://github.com/taskflow/taskflow" target="_blank" style="color:var(--muted);text-decoration:none;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:15px;">Taskflow GitHub</a></div>
+  <div id="status"><a href="https://github.com/taskflow/taskflow" target="_blank" style="color:var(--muted);text-decoration:none;font-weight:700;font-size:15px;">Taskflow Github</a></div>
 </div>
 
 <div id="drop-zone">
@@ -225,7 +227,7 @@ body { background:var(--bg); color:var(--text); }
 
   <div id="tl-section">
     <div id="tl-labels"></div>
-    <canvas id="tl-canvas"></canvas>
+    <svg id="tl-svg"></svg>
     <svg id="tl-xsvg"></svg>
     <svg id="tl-bsvg"></svg>
   </div>
@@ -240,9 +242,9 @@ body { background:var(--bg); color:var(--text); }
 
   <div class="panel-gap"></div>
 
-  <div class="slabel">Critical Tasks — top
-    <input id="rank-n" type="number" value="50" min="1" max="500"
-      style="width:52px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:15px;font-family:inherit;border-radius:3px;padding:1px 5px;margin:0 4px;"> by duration
+  <div class="slabel">Top
+    <input id="rank-n" type="number" value="100" min="1" max="500"
+      style="width:60px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:15px;font-family:inherit;border-radius:3px;padding:1px 5px;margin:0 4px;"> tasks by duration
     <span id="rank-count"></span>
   </div>
   <div id="rank-section"><svg id="rank-svg"></svg></div>
@@ -260,7 +262,7 @@ const TNAMES  = ['static','subflow','condition','module','async'];
 const TCOLORS = {static:'#4c8eda',subflow:'#e07b39',condition:'#3dbf8a',module:'#9b6fe0',async:'#e06b6b',clustered:'#6e7681'};
 
 // Row geometry: each row is ROW_H px tall with ROW_GAP px below it.
-// Canvas height = PAD_TOP + N*(ROW_H+ROW_GAP) + PAD_BOT
+// Timeline height = PAD_TOP + N*(ROW_H+ROW_GAP) + PAD_BOT.
 // This is computed once and never changes on scroll.
 const ROW_H    = 20;
 const ROW_GAP  = 5;
@@ -268,7 +270,6 @@ const PAD_TOP  = 12;
 const PAD_BOT  = 12;
 const LABEL_W  = 140;
 const XAXIS_H  = 44;   // extra height for two-line tick labels (number + unit)
-const PARA_H   = 120;
 const MINI_H   = 36;
 const RANK_H   = 280;
 const MAX_RECTS = 2000;
@@ -293,7 +294,7 @@ const elPText   = document.getElementById('ptext');
 const elPBar    = document.getElementById('pbar');
 const tlSection = document.getElementById('tl-section');
 const tlLabels  = document.getElementById('tl-labels');
-const tlCanvas  = document.getElementById('tl-canvas');
+const tlSvg     = document.getElementById('tl-svg');
 const tlXSvg    = document.getElementById('tl-xsvg');
 const tlBSvg    = document.getElementById('tl-bsvg');
 const miniSect  = document.getElementById('mini-section');
@@ -384,8 +385,8 @@ function setupCanvas(canvas, cssW, cssH) {
   return ctx;
 }
 
-// Width available for the canvas = section width minus label column
-// Canvas width — cached from ResizeObserver, always correct.
+// Width available for the timeline = section width minus label column.
+// Timeline width — cached from ResizeObserver, always correct.
 // Falls back to window.innerWidth calculation if not yet observed.
 let _cachedCW = 0;
 
@@ -410,8 +411,8 @@ const _sectionObserver = new ResizeObserver(entries => {
 // Observe immediately — will fire once tl-section gets its first real size
 _sectionObserver.observe(tlSection);
 
-// Scroll handler — only active when canvas is shorter than the logical rows height.
-// Repositions canvas top and redraws visible rows on scroll.
+// Scroll handler — only active when the SVG viewport is shorter than the
+// logical rows height. Repositions the visible SVG slice on scroll.
 window.addEventListener('scroll', () => {
   if (!D.beg || D.canvasH >= D.totalRowsH) return;  // no virtual scroll needed
 
@@ -424,18 +425,18 @@ window.addEventListener('scroll', () => {
   if (Math.abs(newScrollTop - D.scrollTop) < 1) return;  // no change
   D.scrollTop = newScrollTop;
 
-  // Reposition canvas and brush to stay in the visible viewport area
-  tlCanvas.style.top = D.scrollTop + 'px';
-  tlBSvg.style.top   = D.scrollTop + 'px';
+  // Reposition timeline SVG and brush to stay in the visible viewport area
+  tlSvg.style.top  = D.scrollTop + 'px';
+  tlBSvg.style.top = D.scrollTop + 'px';
 
-  // Scroll: only repaint visible rows — drawnRects cache still valid
-  paintTimelineCanvas();
+  // Scroll: only rebind visible rows — drawnRects cache still valid
+  renderTimelineSvg();
 }, { passive: true });
 
-// x: microseconds → canvas pixel
+// x: microseconds → timeline pixel
 function xpx(us) { return (us - D.x0) / (D.x1 - D.x0) * cW(); }
 
-// Canvas y of row ri (top of the row bar)
+// Logical y of row ri (top of the row bar)
 function rowY(ri) { return PAD_TOP + ri * D.rowStride; }
 
 // ── File loading ───────────────────────────────────────────────────────────
@@ -477,7 +478,7 @@ function onParsed(msg) {
 
   // Always use full comfortable row height — never compress rows.
   // tl-section and tl-labels are full logical height (page scrolls naturally).
-  // Canvas height is capped at maxCssH; scroll handler redraws visible rows.
+  // Timeline SVG height is capped at maxCssH; scroll handler rebinds visible rows.
   const n       = D.workers.length;
   const dpr     = window.devicePixelRatio || 1;
   D.rowH        = ROW_H;
@@ -579,7 +580,7 @@ function applyLayout(){
   const workers = D.filteredWorkers || D.workers;
   const n  = workers.length;
   const tH = D.totalRowsH;   // full logical height (section + labels)
-  const cH = D.canvasH;      // canvas height (capped at browser limit)
+  const cH = D.canvasH;      // visible timeline SVG viewport height
   const sH = D.sectionH;     // full section height (rows + x-axis)
 
   // tl-section: full height
@@ -607,17 +608,17 @@ function applyLayout(){
     tlLabels.appendChild(el);
   }
 
-  // tl-canvas: capped height; redraws visible slice on scroll when tH > cH
-  tlCanvas.style.left = LABEL_W + 'px';
-  tlCanvas.style.top  = D.scrollTop + 'px';
-  setupCanvas(tlCanvas, _cW, cH);
+  // tl-svg: capped viewport; rebinds visible slice on scroll when tH > cH
+  tlSvg.style.left = LABEL_W + 'px';
+  tlSvg.style.top  = D.scrollTop + 'px';
+  d3.select(tlSvg).attr('width', _cW).attr('height', cH);
 
   // tl-xsvg: x-axis strip, always below the full logical rows area
   tlXSvg.style.left = LABEL_W + 'px';
   tlXSvg.style.top  = tH + 'px';
   d3.select(tlXSvg).attr('width', _cW).attr('height', XAXIS_H);
 
-  // tl-bsvg: brush overlay, same visible area as canvas
+  // tl-bsvg: brush overlay, same visible area as the timeline SVG
   tlBSvg.style.left = LABEL_W + 'px';
   tlBSvg.style.top  = D.scrollTop + 'px';
   d3.select(tlBSvg).attr('width', _cW).attr('height', cH);
@@ -631,8 +632,8 @@ function applyLayout(){
 }
 
 // ── Draw timeline ──────────────────────────────────────────────────────────
-// Canvas Y for row ri, accounting for scroll offset
-function canvasY(ri){ return rowY(ri) - D.scrollTop; }
+// Viewport Y for row ri, accounting for scroll offset.
+function viewportY(ri){ return rowY(ri) - D.scrollTop; }
 
 // Pass 1: rebuild drawnRects for all rows — only when zoom/filter changes.
 // This is the expensive O(N × segs_per_worker) pass.
@@ -665,44 +666,59 @@ function rebuildDrawnRects() {
   return vis;
 }
 
-// Pass 2: paint only visible rows onto canvas — fast O(visible × segs) pass.
+// Pass 2: render only visible rows into SVG — fast O(visible × segs) pass.
 // Called on both zoom (after rebuildDrawnRects) and scroll.
-function paintTimelineCanvas() {
-  const ctx = tlCanvas.getContext('2d');
-  const W   = _cW;
-  const cH  = D.canvasH;
+function renderTimelineSvg() {
+  const svg = d3.select(tlSvg);
   const workers = D.filteredWorkers || D.workers;
   const n   = workers.length;
 
-  ctx.clearRect(0, 0, W, cH);
-
   const firstRow = Math.max(0, Math.floor((D.scrollTop - PAD_TOP) / D.rowStride));
-  const lastRow  = Math.min(n, Math.ceil((D.scrollTop + cH - PAD_TOP) / D.rowStride));
+  const lastRow  = Math.min(n, Math.ceil((D.scrollTop + D.canvasH - PAD_TOP) / D.rowStride));
 
-  // Row backgrounds
+  const rowBg = [];
   for(let ri=firstRow; ri<lastRow; ri++){
-    ctx.fillStyle = ri%2===0 ? getComputedStyle(document.documentElement).getPropertyValue('--row-even').trim()
-                              : getComputedStyle(document.documentElement).getPropertyValue('--row-odd').trim();
-    ctx.fillRect(0, canvasY(ri), W, D.rowH);
+    rowBg.push({ri, y:viewportY(ri)});
   }
 
-  // Draw segments for visible rows only — read from drawnRects cache
+  let bgG = svg.select('g#tl-bg');
+  if(bgG.empty()) bgG = svg.append('g').attr('id','tl-bg');
+  bgG.selectAll('rect')
+    .data(rowBg, d=>d.ri)
+    .join('rect')
+      .attr('x', 0)
+      .attr('y', d=>d.y)
+      .attr('width', _cW)
+      .attr('height', D.rowH)
+      .attr('fill', d=>d.ri%2===0 ? 'var(--row-even)' : 'var(--row-odd)');
+
+  // Draw segments for visible rows only — read from drawnRects cache.
   const padY = Math.max(1, Math.floor(D.rowH*0.1));
   const segH = Math.max(1, D.rowH - padY*2);
+  const segData = [];
 
   for(let ri=firstRow; ri<lastRow; ri++){
     if(!D.drawnRects||!D.drawnRects[ri]||!D.drawnRects[ri].length) continue;
-    const sy = canvasY(ri) + padY;
     const rects = D.drawnRects[ri];
     for(let k=0; k<rects.length; k++){
-      const {beg:cB, end:cE, type:cT, clustered:cl} = rects[k];
-      const px0=xpx(cB), pw=Math.max(1, xpx(cE)-px0);
-      ctx.fillStyle=cl?TCOLORS.clustered:(TCOLORS[TNAMES[cT]]||TCOLORS.static);
-      ctx.globalAlpha=.85;
-      ctx.fillRect(Math.floor(px0), sy, Math.ceil(pw), segH);
+      const r = rects[k];
+      segData.push({...r, ri, k, y:viewportY(ri)+padY});
     }
   }
-  ctx.globalAlpha=1;
+
+  let segG = svg.select('g#tl-segs');
+  if(segG.empty()) segG = svg.append('g').attr('id','tl-segs');
+  segG.selectAll('rect')
+    .data(segData, d=>`${d.ri}:${d.k}:${d.beg}:${d.end}`)
+    .join('rect')
+      .attr('x', d=>Math.floor(xpx(d.beg)))
+      .attr('y', d=>d.y)
+      .attr('width', d=>Math.max(1, Math.ceil(xpx(d.end)-xpx(d.beg))))
+      .attr('height', segH)
+      .attr('rx', 1)
+      .attr('ry', 1)
+      .attr('fill', d=>d.clustered ? TCOLORS.clustered : (TCOLORS[TNAMES[d.type]] || TCOLORS.static))
+      .attr('opacity', .85);
 }
 
 function drawTimeline(){
@@ -713,7 +729,7 @@ function drawTimeline(){
     document.getElementById('sv').textContent=vis.toLocaleString();
   }
 
-  paintTimelineCanvas();
+  renderTimelineSvg();
 
   // x-axis in tl-xsvg
   const xSc=d3.scaleLinear().domain([D.x0,D.x1]).range([0,_cW]);
@@ -783,7 +799,7 @@ function drawMini(){
 let rXG=null,rYG=null,rBarsG=null,rLblG=null;
 
 function drawRank(){
-  const N=Math.max(1,Math.min(500,parseInt(document.getElementById('rank-n').value)||50));
+  const N=Math.max(1,Math.min(500,parseInt(document.getElementById('rank-n').value)||100));
   const sl=D.rankData.slice(0,N);
   const rankCount = document.getElementById('rank-count');
   if(rankCount) {
@@ -831,23 +847,22 @@ function showTip(ev,h){tip.innerHTML=h;tip.classList.add('show');moveTip(ev);}
 function moveTip(ev){tip.style.left=Math.min(ev.clientX+14,window.innerWidth-310)+'px';tip.style.top=Math.min(ev.clientY-10,window.innerHeight-110)+'px';}
 function hideTip(){tip.classList.remove('show');}
 
-// Hover on tlBSvg (the brush SVG on top of the canvas) — tlCanvas is beneath
-// it and never receives mouse events directly.
+// Hover on tlBSvg (the brush SVG on top of the timeline SVG).
 // Track the last hovered cluster for tooltip display
 let _hoveredCluster = null;
 let _lastMoveX = 0, _lastMoveY = 0;
+let _tlPointerDown = null;
 
-tlBSvg.addEventListener('mousemove',ev=>{
-  _lastMoveX=ev.clientX; _lastMoveY=ev.clientY;
+function timelineHitFromEvent(ev) {
   if(!D.drawnRects) return;
   const r=tlBSvg.getBoundingClientRect();
   const px=ev.clientX-r.left, py=ev.clientY-r.top;
-  // py is canvas-relative; add scrollTop to get logical Y
+  // py is viewport-relative; add scrollTop to get logical Y
   const logY = py + D.scrollTop;
   const ri=Math.floor((logY-PAD_TOP)/D.rowStride);
   const _fw = D.filteredWorkers||D.workers;
-  if(ri<0||ri>=_fw.length||!D.drawnRects[ri]){hideTip();_hoveredCluster=null;return;}
-  if((logY-PAD_TOP)%D.rowStride>=D.rowH){hideTip();_hoveredCluster=null;return;}
+  if(ri<0||ri>=_fw.length||!D.drawnRects[ri]) return null;
+  if((logY-PAD_TOP)%D.rowStride>=D.rowH) return null;
 
   const us=D.x0+(px/_cW)*(D.x1-D.x0);
   const rects=D.drawnRects[ri];
@@ -855,9 +870,21 @@ tlBSvg.addEventListener('mousemove',ev=>{
   for(let i=0;i<rects.length;i++){
     if(rects[i].beg<=us&&rects[i].end>=us){hit=rects[i];break;}
   }
-  if(!hit){hideTip();_hoveredCluster=null;return;}
+  return hit ? {hit, row:_fw[ri], us} : null;
+}
 
-  const w=_fw[ri];
+function zoomToTimelineHit(hit) {
+  const span = hit.end - hit.beg;
+  const pad = Math.max(D.minSegDur, span * 0.5);
+  zoomTo(Math.max(D.minUs, hit.beg - pad), Math.min(D.maxUs, hit.end + pad));
+}
+
+tlBSvg.addEventListener('mousemove',ev=>{
+  _lastMoveX=ev.clientX; _lastMoveY=ev.clientY;
+  const h = timelineHitFromEvent(ev);
+  if(!h){hideTip();_hoveredCluster=null;return;}
+
+  const {hit, row:w, us} = h;
   if(hit.clustered){
     _hoveredCluster=hit;
     showTip(ev,
@@ -866,14 +893,13 @@ tlBSvg.addEventListener('mousemove',ev=>{
       `<div class="tm">Worker:   ${w.key}</div>` +
       `<div class="tm">Span:     ${fmtUs(hit.beg)} → ${fmtUs(hit.end)}</div>` +
       `<div class="tm">Duration: ${fmtUs(hit.end-hit.beg)}</div>` +
-      `<div style="margin-top:4px;font-size:14px;color:var(--accent)">Brush to zoom in and see individual tasks</div>`
+      `<div style="margin-top:4px;font-size:14px;color:var(--accent)">Click or brush to zoom in</div>`
     );
   } else {
     _hoveredCluster=null;
-    const w2=_fw[ri];
     let f=-1;
-    for(let s=0;s<w2.length;s++){
-      const i=w2.offset+s;
+    for(let s=0;s<w.length;s++){
+      const i=w.offset+s;
       if(D.beg[i]<=us&&D.end[i]>=us){f=i;break;}
     }
     if(f===-1){hideTip();return;}
@@ -883,9 +909,25 @@ tlBSvg.addEventListener('mousemove',ev=>{
       `<div>${D.names[f]||'(anonymous)'}</div>` +
       `<div class="tm">Worker:   ${w.key}</div>` +
       `<div class="tm">Duration: ${fmtUs(D.end[f]-D.beg[f])}</div>` +
-      `<div class="tm">Start:    ${fmtUs(D.beg[f])}</div>`
+      `<div class="tm">Start:    ${fmtUs(D.beg[f])}</div>` +
+      `<div style="margin-top:4px;font-size:13px;color:var(--accent)">Click to zoom in</div>`
     );
   }
+});
+
+tlBSvg.addEventListener('click',ev=>{
+  if(_tlPointerDown) {
+    const dx = ev.clientX - _tlPointerDown.x;
+    const dy = ev.clientY - _tlPointerDown.y;
+    _tlPointerDown = null;
+    if(Math.hypot(dx, dy) > 3) return;
+  }
+  const h = timelineHitFromEvent(ev);
+  if(h && h.hit) zoomToTimelineHit(h.hit);
+});
+
+tlBSvg.addEventListener('pointerdown',ev=>{
+  _tlPointerDown = {x:ev.clientX, y:ev.clientY};
 });
 
 tlBSvg.addEventListener('mouseleave',hideTip);
@@ -1098,7 +1140,7 @@ const themeBtn = document.getElementById('theme-btn');
 function applyTheme(light) {
   document.documentElement.classList.toggle('light', light);
   themeBtn.textContent = light ? '🌙' : '☀️';
-  // Redraw canvases since row/mini background colors changed
+  // Redraw visual layers since row/mini background colors changed
   if(D.beg){ drawTimeline(); drawMini(); }
 }
 // Restore saved preference
