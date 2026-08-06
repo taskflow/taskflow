@@ -437,8 +437,22 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
     }
 
     // only myself - no need to spawn another graph
+    //
+    // Must still apply both lop and gop here, not lop alone: lop and gop are two genuinely
+    // different operations (that's the entire reason make_reduce_by_index_task exposes both
+    // instead of a single bop the way make_reduce_task/make_transform_reduce_task do), so
+    // collapsing this fast path to `init = lop(r, std::move(init))` silently skips whatever
+    // transformation gop was responsible for (e.g. a caller that keeps lop's accumulation in a
+    // different unit/scale than the final answer and applies the conversion only in gop -- valid
+    // usage, since gop is documented as the merge step). Passing `init` as if it were the *local*
+    // seed for lop, then never calling gop at all, makes this fast path's result depend on
+    // scheduling (W, N vs chunk_size()) rather than being a pure function of the input, which
+    // defeats the purpose of a reduction primitive. Fold with lop from a fresh std::nullopt (this
+    // is one "worker" owning the whole range, exactly like any other worker's per-chunk fold),
+    // then merge into init via gop exactly once, matching the multi-worker branches below
+    // (`init = gop(std::move(init), std::move(*tmp))`) argument-for-argument.
     if(W <= 1 || N <= part.chunk_size()) {
-      part([=, &init] () mutable { init = lop(r, std::move(init)); })();
+      part([=, &init] () mutable { init = gop(std::move(init), lop(r, std::nullopt)); })();
       return;
     }
 
