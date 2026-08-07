@@ -516,6 +516,40 @@ class cudaGraphDeleter {
 };
   
 
+namespace detail {
+
+/**
+ @brief casts a kernel call-site argument to the exact type expected by the kernel parameter
+
+ Dispatches between two cast strategies based on whether the target parameter
+ type is a pointer. The dispatch is resolved entirely at compile time via
+ `if constexpr` — no runtime branching is generated.
+
+ - Pointer types: reinterpret_cast — handles T*→const T*, typedef aliases (e.g. boolean_T*
+   vs __nv_bool*), and other ABI-compatible but nominally distinct pointer pairs.
+ - Non-pointer (scalar) types: static_cast — widens int→size_t correctly and makes truly
+   incompatible conversions (non-convertible structs, integer→pointer) a compile error.
+
+ When TParam == TArg (identical types), static_cast<T>(t) is a no-op: the compiler emits no
+ additional instructions compared to passing the argument directly. The function is therefore
+ a zero-cost abstraction — it adds compile-time type safety without any runtime overhead.
+
+ @tparam TParam the exact type the kernel parameter expects (deduced from the function pointer)
+ @tparam TArg   the type of the argument at the call site (deduced from the caller)
+ @param  arg    the argument value from the call site
+ @return the argument converted to TParam
+*/
+template<typename TParam, typename TArg>
+constexpr TParam kernelArgCast(TArg&& arg) {
+    if constexpr (std::is_pointer_v<TParam>) {
+        return reinterpret_cast<TParam>(arg);
+    } else {
+        return static_cast<TParam>(std::forward<TArg>(arg));
+    }
+}
+
+} // namespace detail
+
 /**
 @class cudaGraphBase
 
@@ -637,6 +671,47 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   */
   template <typename F, typename... ArgsT>
   cudaTask kernel(dim3 g, dim3 b, size_t s, F f, ArgsT... args);
+
+  /**
+  @brief creates a kernel task with compile-time type checking of arguments
+
+  This overload accepts a typed @c __global__ function pointer instead of a generic callable.
+  The compiler deduces the kernel's exact parameter types @c Params from the function pointer
+  type and casts each argument accordingly via @c tf::detail::kernelArgCast:
+  - Scalar arguments: @c static_cast — width mismatches (e.g. @c int where @c size_t is
+    required) produce a correctly widened value; genuinely incompatible types become compile
+    errors.
+  - Pointer arguments: @c reinterpret_cast — handles @c T* → @c const T* and typedef aliases
+    that are ABI-compatible but nominally distinct.
+
+  The number of arguments @c ArgsT must exactly match the number of kernel parameters @c Params;
+  a mismatch is a compile error.
+
+  The existing @c kernel(dim3,dim3,size_t,F,ArgsT...) overload is retained for lambdas and
+  functors where a typed function pointer is not available.
+
+  @tparam Params  parameter types deduced from the typed function pointer @c f
+  @tparam ArgsT   types of the arguments at the call site
+
+  @param g  grid dimensions
+  @param b  block dimensions
+  @param s  shared memory size in bytes
+  @param f  pointer to the @c __global__ kernel function
+  @param args arguments to forward to the kernel
+
+  @return a tf::cudaTask handle for the newly created kernel node
+
+  @code{.cpp}
+  // kernel declaration
+  __global__ void scale(float* data, size_t n, float factor);
+
+  tf::cudaGraph cg;
+  // typed overload: int literal for size_t parameter is widened correctly
+  auto task = cg.kernel({8,1,1}, {128,1,1}, 0, scale, d_data, (size_t)N, 2.0f);
+  @endcode
+  */
+  template <typename... Params, typename... ArgsT>
+  cudaTask kernel(dim3 g, dim3 b, size_t s, void(*f)(Params...), ArgsT&&... args);
 
   /**
   @brief creates a memset task that fills untyped data with a byte value
@@ -1030,6 +1105,44 @@ cudaTask cudaGraphBase<Creator, Deleter>::kernel(
     "failed to create a kernel task"
   );
 
+  return cudaTask(this->get(), node);
+}
+
+// Function: kernel (typed overload — compile-time argument type checking)
+template <typename Creator, typename Deleter>
+template <typename... Params, typename... ArgsT>
+cudaTask cudaGraphBase<Creator, Deleter>::kernel(
+  dim3 g, dim3 b, size_t s, void(*f)(Params...), ArgsT&&... args
+) {
+  static_assert(sizeof...(Params) == sizeof...(ArgsT),
+      "kernel: argument count does not match kernel parameter count");
+
+  // Cast every argument to the exact type the kernel parameter expects.
+  // Storing in a tuple keeps the cast values alive until cudaGraphAddKernelNode returns.
+  auto castedArgs = std::make_tuple(
+      detail::kernelArgCast<Params>(std::forward<ArgsT>(args))...
+  );
+
+  cudaGraphNode_t node;
+  cudaKernelNodeParams p;
+
+  // Build the void* array from addresses of the tuple elements.
+  void* arguments[sizeof...(Params)];
+  [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+      ((arguments[Is] = static_cast<void*>(&std::get<Is>(castedArgs))), ...);
+  }(std::make_index_sequence<sizeof...(Params)>{});
+
+  p.func           = reinterpret_cast<void*>(f);
+  p.gridDim        = g;
+  p.blockDim       = b;
+  p.sharedMemBytes = s;
+  p.kernelParams   = arguments;
+  p.extra          = nullptr;
+
+  TF_CHECK_CUDA(
+      cudaGraphAddKernelNode(&node, this->get(), nullptr, 0, &p),
+      "failed to create a kernel task"
+  );
   return cudaTask(this->get(), node);
 }
 

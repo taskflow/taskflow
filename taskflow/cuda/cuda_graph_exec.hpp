@@ -146,7 +146,39 @@ class cudaGraphExecBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph
   void kernel(
     cudaTask task, dim3 g, dim3 b, size_t shm, F f, ArgsT... args
   );
-  
+
+  /**
+  @brief updates parameters of a kernel task with compile-time type checking of arguments
+
+  This is the update-path counterpart of the type-safe @c cudaGraphBase::kernel() overload.
+  It calls @c cudaGraphExecKernelNodeSetParams on the node referenced by @c task.
+  All type-checking and casting rules are identical to the creation overload.
+
+  The kernel function name must NOT change between creation and update (CUDA restriction).
+
+  @tparam Params  parameter types deduced from the typed function pointer @c f
+  @tparam ArgsT   types of the arguments at the call site
+
+  @param task the cudaTask handle that references the kernel node to update
+  @param g    new grid dimensions
+  @param b    new block dimensions
+  @param s    new shared memory size in bytes
+  @param f    pointer to the (same) @c __global__ kernel function
+  @param args new argument values
+
+  @code{.cpp}
+  __global__ void scale(float* data, size_t n, float factor);
+
+  tf::cudaGraph  cg;
+  auto task = cg.kernel({8,1,1}, {128,1,1}, 0, scale, d_data, (size_t)N, 1.0f);
+  tf::cudaGraphExec exec(cg);
+  // update the factor — type safety ensured at compile time
+  exec.kernel(task, {8,1,1}, {128,1,1}, 0, scale, d_data, (size_t)N, 2.0f);
+  @endcode
+  */
+  template <typename... Params, typename... ArgsT>
+  void kernel(cudaTask task, dim3 g, dim3 b, size_t s, void(*f)(Params...), ArgsT&&... args);
+
   /**
   @brief updates parameters of a memset task
 
@@ -288,6 +320,39 @@ void cudaGraphExecBase<Creator, Deleter>::kernel(
   p.sharedMemBytes = s;
   p.kernelParams = arguments;
   p.extra = nullptr;
+
+  TF_CHECK_CUDA(
+    cudaGraphExecKernelNodeSetParams(this->get(), task._native_node, &p),
+    "failed to update kernel parameters on ", task
+  );
+}
+
+// Function: update kernel parameters (typed overload — compile-time type-safe)
+template <typename Creator, typename Deleter>
+template <typename... Params, typename... ArgsT>
+void cudaGraphExecBase<Creator, Deleter>::kernel(
+  cudaTask task, dim3 g, dim3 b, size_t s, void(*f)(Params...), ArgsT&&... args
+) {
+  static_assert(sizeof...(Params) == sizeof...(ArgsT),
+    "kernel: argument count does not match kernel parameter count");
+
+  auto castedArgs = std::make_tuple(
+    detail::kernelArgCast<Params>(std::forward<ArgsT>(args))...
+  );
+
+  cudaKernelNodeParams p;
+
+  void* arguments[sizeof...(Params)];
+  [&]<std::size_t... Is>(std::index_sequence<Is...>) {
+    ((arguments[Is] = static_cast<void*>(&std::get<Is>(castedArgs))), ...);
+  }(std::make_index_sequence<sizeof...(Params)>{});
+
+  p.func           = reinterpret_cast<void*>(f);
+  p.gridDim        = g;
+  p.blockDim       = b;
+  p.sharedMemBytes = s;
+  p.kernelParams   = arguments;
+  p.extra          = nullptr;
 
   TF_CHECK_CUDA(
     cudaGraphExecKernelNodeSetParams(this->get(), task._native_node, &p),

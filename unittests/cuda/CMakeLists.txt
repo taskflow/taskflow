@@ -7,6 +7,7 @@ list(APPEND TF_CUDA_UNITTESTS
   test_cuda_kmeans 
   test_cuda_for_each
   test_cuda_transform
+  test_cuda_type_safe_kernel
   #test_cuda_reduce
   #test_cuda_scan
   #test_cuda_find
@@ -34,5 +35,40 @@ foreach(cudatest IN LISTS TF_CUDA_UNITTESTS)
   doctest_discover_tests(${cudatest})
 endforeach()
 
+# ---------------------------------------------------------------------------
+# Negative compile tests — these files MUST fail to compile.
+# try_compile returns TRUE if compilation succeeds, FALSE if it fails.
+# We expect failure, so we REQUIRE the result to be FALSE.
+# ---------------------------------------------------------------------------
 
+try_compile(
+    TF_COMPILE_FAIL_ARG_COUNT_RESULT
+    ${CMAKE_BINARY_DIR}
+    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test_compile_fail_arg_count.cu
+    CMAKE_FLAGS
+        "-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}"
+        "-DCMAKE_CUDA_STANDARD=20"
+    OUTPUT_VARIABLE TF_COMPILE_FAIL_ARG_COUNT_OUTPUT
+)
+if(TF_COMPILE_FAIL_ARG_COUNT_RESULT)
+    message(FATAL_ERROR
+        "test_compile_fail_arg_count.cu should have failed to compile "
+        "(static_assert on wrong arg count), but it succeeded.\n"
+        "Output:\n${TF_COMPILE_FAIL_ARG_COUNT_OUTPUT}")
+endif()
 
+try_compile(
+    TF_COMPILE_FAIL_SCALAR_MISMATCH_RESULT
+    ${CMAKE_BINARY_DIR}
+    SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/test_compile_fail_scalar_mismatch.cu
+    CMAKE_FLAGS
+        "-DINCLUDE_DIRECTORIES=${CMAKE_SOURCE_DIR}"
+        "-DCMAKE_CUDA_STANDARD=20"
+    OUTPUT_VARIABLE TF_COMPILE_FAIL_SCALAR_MISMATCH_OUTPUT
+)
+if(TF_COMPILE_FAIL_SCALAR_MISMATCH_RESULT)
+    message(FATAL_ERROR
+        "test_compile_fail_scalar_mismatch.cu should have failed to compile "
+        "(incompatible struct to scalar cast), but it succeeded.\n"
+        "Output:\n${TF_COMPILE_FAIL_SCALAR_MISMATCH_OUTPUT}")
+endif()
