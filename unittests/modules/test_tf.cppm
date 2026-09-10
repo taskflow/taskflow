@@ -21,8 +21,8 @@ export int module_async(unsigned workers) {
     rt.silent_async([&count] { ++count; });
   });
   auto first = executor.silent_dependent_async([&count] { ++count; });
-  auto [last, done] = executor.dependent_async([&count] { ++count; }, first);
-  done.get();
+  auto dependent = executor.dependent_async([&count] { ++count; }, first);
+  dependent.second.get();
   runtime.get();
   executor.wait_for_all();
   return result.get() + count.load();
