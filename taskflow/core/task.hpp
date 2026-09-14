@@ -760,7 +760,8 @@ class Task {
   assert(task.name*) == "foo");
   @endcode
   */
-  Task& name(const std::string& name);
+  template <StringLike S>
+  Task& name(S&& name);
 
   /**
   @brief assigns a callable
@@ -1368,8 +1369,9 @@ inline bool Task::operator != (const Task& rhs) const {
 }
 
 // Function: name
-inline Task& Task::name(const std::string& name) {
-  _node->_name = name;
+template <StringLike S>
+Task& Task::name(S&& name) {
+  _node->_name = std::forward<S>(name);
   return *this;
 }
 
