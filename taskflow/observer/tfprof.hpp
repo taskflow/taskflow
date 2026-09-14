@@ -323,7 +323,7 @@ class TFProfObserver : public ObserverInterface {
 // ----------------------------------------------------------------------------
 
 // helper: emit a horizontal rule of width w
-static inline void _tf_rule(std::ostream& os, size_t w, char c = '-') {
+inline void _tf_rule(std::ostream& os, size_t w, char c = '-') {
   for(size_t i = 0; i < w; ++i) os << c;
   os << '\n';
 }
@@ -336,7 +336,7 @@ static inline void _tf_rule(std::ostream& os, size_t w, char c = '-') {
 //   < 10,000 ms  -> ms  (milliseconds)
 //   < 10,000 s   -> s   (seconds)
 //   otherwise    -> min (minutes)
-static inline double _tf_time_scale(size_t us, const char*& unit) {
+inline double _tf_time_scale(size_t us, const char*& unit) {
   if(us < 10000ULL) {
     unit = "us";
     return static_cast<double>(us);

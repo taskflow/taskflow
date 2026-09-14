@@ -454,7 +454,7 @@ class Node : public NodeBase {
   // module work handle
   struct Module {
 
-    Module(Graph&);
+    Module(Graph& g) : graph(g) {}
 
     Graph& graph;
   };
@@ -462,7 +462,7 @@ class Node : public NodeBase {
   // adopted module work handle
   struct AdoptedModule {
 
-    AdoptedModule(Graph&&);
+    AdoptedModule(Graph&& g) : graph(std::move(g)) {}
 
     Graph graph;
   };
@@ -624,18 +624,6 @@ Node::Condition::Condition(C&& c) : work {std::forward<C>(c)} {
 // Constructor
 template <typename C>
 Node::MultiCondition::MultiCondition(C&& c) : work {std::forward<C>(c)} {
-}
-
-// ----------------------------------------------------------------------------
-// Definition for Node::Module
-// ----------------------------------------------------------------------------
-
-// Constructor
-inline Node::Module::Module(Graph& g) : graph(g){
-}
-
-// Constructor
-inline Node::AdoptedModule::AdoptedModule(Graph&& g) : graph(std::move(g)){
 }
 
 // ----------------------------------------------------------------------------
