@@ -20,6 +20,15 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
     E_t end = last;
 
     size_t W = rt.executor().num_workers();
+
+    // Sentinel-based ranges cannot use std::distance; run sequentially.
+    if constexpr (!std::is_same_v<E_t, B_t>) {
+      part([=, &result]() mutable {
+        result = std::find_if(beg, end, predicate);
+      })();
+      return;
+    }
+
     size_t N = std::distance(beg, end);
     
     if(N == 0) {
@@ -111,6 +120,15 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
     E_t end = last;
 
     size_t W = rt.executor().num_workers();
+
+    // Sentinel-based ranges cannot use std::distance; run sequentially.
+    if constexpr (!std::is_same_v<E_t, B_t>) {
+      part([=, &result]() mutable {
+        result = std::find_if_not(beg, end, predicate);
+      })();
+      return;
+    }
+
     size_t N = std::distance(beg, end);
     
     if(N == 0) {
