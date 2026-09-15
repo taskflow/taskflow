@@ -54,6 +54,17 @@ If your project does not support C++20, please use %Taskflow v3.11.0, which can 
 + replaced generic template type in dependent async tasks with std::input_iterator
 + improved ND parallel-for scheduling with a local recursive partition
 
+@subsection release-4-2-0_gpu_tasking GPU Tasking
+
+@li added type-safe overloads of tf::cudaGraphBase::kernel and tf::cudaGraphExecBase::kernel
+  that accept a typed @c __global__ function pointer (@c void(*)(Params...)) and use
+  @c tf::detail::kernelArgCast to enforce correct argument types at compile time
+  @li scalar arguments use @c static_cast — width mismatches (e.g. @c int where @c size_t
+    is expected) are resolved correctly; truly incompatible types become compile errors
+  @li pointer arguments use @c reinterpret_cast — handles @c T*→const T* and typedef aliases
+    without requiring explicit casts at the call site
+  @li the existing generic overload (lambda/functor) is unchanged
+
 @subsection release-4-2-0_utilities Utilities
 
 @section release-4-2-0_bug_fixes Bug Fixes 
