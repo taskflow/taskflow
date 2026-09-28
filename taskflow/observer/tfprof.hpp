@@ -322,13 +322,15 @@ class TFProfObserver : public ObserverInterface {
 // TFProfObserver::Summary output methods
 // ----------------------------------------------------------------------------
 
+namespace detail {
+
 // helper: emit a horizontal rule of width w
-inline void _tf_rule(std::ostream& os, size_t w, char c = '-') {
+inline void tfprof_rule(std::ostream& os, size_t w, char c = '-') {
   for(size_t i = 0; i < w; ++i) os << c;
   os << '\n';
 }
 
-// Helper: _tf_time_scale
+// Helper: tfprof_time_scale
 // Given a duration in microseconds, returns a human-readable scaled value
 // and sets unit to the appropriate suffix string.
 // Thresholds:
@@ -336,7 +338,7 @@ inline void _tf_rule(std::ostream& os, size_t w, char c = '-') {
 //   < 10,000 ms  -> ms  (milliseconds)
 //   < 10,000 s   -> s   (seconds)
 //   otherwise    -> min (minutes)
-inline double _tf_time_scale(size_t us, const char*& unit) {
+inline double tfprof_time_scale(size_t us, const char*& unit) {
   if(us < 10000ULL) {
     unit = "us";
     return static_cast<double>(us);
@@ -353,6 +355,8 @@ inline double _tf_time_scale(size_t us, const char*& unit) {
   return static_cast<double>(us) / 60e6;
 }
 
+}  // namespace detail
+
 // Procedure: dump_overview
 // Emits the single-line header with wall time, worker count, task count,
 // and average worker utilization — the single number that captures how
@@ -361,7 +365,7 @@ inline void TFProfObserver::Summary::dump_overview(
   std::ostream& os, size_t uid, size_t num_tasks
 ) const {
   const char* wall_unit;
-  double wall_val = _tf_time_scale(wall_us, wall_unit);
+  double wall_val = detail::tfprof_time_scale(wall_us, wall_unit);
 
   os << std::string(80, '=') << '\n';
   os << std::fixed << std::setprecision(2);
@@ -400,7 +404,7 @@ inline void TFProfObserver::Summary::dump_tsum(std::ostream& os) const {
   }
 
   os << "\n[Aggregate Task Statistics]\n";
-  _tf_rule(os, 2 + type_w + count_w + tot_w + avg_w + min_w + max_w + 12);
+  detail::tfprof_rule(os, 2 + type_w + count_w + tot_w + avg_w + min_w + max_w + 12);
 
   os << std::setw(type_w)  << "Type"
      << std::setw(count_w+2) << "Count"
@@ -409,7 +413,7 @@ inline void TFProfObserver::Summary::dump_tsum(std::ostream& os) const {
      << std::setw(min_w+2)   << "Min(us)"
      << std::setw(max_w+2)   << "Max(us)"
      << '\n';
-  _tf_rule(os, 2 + type_w + count_w + tot_w + avg_w + min_w + max_w + 12);
+  detail::tfprof_rule(os, 2 + type_w + count_w + tot_w + avg_w + min_w + max_w + 12);
 
   for(size_t i = 0; i < TASK_TYPES.size(); ++i) {
     const auto& t = tsum[i];
@@ -455,7 +459,7 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
   size_t row_w = w_w + count_w + busy_w + idle_w + avg_w + min_w + max_w + util_w + 16;
 
   os << "\n[Worker Utilization]\n";
-  _tf_rule(os, row_w);
+  detail::tfprof_rule(os, row_w);
 
   os << std::setw(w_w+2)     << "Worker"
      << std::setw(count_w+2) << "Tasks"
@@ -466,7 +470,7 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
      << std::setw(max_w+2)   << "Max(us)"
      << std::setw(util_w+2)  << "Util%"
      << '\n';
-  _tf_rule(os, row_w);
+  detail::tfprof_rule(os, row_w);
 
   for(const auto& w : wsum) {
     os << std::setw(w_w+2)     << w.id
@@ -483,7 +487,7 @@ inline void TFProfObserver::Summary::dump_wsum(std::ostream& os) const {
 
   // totals row: Util% shows avg across ALL num_all_workers (including idle),
   // consistent with the header's "Avg Utilization" figure
-  _tf_rule(os, row_w);
+  detail::tfprof_rule(os, row_w);
   size_t total_count = 0;
   size_t total_busy  = 0;
   size_t total_idle  = 0;
@@ -764,7 +768,7 @@ inline void TFProfObserver::summary(std::ostream& os) const {
     if(probe_bin_us == 0) probe_bin_us = 1;
 
     const char* bin_unit;
-    _tf_time_scale(probe_bin_us, bin_unit);
+    detail::tfprof_time_scale(probe_bin_us, bin_unit);
     double divisor = 1.0;
     if     (std::string(bin_unit) == "ms")  divisor = 1e3;
     else if(std::string(bin_unit) == "s")   divisor = 1e6;
