@@ -10,118 +10,51 @@ namespace tf {
 // ----------------------------------------------------------------------------
 
 /**
-@class cudaGraphExecCreator
-@brief class to create functors for constructing executable CUDA graphs
+@class cudaGraphExec
 
-This class provides an overloaded function call operator to create a
-new executable CUDA graph using `cudaGraphCreate`. 
+@brief class to create an executable CUDA graph with unique ownership
+
+This class wraps a `cudaGraphExec_t` handle with `std::unique_ptr` to ensure proper
+resource management and automatic cleanup.
+The executable graph is created by `cudaGraphInstantiate` and destroyed by `cudaGraphExecDestroy`.
 */
-class cudaGraphExecCreator {
-  
+class cudaGraphExec : public std::unique_ptr<
+  std::remove_pointer_t<cudaGraphExec_t>,
+  cudaProxyDeleter<cudaGraphExecDestroy>
+> {
+
   public:
 
   /**
-  @brief returns a null executable CUDA graph
+  @brief constructs an empty executable graph that manages no `cudaGraphExec_t`
   */
-  cudaGraphExec_t operator () () const { 
-    return nullptr;
-  }
-  
+  cudaGraphExec() = default;
+
   /**
-  @brief returns the given executable graph
+  @brief constructs an executable graph that takes ownership of the given `cudaGraphExec_t`
   */
-  cudaGraphExec_t operator () (cudaGraphExec_t exec) const {
-    return exec;
+  explicit cudaGraphExec(cudaGraphExec_t exec) : unique_ptr(exec) {
   }
 
   /**
-  @brief returns a newly instantiated executable graph from the given CUDA graph
+  @brief instantiates an executable graph from the given CUDA graph using `cudaGraphInstantiate`
+
+  A tf::cudaGraph implicitly converts to `cudaGraph_t` and can be passed directly.
   */
-  cudaGraphExec_t operator () (cudaGraph_t graph) const {
+  explicit cudaGraphExec(cudaGraph_t graph) : unique_ptr([graph](){
     cudaGraphExec_t exec;
     TF_CHECK_CUDA(
       cudaGraphInstantiate(&exec, graph, nullptr, nullptr, 0),
       "failed to create an executable graph"
     );
     return exec;
+  }()) {
   }
 
   /**
-  @brief returns a newly instantiated executable graph from the given CUDA graph
+  @brief implicitly converts to the managed `cudaGraphExec_t`
   */
-  template <typename C, typename D>
-  cudaGraphExec_t operator () (const cudaGraphBase<C, D>& graph) const {
-    return this->operator()(graph.get());
-  }
-};
-  
-/**
-@class cudaGraphExecDeleter
-@brief class to create a functor for deleting an executable CUDA graph
-
-This class provides an overloaded function call operator to safely
-destroy a CUDA graph using `cudaGraphDestroy`.
-*/
-class cudaGraphExecDeleter {
-
-  public:
-
-  /**
-   @brief deletes an executable CUDA graph
-   
-   Calls `cudaGraphDestroy` to release the CUDA graph resource if it is valid.
-   
-   @param executable the executable CUDA graph to be destroyed
-  */
-  void operator () (cudaGraphExec_t executable) const {
-    cudaGraphExecDestroy(executable);
-  }
-};
-
-/**
-@class cudaGraphExecBase
-
-@brief class to create an executable CUDA graph with unique ownership
-
-@tparam Creator functor to create the stream (used in constructor)
-@tparam Deleter functor to delete the stream (used in destructor)
-
-This class wraps a `cudaGraphExec_t` handle with `std::unique_ptr` to ensure proper 
-resource management and automatic cleanup.
-*/
-template <typename Creator, typename Deleter>
-class cudaGraphExecBase : public std::unique_ptr<std::remove_pointer_t<cudaGraphExec_t>, Deleter> {
-  
-  static_assert(std::is_pointer_v<cudaGraphExec_t>, "cudaGraphExec_t is not a pointer type");
-
-  public:
-  
-  /**
-  @brief base std::unique_ptr type
-  */
-  using base_type = std::unique_ptr<std::remove_pointer_t<cudaGraphExec_t>, Deleter>;
-
-  /**
-  @brief constructs a `cudaGraphExec` object by passing the given arguments to the executable CUDA graph creator
-
-  Constructs a `cudaGraphExec` object by passing the given arguments to the executable CUDA graph creator
-
-  @param args arguments to pass to the executable CUDA graph creator
-  */
-  template <typename... ArgsT>
-  explicit cudaGraphExecBase(ArgsT&& ... args) : base_type(
-    Creator{}(std::forward<ArgsT>(args)...), Deleter()
-  ) {}  
-
-  /**
-  @brief constructs a `cudaGraphExec` from the given rhs using move semantics
-  */
-  cudaGraphExecBase(cudaGraphExecBase&&) = default;
-
-  /**
-  @brief assign the rhs to `*this` using move semantics
-  */
-  cudaGraphExecBase& operator = (cudaGraphExecBase&&) = default;
+  operator cudaGraphExec_t () const noexcept { return get(); }
 
   // ----------------------------------------------------------------------------------------------
   // Update Methods
@@ -250,12 +183,6 @@ class cudaGraphExecBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph
   template <typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
   void transform(cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c);
 
-  
-  private:
-
-  cudaGraphExecBase(const cudaGraphExecBase&) = delete;
-
-  cudaGraphExecBase& operator = (const cudaGraphExecBase&) = delete;
 };
 
 // ------------------------------------------------------------------------------------------------
@@ -263,9 +190,8 @@ class cudaGraphExecBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph
 // ------------------------------------------------------------------------------------------------
 
 // Function: host
-template <typename Creator, typename Deleter>
 template <typename C>
-void cudaGraphExecBase<Creator, Deleter>::host(cudaTask task, C&& func, void* user_data) {
+void cudaGraphExec::host(cudaTask task, C&& func, void* user_data) {
   cudaHostNodeParams p {func, user_data};
   TF_CHECK_CUDA(
     cudaGraphExecHostNodeSetParams(this->get(), task._native_node, &p),
@@ -274,9 +200,8 @@ void cudaGraphExecBase<Creator, Deleter>::host(cudaTask task, C&& func, void* us
 }
 
 // Function: update kernel parameters
-template <typename Creator, typename Deleter>
 template <typename F, typename... ArgsT>
-void cudaGraphExecBase<Creator, Deleter>::kernel(
+void cudaGraphExec::kernel(
   cudaTask task, dim3 g, dim3 b, size_t s, F f, ArgsT... args
 ) {
   cudaKernelNodeParams p;
@@ -296,9 +221,8 @@ void cudaGraphExecBase<Creator, Deleter>::kernel(
 }
 
 // Function: update copy parameters
-template <typename Creator, typename Deleter>
 template <typename T, std::enable_if_t<!std::is_same_v<T, void>, void>*>
-void cudaGraphExecBase<Creator, Deleter>::copy(cudaTask task, T* tgt, const T* src, size_t num) {
+void cudaGraphExec::copy(cudaTask task, T* tgt, const T* src, size_t num) {
   auto p = cuda_get_copy_parms(tgt, src, num);
   TF_CHECK_CUDA(
     cudaGraphExecMemcpyNodeSetParams(this->get(), task._native_node, &p),
@@ -307,8 +231,7 @@ void cudaGraphExecBase<Creator, Deleter>::copy(cudaTask task, T* tgt, const T* s
 }
 
 // Function: update memcpy parameters
-template <typename Creator, typename Deleter>
-void cudaGraphExecBase<Creator, Deleter>::memcpy(
+inline void cudaGraphExec::memcpy(
   cudaTask task, void* tgt, const void* src, size_t bytes
 ) {
   auto p = cuda_get_memcpy_parms(tgt, src, bytes);
@@ -320,8 +243,7 @@ void cudaGraphExecBase<Creator, Deleter>::memcpy(
 }
 
 // Procedure: memset
-template <typename Creator, typename Deleter>
-void cudaGraphExecBase<Creator, Deleter>::memset(cudaTask task, void* dst, int ch, size_t count) {
+inline void cudaGraphExec::memset(cudaTask task, void* dst, int ch, size_t count) {
   auto p = cuda_get_memset_parms(dst, ch, count);
   TF_CHECK_CUDA(
     cudaGraphExecMemsetNodeSetParams(this->get(), task._native_node, &p),
@@ -330,11 +252,10 @@ void cudaGraphExecBase<Creator, Deleter>::memset(cudaTask task, void* dst, int c
 }
 
 // Procedure: fill
-template <typename Creator, typename Deleter>
 template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
 >
-void cudaGraphExecBase<Creator, Deleter>::fill(cudaTask task, T* dst, T value, size_t count) {
+void cudaGraphExec::fill(cudaTask task, T* dst, T value, size_t count) {
   auto p = cuda_get_fill_parms(dst, value, count);
   TF_CHECK_CUDA(
     cudaGraphExecMemsetNodeSetParams(this->get(), task._native_node, &p),
@@ -343,42 +264,15 @@ void cudaGraphExecBase<Creator, Deleter>::fill(cudaTask task, T* dst, T value, s
 }
 
 // Procedure: zero
-template <typename Creator, typename Deleter>
 template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
 >
-void cudaGraphExecBase<Creator, Deleter>::zero(cudaTask task, T* dst, size_t count) {
+void cudaGraphExec::zero(cudaTask task, T* dst, size_t count) {
   auto p = cuda_get_zero_parms(dst, count);
   TF_CHECK_CUDA(
     cudaGraphExecMemsetNodeSetParams(this->get(), task._native_node, &p),
     "failed to update memset parameters on ", task
   );
 }
-
-//-------------------------------------------------------------------------------------------------
-// forward declaration
-//-------------------------------------------------------------------------------------------------
-
-/**
-@private
-*/
-template <typename SC, typename SD>
-cudaStreamBase<SC, SD>& cudaStreamBase<SC, SD>::run(cudaGraphExec_t exec) {
-  TF_CHECK_CUDA(
-    cudaGraphLaunch(exec, this->get()), "failed to launch a CUDA executable graph"
-  );  
-  return *this;
-}
-
-/**
-@private
-*/
-template <typename SC, typename SD>
-template <typename EC, typename ED>
-cudaStreamBase<SC, SD>& cudaStreamBase<SC, SD>::run(const cudaGraphExecBase<EC, ED>& exec) {
-  return run(exec.get());
-}
-
-
 
 }  // end of namespace tf -------------------------------------------------------------------------

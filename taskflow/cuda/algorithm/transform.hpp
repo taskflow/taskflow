@@ -60,9 +60,8 @@ __global__ void cuda_transform_kernel(
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename Creator, typename Deleter>
 template <typename I, typename O, typename C, typename E>
-cudaTask cudaGraphBase<Creator, Deleter>::transform(I first, I last, O output, C c) {
+cudaTask cudaGraph::transform(I first, I last, O output, C c) {
   
   unsigned count = std::distance(first, last);
   
@@ -74,9 +73,8 @@ cudaTask cudaGraphBase<Creator, Deleter>::transform(I first, I last, O output, C
 }
 
 // Function: transform
-template <typename Creator, typename Deleter>
 template <typename I1, typename I2, typename O, typename C, typename E>
-cudaTask cudaGraphBase<Creator, Deleter>::transform(I1 first1, I1 last1, I2 first2, O output, C c) {
+cudaTask cudaGraph::transform(I1 first1, I1 last1, I2 first2, O output, C c) {
   
   unsigned count = std::distance(first1, last1);
   
@@ -89,9 +87,8 @@ cudaTask cudaGraphBase<Creator, Deleter>::transform(I1 first1, I1 last1, I2 firs
 
 
 // Function: update transform
-template <typename Creator, typename Deleter>
 template <typename I, typename O, typename C, typename E>
-void cudaGraphExecBase<Creator, Deleter>::transform(cudaTask task, I first, I last, O output, C c) {
+void cudaGraphExec::transform(cudaTask task, I first, I last, O output, C c) {
   
   unsigned count = std::distance(first, last);
   
@@ -103,9 +100,8 @@ void cudaGraphExecBase<Creator, Deleter>::transform(cudaTask task, I first, I la
 }
 
 // Function: update transform
-template <typename Creator, typename Deleter>
 template <typename I1, typename I2, typename O, typename C, typename E>
-void cudaGraphExecBase<Creator, Deleter>::transform(
+void cudaGraphExec::transform(
   cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c
 ) {
   unsigned count = std::distance(first1, last1);

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "cuda_error.hpp"
 
 /**
@@ -11,225 +13,109 @@ namespace tf {
 
 
 // ----------------------------------------------------------------------------
-// cudaEventBase
+// cudaEvent
 // ----------------------------------------------------------------------------
-  
-/**
-@class cudaEventCreator
-
-@brief class to create functors that construct CUDA events
-*/
-class cudaEventCreator {
-    
-  public:
-
-  /**
-  @brief creates a new `cudaEvent_t` object using `cudaEventCreate`
-  */
-  cudaEvent_t operator () () const {
-    cudaEvent_t event;
-    TF_CHECK_CUDA(cudaEventCreate(&event), "failed to create a CUDA event");
-    return event;
-  }
-  
-  /**
-  @brief creates a new `cudaEvent_t` object using `cudaEventCreate` with the given `flag`
-  */
-  cudaEvent_t operator () (unsigned int flag) const {
-    cudaEvent_t event;
-    TF_CHECK_CUDA(
-      cudaEventCreateWithFlags(&event, flag),
-      "failed to create a CUDA event with flag=", flag
-    );
-    return event;
-  }
-  
-  /**
-  @brief returns the given `cudaEvent_t` object
-  */
-  cudaEvent_t operator () (cudaEvent_t event) const {
-    return event;
-  }
-};
 
 /**
-@class cudaEventDeleter
-
-@brief class to create a functor that deletes a CUDA event
-*/
-class cudaEventDeleter {
-  public:
-  /**
-  @brief deletes the given `cudaEvent_t` object using `cudaEventDestroy`
-  */
-  void operator () (cudaEvent_t event) const {
-    cudaEventDestroy(event);
-  }
-};
-
-/**
-@class cudaEventBase
+@class cudaEvent
 
 @brief class to create a CUDA event with unique ownership
 
-@tparam Creator functor to create the stream (used in constructor)
-@tparam Deleter functor to delete the stream (used in destructor)
-
-The `cudaEventBase` class encapsulates a `cudaEvent_t` using `std::unique_ptr`, ensuring that
+The `cudaEvent` class encapsulates a `cudaEvent_t` using `std::unique_ptr`, ensuring that
 CUDA events are properly created and destroyed with a unique ownership.
+The event is created by `cudaEventCreate` (or `cudaEventCreateWithFlags`) and
+destroyed by `cudaEventDestroy`.
 */
-template <typename Creator, typename Deleter>
-class cudaEventBase : public std::unique_ptr<std::remove_pointer_t<cudaEvent_t>, Deleter> {
-
-  static_assert(std::is_pointer_v<cudaEvent_t>, "cudaEvent_t is not a pointer type");
+class cudaEvent : public std::unique_ptr<
+  std::remove_pointer_t<cudaEvent_t>,
+  cudaProxyDeleter<cudaEventDestroy>
+> {
 
   public:
-  
-  /**
-  @brief base type for the underlying unique pointer
-
-  This alias provides a shorthand for the underlying `std::unique_ptr` type that manages
-  CUDA event resources with an associated deleter.
-  */
-  using base_type = std::unique_ptr<std::remove_pointer_t<cudaEvent_t>, Deleter>;
 
   /**
-  @brief constructs a `cudaEvent` object by passing the given arguments to the event creator
-
-  Constructs a `cudaEvent` object by passing the given arguments to the event creator
-
-  @param args arguments to pass to the event creator
+  @brief constructs a new event using `cudaEventCreate`
   */
-  template <typename... ArgsT>
-  explicit cudaEventBase(ArgsT&& ... args) : base_type(
-    Creator{}(std::forward<ArgsT>(args)...), Deleter()
-  ) {
-  }  
-  
-  /**
-  @brief constructs a `cudaEvent` from the given rhs using move semantics
-  */
-  cudaEventBase(cudaEventBase&&) = default;
+  cudaEvent() : unique_ptr([](){
+    cudaEvent_t event;
+    TF_CHECK_CUDA(cudaEventCreate(&event), "failed to create a CUDA event");
+    return event;
+  }()) {
+  }
 
   /**
-  @brief assign the rhs to `*this` using move semantics
+  @brief constructs a new event using `cudaEventCreateWithFlags` with the given `flags`
   */
-  cudaEventBase& operator = (cudaEventBase&&) = default;
-  
-  private:
+  explicit cudaEvent(unsigned int flags) : unique_ptr([flags](){
+    cudaEvent_t event;
+    TF_CHECK_CUDA(
+      cudaEventCreateWithFlags(&event, flags),
+      "failed to create a CUDA event with flags=", flags
+    );
+    return event;
+  }()) {
+  }
 
-  cudaEventBase(const cudaEventBase&) = delete;
-  cudaEventBase& operator = (const cudaEventBase&) = delete;
+  /**
+  @brief constructs an event that takes ownership of the given `cudaEvent_t`
+  */
+  explicit cudaEvent(cudaEvent_t event) : unique_ptr(event) {
+  }
+
+  /**
+  @brief implicitly converts to the managed `cudaEvent_t`
+  */
+  operator cudaEvent_t () const noexcept { return get(); }
 };
-
-/**
-@brief default smart pointer type to manage a `cudaEvent_t` object with unique ownership
-*/
-using cudaEvent = cudaEventBase<cudaEventCreator, cudaEventDeleter>;
 
 // ----------------------------------------------------------------------------
 // cudaStream
 // ----------------------------------------------------------------------------
 
 /**
-@class cudaStreamCreator 
-
-@brief class to create functors that construct CUDA streams
-*/
-class cudaStreamCreator {
-  
-  public:
-
-  /**
-  @brief constructs a new `cudaStream_t` object using `cudaStreamCreate`
-  */
-  cudaStream_t operator () () const {
-    cudaStream_t stream;
-    TF_CHECK_CUDA(cudaStreamCreate(&stream), "failed to create a CUDA stream");
-    return stream;
-  }
-  
-  /**
-  @brief returns the given `cudaStream_t` object
-  */
-  cudaStream_t operator () (cudaStream_t stream) const {
-    return stream;
-  }
-};
-
-/**
-@class cudaStreamDeleter
-
-@brief class to create a functor that deletes a CUDA stream
-*/
-class cudaStreamDeleter {
-
-  public:
-
-  /**
-  @brief deletes the given `cudaStream_t` object
-  */
-  void operator () (cudaStream_t stream) const {
-    cudaStreamDestroy(stream);
-  }
-};
-
-/**
-@class cudaStreamBase
+@class cudaStream
 
 @brief class to create a CUDA stream with unique ownership
 
-@tparam Creator functor to create the stream (used in constructor)
-@tparam Deleter functor to delete the stream (used in destructor)
-
 The `cudaStream` class encapsulates a `cudaStream_t` using `std::unique_ptr`, ensuring that
-CUDA events are properly created and destroyed with a unique ownership.
+CUDA streams are properly created and destroyed with a unique ownership.
+The stream is created by `cudaStreamCreate` and destroyed by `cudaStreamDestroy`.
 */
-template <typename Creator, typename Deleter>
-class cudaStreamBase : public std::unique_ptr<std::remove_pointer_t<cudaStream_t>, Deleter> {
+class cudaStream : public std::unique_ptr<
+  std::remove_pointer_t<cudaStream_t>,
+  cudaProxyDeleter<cudaStreamDestroy>
+> {
 
-  static_assert(std::is_pointer_v<cudaStream_t>, "cudaStream_t is not a pointer type");
-  
   public:
-  
-  /**
-  @brief base type for the underlying unique pointer
-
-  This alias provides a shorthand for the underlying `std::unique_ptr` type that manages
-  CUDA stream resources with an associated deleter.
-  */
-  using base_type = std::unique_ptr<std::remove_pointer_t<cudaStream_t>, Deleter>;
 
   /**
-  @brief constructs a `cudaStream` object by passing the given arguments to the stream creator
-
-  Constructs a `cudaStream` object by passing the given arguments to the stream creator
-
-  @param args arguments to pass to the stream creator
+  @brief constructs a new stream using `cudaStreamCreate`
   */
-  template <typename... ArgsT>
-  explicit cudaStreamBase(ArgsT&& ... args) : base_type(
-    Creator{}(std::forward<ArgsT>(args)...), Deleter()
-  ) {
-  }  
-  
-  /**
-  @brief constructs a `cudaStream` from the given rhs using move semantics
-  */
-  cudaStreamBase(cudaStreamBase&&) = default;
+  cudaStream() : unique_ptr([](){
+    cudaStream_t stream;
+    TF_CHECK_CUDA(cudaStreamCreate(&stream), "failed to create a CUDA stream");
+    return stream;
+  }()) {
+  }
 
   /**
-  @brief assign the rhs to `*this` using move semantics
+  @brief constructs a stream that takes ownership of the given `cudaStream_t`
   */
-  cudaStreamBase& operator = (cudaStreamBase&&) = default;
-  
+  explicit cudaStream(cudaStream_t stream) : unique_ptr(stream) {
+  }
+
+  /**
+  @brief implicitly converts to the managed `cudaStream_t`
+  */
+  operator cudaStream_t () const noexcept { return get(); }
+
   /**
   @brief synchronizes the associated stream
 
   Equivalently calling @c cudaStreamSynchronize to block 
   until this stream has completed all operations.
   */
-  cudaStreamBase& synchronize() {
+  cudaStream& synchronize() {
     TF_CHECK_CUDA(
       cudaStreamSynchronize(this->get()), "failed to synchronize a CUDA stream"
     );
@@ -314,30 +200,19 @@ class cudaStreamBase : public std::unique_ptr<std::remove_pointer_t<cudaStream_t
   }
 
   /**
-  @brief runs the given executable CUDA graph
+  @brief runs the given executable CUDA graph using `cudaGraphLaunch`
 
-  @param exec the given `cudaGraphExec`
-  */
-  template <typename C, typename D>
-  cudaStreamBase& run(const cudaGraphExecBase<C, D>& exec);
+  A tf::cudaGraphExec implicitly converts to `cudaGraphExec_t` and can be passed directly.
 
-  /**
-  @brief runs the given executable CUDA graph
-  
   @param exec the given `cudaGraphExec_t`
   */
-  cudaStreamBase& run(cudaGraphExec_t exec);
-
-  private:
-
-  cudaStreamBase(const cudaStreamBase&) = delete;
-  cudaStreamBase& operator = (const cudaStreamBase&) = delete;
+  cudaStream& run(cudaGraphExec_t exec) {
+    TF_CHECK_CUDA(
+      cudaGraphLaunch(exec, this->get()), "failed to launch a CUDA executable graph"
+    );
+    return *this;
+  }
 };
-
-/**
-@brief default smart pointer type to manage a `cudaStream_t` object with unique ownership
-*/
-using cudaStream = cudaStreamBase<cudaStreamCreator, cudaStreamDeleter>;
 
 }  // end of namespace tf -----------------------------------------------------
 

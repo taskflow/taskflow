@@ -198,12 +198,13 @@ inline size_t cuda_graph_node_get_dependent_nodes(cudaGraphNode_t node, cudaGrap
 @param to
 @param numDependencies
  */
-inline void cuda_graph_add_dependencies(cudaGraph_t graph, const cudaGraphNode_t *from, const cudaGraphNode_t *to, size_t numDependencies) {
+inline void cuda_graph_add_dependencies(
+  cudaGraph_t graph, const cudaGraphNode_t *from, const cudaGraphNode_t *to, size_t numDependencies) {
   TF_CHECK_CUDA(
-      TF_CUDA_PRE13(cudaGraphAddDependencies(graph, from, to, numDependencies))
-      TF_CUDA_POST13(cudaGraphAddDependencies(graph, from, to, nullptr, numDependencies)),
-      "Failed to add CUDA graph node dependencies"
-      );
+    TF_CUDA_PRE13(cudaGraphAddDependencies(graph, from, to, numDependencies))
+    TF_CUDA_POST13(cudaGraphAddDependencies(graph, from, to, nullptr, numDependencies)),
+    "Failed to add CUDA graph node dependencies"
+  );
 }
 
 /**
@@ -314,11 +315,8 @@ constexpr const char* to_string(cudaGraphNodeType type) {
 */
 class cudaTask {
 
-  template <typename Creator, typename Deleter>
-  friend class cudaGraphBase;
-  
-  template <typename Creator, typename Deleter>
-  friend class cudaGraphExecBase;
+  friend class cudaGraph;
+  friend class cudaGraphExec;
 
   friend class cudaFlow;
   friend class cudaFlowCapturer;
@@ -455,114 +453,41 @@ inline std::ostream& operator << (std::ostream& os, const cudaTask& ct) {
 // ----------------------------------------------------------------------------
 
 /**
- @class cudaGraphCreator
+@class cudaGraph
 
- @brief class to create functors that construct CUDA graphs
- 
- This class define functors to new CUDA graphs using `cudaGraphCreate`. 
- 
-*/
-class cudaGraphCreator {
+@brief class to create a CUDA graph with unique ownership
 
-  public:
-
-  /**
-   * @brief creates a new CUDA graph
-   *
-   * Calls `cudaGraphCreate` to generate a CUDA native graph and returns it.
-   * If the graph creation fails, an error is reported.
-   *
-   * @return A newly created `cudaGraph_t` instance.
-   * @throws If CUDA graph creation fails, an error is logged.
-   */
-  cudaGraph_t operator () () const {
-    cudaGraph_t g;
-    TF_CHECK_CUDA(cudaGraphCreate(&g, 0), "failed to create a CUDA native graph");
-    return g;
-  }
-  
-  /**
-  @brief return the given CUDA graph
-  */
-  cudaGraph_t operator () (cudaGraph_t graph) const {
-    return graph;
-  }
-
-};
-
-/**
- @class cudaGraphDeleter
-
- @brief class to create a functor that deletes a CUDA graph
- 
- This structure provides an overloaded function call operator to safely
- destroy a CUDA graph using `cudaGraphDestroy`.
- 
-*/
-class cudaGraphDeleter {
-
-  public:
- 
-  /**
-   * @brief deletes a CUDA graph
-   *
-   * Calls `cudaGraphDestroy` to release the CUDA graph resource if it is valid.
-   *
-   * @param g the CUDA graph to be destroyed
-   */
-  void operator () (cudaGraph_t g) const {
-    cudaGraphDestroy(g);
-  }
-};
-  
-
-/**
-@class cudaGraphBase
-
-@brief class to create a CUDA graph with uunique ownership
-
-@tparam Creator functor to create the stream (used in constructor)
-@tparam Deleter functor to delete the stream (used in destructor)
-
-This class wraps a `cudaGraph_t` handle with std::unique_ptr to ensure proper 
+This class wraps a `cudaGraph_t` handle with `std::unique_ptr` to ensure proper
 resource management and automatic cleanup.
+The graph is created by `cudaGraphCreate` and destroyed by `cudaGraphDestroy`.
 */
-template <typename Creator, typename Deleter>
-class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>, cudaGraphDeleter> {
-  
-  static_assert(std::is_pointer_v<cudaGraph_t>, "cudaGraph_t is not a pointer type");
+class cudaGraph : public std::unique_ptr<
+  std::remove_pointer_t<cudaGraph_t>,
+  cudaProxyDeleter<cudaGraphDestroy>
+> {
 
   public:
-  
-  /**
-  @brief base std::unique_ptr type
-  */
-  using base_type = std::unique_ptr<std::remove_pointer_t<cudaGraph_t>, Deleter>;
 
   /**
-  @brief constructs a `cudaGraph` object by passing the given arguments to the executable CUDA graph creator
-
-  Constructs a `cudaGraph` object by passing the given arguments to the executable CUDA graph creator
-
-  @param args arguments to pass to the executable CUDA graph creator
-  @note participates in overload resolution only if `Creator` invocable with `ArgsT...` with cudaGraph_t
+  @brief constructs a new graph using `cudaGraphCreate`
   */
-  template <typename... ArgsT>
-  requires std::is_invocable_r_v<cudaGraph_t, Creator, ArgsT...>
-  explicit cudaGraphBase(ArgsT&& ... args) : base_type(
-    Creator{}(std::forward<ArgsT>(args)...), Deleter()
-  ) {
-  }  
-  
-  /**
-  @brief constructs a `cudaGraph` from the given rhs using move semantics
-  */
-  cudaGraphBase(cudaGraphBase&&) = default;
+  cudaGraph() : unique_ptr([](){
+    cudaGraph_t graph;
+    TF_CHECK_CUDA(cudaGraphCreate(&graph, 0), "failed to create a CUDA native graph");
+    return graph;
+  }()) {
+  }
 
   /**
-  @brief assign the rhs to `*this` using move semantics
+  @brief constructs a graph that takes ownership of the given `cudaGraph_t`
   */
-  cudaGraphBase& operator = (cudaGraphBase&&) = default;
+  explicit cudaGraph(cudaGraph_t graph) : unique_ptr(graph) {
+  }
+
+  /**
+  @brief implicitly converts to the managed `cudaGraph_t`
+  */
+  operator cudaGraph_t () const noexcept { return get(); }
 
   /**
   @brief queries the number of nodes in a native CUDA graph
@@ -847,16 +772,10 @@ class cudaGraphBase : public std::unique_ptr<std::remove_pointer_t<cudaGraph_t>,
   */
   template <typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
   cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
-
-  private:
-
-  cudaGraphBase(const cudaGraphBase&) = delete;
-  cudaGraphBase& operator = (const cudaGraphBase&) = delete;
 };
 
 // query the number of nodes
-template <typename Creator, typename Deleter>
-size_t cudaGraphBase<Creator, Deleter>::num_nodes() const {
+inline size_t cudaGraph::num_nodes() const {
   size_t n;
   TF_CHECK_CUDA(
     cudaGraphGetNodes(this->get(), nullptr, &n),
@@ -866,14 +785,12 @@ size_t cudaGraphBase<Creator, Deleter>::num_nodes() const {
 }
 
 // query the emptiness
-template <typename Creator, typename Deleter>
-bool cudaGraphBase<Creator, Deleter>::empty() const {
+inline bool cudaGraph::empty() const {
   return num_nodes() == 0;
 }
 
 // query the number of edges
-template <typename Creator, typename Deleter>
-size_t cudaGraphBase<Creator, Deleter>::num_edges() const {
+inline size_t cudaGraph::num_edges() const {
   return cuda_graph_get_num_edges(this->get());
 }
 
@@ -953,8 +870,7 @@ size_t cudaGraphBase<Creator, Deleter>::num_edges() const {
 //}
 
 // dump the graph
-template <typename Creator, typename Deleter>
-void cudaGraphBase<Creator, Deleter>::dump(std::ostream& os) {
+inline void cudaGraph::dump(std::ostream& os) {
 
   // Generate a unique temporary filename in the system's temp directory using filesystem
   auto temp_path = std::filesystem::temp_directory_path() / "graph_";
@@ -977,8 +893,7 @@ void cudaGraphBase<Creator, Deleter>::dump(std::ostream& os) {
 }
 
 // Function: noop
-template <typename Creator, typename Deleter>
-cudaTask cudaGraphBase<Creator, Deleter>::noop() {
+inline cudaTask cudaGraph::noop() {
 
   cudaGraphNode_t node;
 
@@ -991,9 +906,8 @@ cudaTask cudaGraphBase<Creator, Deleter>::noop() {
 }
 
 // Function: host
-template <typename Creator, typename Deleter>
 template <typename C>
-cudaTask cudaGraphBase<Creator, Deleter>::host(C&& callable, void* user_data) {
+cudaTask cudaGraph::host(C&& callable, void* user_data) {
 
   cudaGraphNode_t node;
   cudaHostNodeParams p {callable, user_data};
@@ -1007,9 +921,8 @@ cudaTask cudaGraphBase<Creator, Deleter>::host(C&& callable, void* user_data) {
 }
 
 // Function: kernel
-template <typename Creator, typename Deleter>
 template <typename F, typename... ArgsT>
-cudaTask cudaGraphBase<Creator, Deleter>::kernel(
+cudaTask cudaGraph::kernel(
   dim3 g, dim3 b, size_t s, F f, ArgsT... args
 ) {
 
@@ -1034,11 +947,10 @@ cudaTask cudaGraphBase<Creator, Deleter>::kernel(
 }
 
 // Function: zero
-template <typename Creator, typename Deleter>
 template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
 >
-cudaTask cudaGraphBase<Creator, Deleter>::zero(T* dst, size_t count) {
+cudaTask cudaGraph::zero(T* dst, size_t count) {
 
   cudaGraphNode_t node;
   auto p = cuda_get_zero_parms(dst, count);
@@ -1052,11 +964,10 @@ cudaTask cudaGraphBase<Creator, Deleter>::zero(T* dst, size_t count) {
 }
 
 // Function: fill
-template <typename Creator, typename Deleter>
 template <typename T, std::enable_if_t<
   is_pod_v<T> && (sizeof(T)==1 || sizeof(T)==2 || sizeof(T)==4), void>*
 >
-cudaTask cudaGraphBase<Creator, Deleter>::fill(T* dst, T value, size_t count) {
+cudaTask cudaGraph::fill(T* dst, T value, size_t count) {
 
   cudaGraphNode_t node;
   auto p = cuda_get_fill_parms(dst, value, count);
@@ -1069,12 +980,11 @@ cudaTask cudaGraphBase<Creator, Deleter>::fill(T* dst, T value, size_t count) {
 }
 
 // Function: copy
-template <typename Creator, typename Deleter>
 template <
   typename T,
   std::enable_if_t<!std::is_same_v<T, void>, void>*
 >
-cudaTask cudaGraphBase<Creator, Deleter>::copy(T* tgt, const T* src, size_t num) {
+cudaTask cudaGraph::copy(T* tgt, const T* src, size_t num) {
 
   cudaGraphNode_t node;
   auto p = cuda_get_copy_parms(tgt, src, num);
@@ -1088,8 +998,7 @@ cudaTask cudaGraphBase<Creator, Deleter>::copy(T* tgt, const T* src, size_t num)
 }
 
 // Function: memset
-template <typename Creator, typename Deleter>
-cudaTask cudaGraphBase<Creator, Deleter>::memset(void* dst, int ch, size_t count) {
+inline cudaTask cudaGraph::memset(void* dst, int ch, size_t count) {
 
   cudaGraphNode_t node;
   auto p = cuda_get_memset_parms(dst, ch, count);
@@ -1103,8 +1012,7 @@ cudaTask cudaGraphBase<Creator, Deleter>::memset(void* dst, int ch, size_t count
 }
 
 // Function: memcpy
-template <typename Creator, typename Deleter>
-cudaTask cudaGraphBase<Creator, Deleter>::memcpy(void* tgt, const void* src, size_t bytes) {
+inline cudaTask cudaGraph::memcpy(void* tgt, const void* src, size_t bytes) {
 
   cudaGraphNode_t node;
   auto p = cuda_get_memcpy_parms(tgt, src, bytes);

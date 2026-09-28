@@ -48,9 +48,8 @@ __global__ void cuda_for_each_index_kernel(I first, I inc, unsigned count, C c) 
 // ----------------------------------------------------------------------------
 
 // Function: for_each
-template <typename Creator, typename Deleter>
 template <typename I, typename C, typename E>
-cudaTask cudaGraphBase<Creator, Deleter>::for_each(I first, I last, C c) {
+cudaTask cudaGraph::for_each(I first, I last, C c) {
 
   unsigned count = std::distance(first, last);
   
@@ -61,9 +60,8 @@ cudaTask cudaGraphBase<Creator, Deleter>::for_each(I first, I last, C c) {
 }
 
 // Function: for_each
-template <typename Creator, typename Deleter>
 template <typename I, typename C, typename E>
-void cudaGraphExecBase<Creator, Deleter>::for_each(cudaTask task, I first, I last, C c) {
+void cudaGraphExec::for_each(cudaTask task, I first, I last, C c) {
   
   unsigned count = std::distance(first, last);
 
@@ -74,9 +72,8 @@ void cudaGraphExecBase<Creator, Deleter>::for_each(cudaTask task, I first, I las
 }
 
 // Function: for_each_index
-template <typename Creator, typename Deleter>
 template <typename I, typename C, typename E>
-cudaTask cudaGraphBase<Creator, Deleter>::for_each_index(I first, I last, I inc, C c) {
+cudaTask cudaGraph::for_each_index(I first, I last, I inc, C c) {
 
   unsigned count = distance(first, last, inc);
 
@@ -87,9 +84,8 @@ cudaTask cudaGraphBase<Creator, Deleter>::for_each_index(I first, I last, I inc,
 }
 
 // Function: for_each_index
-template <typename Creator, typename Deleter>
 template <typename I, typename C, typename E>
-void cudaGraphExecBase<Creator, Deleter>::for_each_index(cudaTask task, I first, I last, I inc, C c) {
+void cudaGraphExec::for_each_index(cudaTask task, I first, I last, I inc, C c) {
   
   unsigned count = distance(first, last, inc);
 

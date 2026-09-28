@@ -184,7 +184,7 @@ tf::IndexRanges<int, 3> r(
 r.size();  // 100  (only the i-dimension contributes)
 @endcode
 */
-template <std::integral T, size_t N = 1>
+template <std::integral T, size_t N>
 class IndexRanges {
 
 public:
