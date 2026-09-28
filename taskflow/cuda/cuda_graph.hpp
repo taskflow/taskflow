@@ -684,7 +684,7 @@ class cudaGraph : public std::unique_ptr<
   }
   @endcode
   */
-  template <typename I, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I, typename C>
   cudaTask for_each(I first, I last, C callable);
   
   /**
@@ -715,7 +715,7 @@ class cudaGraph : public std::unique_ptr<
   }
   @endcode
   */
-  template <typename I, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I, typename C>
   cudaTask for_each_index(I first, I last, I step, C callable);
   
   /**
@@ -741,7 +741,7 @@ class cudaGraph : public std::unique_ptr<
   }
   @endcode
   */
-  template <typename I, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I, typename O, typename C>
   cudaTask transform(I first, I last, O output, C op);
   
   /**
@@ -770,7 +770,7 @@ class cudaGraph : public std::unique_ptr<
   }
   @endcode
   */
-  template <typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I1, typename I2, typename O, typename C>
   cudaTask transform(I1 first1, I1 last1, I2 first2, O output, C op);
 };
 

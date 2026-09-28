@@ -14,7 +14,7 @@ namespace detail {
 /**
 @private
 */
-template <typename I, typename C, typename E>
+template <typename E, typename I, typename C>
 __global__ void cuda_for_each_kernel(I first, unsigned count, C c) {
   auto tid  = threadIdx.x;
   auto bid  = blockIdx.x;
@@ -28,7 +28,7 @@ __global__ void cuda_for_each_kernel(I first, unsigned count, C c) {
 }
 
 /** @private */
-template <typename I, typename C, typename E>
+template <typename E, typename I, typename C>
 __global__ void cuda_for_each_index_kernel(I first, I inc, unsigned count, C c) {
   auto tid = threadIdx.x;
   auto bid = blockIdx.x;
@@ -48,50 +48,50 @@ __global__ void cuda_for_each_index_kernel(I first, I inc, unsigned count, C c) 
 // ----------------------------------------------------------------------------
 
 // Function: for_each
-template <typename I, typename C, typename E>
+template <typename E, typename I, typename C>
 cudaTask cudaGraph::for_each(I first, I last, C c) {
 
   unsigned count = std::distance(first, last);
   
   return kernel(
     E::num_blocks(count), E::nt, 0, 
-    detail::cuda_for_each_kernel<I, C, E>, first, count, c
+    detail::cuda_for_each_kernel<E, I, C>, first, count, c
   );
 }
 
 // Function: for_each
-template <typename I, typename C, typename E>
+template <typename E, typename I, typename C>
 void cudaGraphExec::for_each(cudaTask task, I first, I last, C c) {
   
   unsigned count = std::distance(first, last);
 
   kernel(task, 
     E::num_blocks(count), E::nt, 0, 
-    detail::cuda_for_each_kernel<I, C, E>, first, count, c
+    detail::cuda_for_each_kernel<E, I, C>, first, count, c
   );
 }
 
 // Function: for_each_index
-template <typename I, typename C, typename E>
+template <typename E, typename I, typename C>
 cudaTask cudaGraph::for_each_index(I first, I last, I inc, C c) {
 
   unsigned count = distance(first, last, inc);
 
   return kernel(
     E::num_blocks(count), E::nt, 0, 
-    detail::cuda_for_each_index_kernel<I, C, E>, first, inc, count, c
+    detail::cuda_for_each_index_kernel<E, I, C>, first, inc, count, c
   );
 }
 
 // Function: for_each_index
-template <typename I, typename C, typename E>
+template <typename E, typename I, typename C>
 void cudaGraphExec::for_each_index(cudaTask task, I first, I last, I inc, C c) {
   
   unsigned count = distance(first, last, inc);
 
   return kernel(task,
     E::num_blocks(count), E::nt, 0, 
-    detail::cuda_for_each_index_kernel<I, C, E>, first, inc, count, c
+    detail::cuda_for_each_index_kernel<E, I, C>, first, inc, count, c
   );
 }
 

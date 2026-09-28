@@ -162,25 +162,25 @@ class cudaGraphExec : public std::unique_ptr<
   /**
   @brief updates parameters of a `for_each` kernel task created from the CUDA graph of `*this`
   */
-  template <typename I, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I, typename C>
   void for_each(cudaTask task, I first, I last, C callable);
   
   /**
   @brief updates parameters of a `for_each_index` kernel task created from the CUDA graph of `*this`
   */
-  template <typename I, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I, typename C>
   void for_each_index(cudaTask task, I first, I last, I step, C callable);
 
   /**
   @brief updates parameters of a `transform` kernel task created from the CUDA graph of `*this`
   */
-  template <typename I, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I, typename O, typename C>
   void transform(cudaTask task, I first, I last, O output, C c);
 
   /**
   @brief updates parameters of a `transform` kernel task created from the CUDA graph of `*this`
   */
-  template <typename I1, typename I2, typename O, typename C, typename E = cudaDefaultExecutionPolicy>
+  template <typename E = cudaDefaultExecutionPolicy, typename I1, typename I2, typename O, typename C>
   void transform(cudaTask task, I1 first1, I1 last1, I2 first2, O output, C c);
 
 };
