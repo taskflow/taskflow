@@ -77,7 +77,8 @@ auto make_generate_n_task(B first, C count, G gen, P part = P()) {
     B_t beg = first;
 
     size_t W = rt.executor().num_workers();
-    size_t N = count;
+    // like std::generate_n, a non-positive count does nothing
+    size_t N = count > 0 ? static_cast<size_t>(count) : 0;
 
     // the workload should be sequential
     if (W <= 1 || N <= part.chunk_size()) {

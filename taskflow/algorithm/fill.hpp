@@ -80,7 +80,8 @@ auto make_fill_n_task(B first, C count, V value, P part = P()) {
     B_t beg = first;
 
     size_t W = rt.executor().num_workers();
-    size_t N = count;
+    // like std::fill_n, a non-positive count does nothing
+    size_t N = count > 0 ? static_cast<size_t>(count) : 0;
     
     if(N == 0) {
       return;
