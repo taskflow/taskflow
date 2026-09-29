@@ -1,5 +1,6 @@
 module;
 
+#include <taskflow/taskflow.hpp>
 #include <taskflow/core/async_task.hpp>
 #include <taskflow/core/atomic_notifier.hpp>
 #include <taskflow/core/environment.hpp>
@@ -29,18 +30,18 @@ export namespace tf {
     using tf::estate_t;
     using tf::Executor;
     using tf::FlowBuilder;
+    using tf::Subflow;
     using tf::Graph;
     using tf::TaskParams;
     using tf::DefaultTaskParams;
     using tf::NodeBase;
     using tf::Node;
     using tf::ExplicitAnchorGuard;
-    using tf::HasGraph;
+    using tf::GraphLike;
     using tf::NonblockingNotifier;
     using tf::observer_stamp_t;
     using tf::Segment;
     using tf::Timeline;
-    using tf::ProfileData;
     using tf::ObserverInterface;
     using tf::ChromeObserver;
     using tf::TFProfObserver;

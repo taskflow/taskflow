@@ -1,6 +1,9 @@
 include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
 
 add_executable(test_cxx_modules test_cxx_modules.cpp)
+target_sources(test_cxx_modules PRIVATE
+  FILE_SET CXX_MODULES FILES test_tf.cppm
+)
 
 set_target_properties(test_cxx_modules PROPERTIES CXX_SCAN_FOR_MODULES ON)
 
