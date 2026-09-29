@@ -442,3 +442,37 @@ TEST_CASE("ParallelFillN.Default.int.3.10000" * doctest::timeout(300)) {
 TEST_CASE("ParallelFillN.Default.int.4.10000" * doctest::timeout(300)) {
   fill_n_partioners(4, 10000, tf::DefaultPartitioner());
 }
+
+// ----------------------------------------------------------------------------
+// fill_n with a non-positive count
+// ----------------------------------------------------------------------------
+
+template <typename P>
+void fill_n_nonpositive_count(size_t W, P part) {
+  for(int count : {0, -1, -1000}) {
+    std::vector<int> a(1000);
+    for(size_t i = 0; i < a.size(); i++) {
+      a[i] = static_cast<int>(i) + 1;
+    }
+    auto std_a = a;
+
+    tf::Executor executor(W);
+    tf::Taskflow taskflow;
+
+    taskflow.fill_n(a.begin(), count, 12, part);
+    executor.run(taskflow).wait();
+
+    std::fill_n(std_a.begin(), count, 12);
+
+    REQUIRE(a == std_a);
+  }
+}
+
+TEST_CASE("ParallelFillN.NonPositiveCount" * doctest::timeout(300)) {
+  for(size_t W = 1; W <= 4; W++) {
+    fill_n_nonpositive_count(W, tf::GuidedPartitioner());
+    fill_n_nonpositive_count(W, tf::DynamicPartitioner());
+    fill_n_nonpositive_count(W, tf::StaticPartitioner());
+    fill_n_nonpositive_count(W, tf::RandomPartitioner());
+  }
+}
