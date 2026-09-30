@@ -5,6 +5,31 @@ on: [push, pull_request]
 jobs:
 
 ###############################################################################
+# CUDA test on a simulated GPU:
+###############################################################################
+
+  # The runners have no GPU, so PantheonSim simulates one on the CPU and runs
+  # the CUDA unit tests' kernels there. It checks results, not performance.
+  cuda-test-simulated-gpu:
+    # Reads the repository only; the simulator's action uses no token or secrets.
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: simulated GPU
+      uses: pantheongpu/setup-pantheonsim@06648b8c0cb091584196678593215db2e16bd7eb # v0.1.2
+      with:
+        gpu: nvidia/t4
+        cuda-toolkit: '12.8'
+    - name: cmake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=20 -DTF_BUILD_CUDA=ON -DTF_BUILD_EXAMPLES=OFF -DTF_BUILD_BENCHMARKS=OFF -DCMAKE_CUDA_RUNTIME_LIBRARY=Shared
+    - name: build
+      run: cmake --build build --parallel 4 --target test_cuda_objects test_cuda_basics test_cuda_updates test_cuda_matrix test_cuda_kmeans test_cuda_for_each test_cuda_transform
+    - name: test
+      run: cd build ; ctest --output-on-failure -E NOT_BUILT
+
+###############################################################################
 # C++ 20 standard test:
 ###############################################################################
   
