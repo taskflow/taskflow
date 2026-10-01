@@ -3,6 +3,7 @@
 #include <doctest.h>
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/for_each.hpp>
+#include <taskflow/algorithm/reduce.hpp>
 #include <cstdint>
 
 // --------------------------------------------------------
@@ -2284,4 +2285,141 @@ TEST_CASE("MDForEachByIndex.ZeroDim.Random.4threads" * doctest::timeout(300)) {
 }
 TEST_CASE("MDForEachByIndex.ZeroDim.Random.8threads" * doctest::timeout(300)) {
   md_for_each_by_index_zero_dim<tf::RandomPartitioner<>>(8);
+}
+
+// --------------------------------------------------------
+// Testcase: distance of ranges that span more than the index type can hold
+// --------------------------------------------------------
+
+TEST_CASE("Distance.SpanExceedsSignedRange") {
+  REQUIRE(tf::distance<int>(0, INT32_MAX, 2) == (size_t{1} << 30));
+  REQUIRE(tf::distance<int>(0, INT32_MAX, 1 << 20) == 2048);
+  REQUIRE(tf::distance<int>(-1500000000, 1500000000, 1000000000) == 3);
+  REQUIRE(tf::distance<int>(1500000000, -1500000000, -1000000000) == 3);
+  REQUIRE(tf::distance<int>(INT32_MIN, INT32_MAX, 1) == UINT32_MAX);
+  REQUIRE(tf::distance<int>(INT32_MAX, INT32_MIN, -1) == UINT32_MAX);
+  REQUIRE(tf::distance<int64_t>(INT64_MIN, INT64_MAX, 1) == UINT64_MAX);
+}
+
+TEST_CASE("Distance.SpanExceedsUnsignedRange") {
+  REQUIRE(tf::distance<unsigned>(0u, UINT32_MAX, 1u << 20) == 4096);
+  REQUIRE(tf::distance<unsigned>(0u, UINT32_MAX, 2u) == (size_t{1} << 31));
+  REQUIRE(tf::distance<uint64_t>(0, UINT64_MAX, 1) == UINT64_MAX);
+}
+
+TEST_CASE("Distance.SmallTypesAndEmptyRanges") {
+  REQUIRE(tf::distance<int8_t>(-100, 100, 50) == 4);
+  REQUIRE(tf::distance<int16_t>(30000, -30000, -20000) == 3);
+  REQUIRE(tf::distance<int>(10, 0, -3) == 4);
+  // an empty range must not divide by its zero step
+  REQUIRE(tf::distance<int>(5, 5, 0) == 0);
+  REQUIRE(tf::distance<int>(5, 5, 1) == 0);
+  REQUIRE(tf::distance<int>(5, 5, -1) == 0);
+  REQUIRE(tf::distance<unsigned>(5u, 5u, 0u) == 0);
+}
+
+// --------------------------------------------------------
+// Testcase: for_each_index over a range wider than the index type
+// --------------------------------------------------------
+
+TEST_CASE("ForEachIndex.WideRange" * doctest::timeout(300)) {
+
+  for(unsigned W : {1u, 4u}) {
+
+    tf::Executor executor(W);
+    tf::Taskflow taskflow;
+
+    std::atomic<size_t> signed_count {0};
+    std::atomic<size_t> unsigned_count {0};
+    std::atomic<size_t> empty_count {0};
+
+    taskflow.for_each_index(0, INT32_MAX, 1 << 20, [&](int){ signed_count++; });
+    taskflow.for_each_index(0u, UINT32_MAX, 1u << 20, [&](unsigned){ unsigned_count++; });
+    taskflow.for_each_index(5, 5, 0, [&](int){ empty_count++; });
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(signed_count == 2048);
+    REQUIRE(unsigned_count == 4096);
+    REQUIRE(empty_count == 0);
+  }
+}
+
+// --------------------------------------------------------
+// Testcase: index ranges whose last partition ends outside the index type
+// --------------------------------------------------------
+
+TEST_CASE("IndexRange1D.unravel.WideRange") {
+  tf::IndexRange<unsigned> r(0u, UINT32_MAX, 1u << 20);
+  REQUIRE(r.size() == 4096);
+  // positions [4095, 4096) is the last element; its exclusive end is 2^32 and falls outside unsigned
+  auto last = r.unravel(4095, 4096);
+  REQUIRE(last.begin() == 4095u << 20);
+  REQUIRE(last.size() == 1);
+  REQUIRE(r.unravel(0, 4096).size() == 4096);
+
+  tf::IndexRange<int> s(INT32_MIN, INT32_MAX, 1 << 30);
+  REQUIRE(s.size() == 4);
+  REQUIRE(s.unravel(3, 4).begin() == static_cast<int>(INT32_MIN + 3LL * (1 << 30)));
+  REQUIRE(s.unravel(3, 4).size() == 1);
+
+  tf::IndexRange<int> t(INT32_MAX, INT32_MIN, -(1 << 30));
+  REQUIRE(t.size() == 4);
+  REQUIRE(t.unravel(3, 4).size() == 1);
+  REQUIRE(t.unravel(0, 4).size() == 4);
+}
+
+template <typename P>
+void by_index_wide_range(unsigned W) {
+
+  tf::Executor executor(W);
+
+  for(size_t c : {0, 1, 3, 100}) {
+
+    tf::Taskflow taskflow;
+
+    tf::IndexRange<unsigned> r1(0u, UINT32_MAX, 1u << 20);
+    tf::IndexRanges<unsigned, 2> r2(
+      tf::IndexRange<unsigned>(0u, UINT32_MAX, 1u << 28),
+      tf::IndexRange<unsigned>(0u, 3u, 1u)
+    );
+
+    std::atomic<size_t> count1 {0};
+    std::atomic<size_t> count2 {0};
+    size_t sum1 = 0;
+
+    taskflow.for_each_by_index(r1, [&](const tf::IndexRange<unsigned>& box){
+      count1 += box.size();
+    }, P(c));
+
+    taskflow.for_each_by_index(r2, [&](const tf::IndexRanges<unsigned, 2>& box){
+      count2 += box.size(0) * box.size(1);
+    }, P(c));
+
+    taskflow.reduce_by_index(r1, sum1,
+      [](const tf::IndexRange<unsigned>& box, std::optional<size_t> running){
+        return (running ? *running : size_t{0}) + box.size();
+      },
+      std::plus<size_t>(), P(c)
+    );
+
+    executor.run(taskflow).wait();
+
+    REQUIRE(count1 == 4096);
+    REQUIRE(count2 == 16 * 3);
+    REQUIRE(sum1 == 4096);
+  }
+}
+
+TEST_CASE("ByIndex.WideRange.Guided" * doctest::timeout(300)) {
+  by_index_wide_range<tf::GuidedPartitioner<>>(1);
+  by_index_wide_range<tf::GuidedPartitioner<>>(4);
+}
+TEST_CASE("ByIndex.WideRange.Dynamic" * doctest::timeout(300)) {
+  by_index_wide_range<tf::DynamicPartitioner<>>(1);
+  by_index_wide_range<tf::DynamicPartitioner<>>(4);
+}
+TEST_CASE("ByIndex.WideRange.Static" * doctest::timeout(300)) {
+  by_index_wide_range<tf::StaticPartitioner<>>(1);
+  by_index_wide_range<tf::StaticPartitioner<>>(4);
 }

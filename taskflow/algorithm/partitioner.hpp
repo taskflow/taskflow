@@ -202,14 +202,14 @@ requires (N > 1) {
 template <typename T, size_t N>
 void IndexRangesPartitioner<T, N>::_set_point(size_t dim, size_t coord) {
   auto [bd, ed, sd] = _ranges.dim(dim);
-  _box.dim(dim) = { static_cast<T>(bd + coord * sd), static_cast<T>(bd + (coord + 1) * sd), sd };
+  _box.dim(dim) = { index_at(bd, ed, sd, coord), index_at(bd, ed, sd, coord + 1), sd };
 }
 
 // Function: _set_span
 template <typename T, size_t N>
 void IndexRangesPartitioner<T, N>::_set_span(size_t dim, size_t b, size_t e) {
   auto [bd, ed, sd] = _ranges.dim(dim);
-  _box.dim(dim) = { static_cast<T>(bd + b * sd), static_cast<T>(bd + e * sd), sd };
+  _box.dim(dim) = { index_at(bd, ed, sd, b), index_at(bd, ed, sd, e), sd };
 }
 
 // Function: _emit_middle
