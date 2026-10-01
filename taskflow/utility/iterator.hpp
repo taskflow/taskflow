@@ -4,6 +4,7 @@
 #include <cassert>
 #include <concepts>
 #include <cstddef>
+#include <limits>
 #include <tuple>
 #include <type_traits>
 
@@ -69,15 +70,78 @@ An invalid index range will return 0.
 */
 template <std::integral T>
 constexpr size_t distance(T beg, T end, T step) {
-  if constexpr (std::is_unsigned_v<T>) {
-    return end > beg
-      ? static_cast<size_t>((end - beg + step - T{1}) / step)
+
+  // The span between the two ends can exceed the range of T (e.g., [INT_MIN, INT_MAX)
+  // or [0, UINT_MAX) with a large step), so it is computed in the unsigned type of the same
+  // width, where it is always representable.
+  using U = std::make_unsigned_t<T>;
+
+  if(step > T{0}) {
+    return beg < end
+      ? static_cast<size_t>(static_cast<U>(static_cast<U>(end) - static_cast<U>(beg) - U{1}) / static_cast<U>(step)) + 1
       : size_t{0};
-  } else {
-    return static_cast<size_t>(
-      std::max(T{0}, (end - beg + step + (step > T{0} ? T{-1} : T{1})) / step)
-    );
   }
+
+  if constexpr (std::is_signed_v<T>) {
+    if(step < T{0}) {
+      return beg > end
+        ? static_cast<size_t>(static_cast<U>(static_cast<U>(beg) - static_cast<U>(end) - U{1}) / static_cast<U>(U{0} - static_cast<U>(step))) + 1
+        : size_t{0};
+    }
+  }
+
+  // a zero step never advances; the range is either empty (beg == end) or invalid
+  return 0;
+}
+
+/**
+@brief returns the index at the given position of an index range
+
+@tparam T integral type of the indices and step
+
+@param beg starting index of the range
+@param end ending index of the range
+@param step step size to traverse the range
+@param pos zero-based position along the range
+
+@return the index @c beg + pos * step, or @c end if that value cannot be
+        represented in @c T
+
+The position equal to the size of a range is one step past its last index, which can
+lie outside the value range of @c T (e.g., [0, UINT_MAX) with a step of 1u << 20).
+Such a position is only ever used as the exclusive end of a partition, for which
+@c end is equivalent.
+*/
+template <std::integral T>
+constexpr T index_at(T beg, T end, T step, size_t pos) {
+
+  using U = std::make_unsigned_t<T>;
+
+  if(step == T{0}) {
+    return end;
+  }
+
+  const bool fwd = step > T{0};
+
+  // distance that the index can move from beg in the direction of the step
+  const U room = fwd
+    ? static_cast<U>(static_cast<U>(std::numeric_limits<T>::max()) - static_cast<U>(beg))
+    : static_cast<U>(static_cast<U>(beg) - static_cast<U>(std::numeric_limits<T>::min()));
+
+  const U mag = fwd
+    ? static_cast<U>(step)
+    : static_cast<U>(U{0} - static_cast<U>(step));
+
+  if(pos > static_cast<size_t>(static_cast<U>(room / mag))) {
+    return end;
+  }
+
+  const U off = static_cast<U>(static_cast<U>(pos) * mag);
+
+  return static_cast<T>(fwd
+    ? static_cast<U>(static_cast<U>(beg) + off)
+    : static_cast<U>(static_cast<U>(beg) - off)
+  );
 }
 
 // ============================================================================
@@ -562,8 +626,8 @@ IndexRanges<T, N>
 IndexRanges<T, N>::unravel(size_t part_beg, size_t part_end) const requires (N == 1) {
   auto [beg, end, step] = _dims[0];
   return IndexRanges(
-    static_cast<T>(part_beg) * step + beg,
-    static_cast<T>(part_end) * step + beg,
+    index_at(beg, end, step, part_beg),
+    index_at(beg, end, step, part_end),
     step
   );
 }

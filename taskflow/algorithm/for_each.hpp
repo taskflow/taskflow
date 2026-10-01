@@ -106,9 +106,11 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
       part([=]() mutable {
-        for(size_t x=0; x<N; x++, beg+=inc) {
+        // the index is not advanced past the last iteration, which could overflow the index type
+        for(size_t x=1; x<N; x++, beg+=inc) {
           c(beg);
         }
+        c(beg);
       })();
       return;
     }
@@ -124,9 +126,11 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
         auto task = part([=] () mutable {
           part.loop(N, W, curr_b, chunk_size, [=] (size_t part_b, size_t part_e) {
             auto idx = static_cast<B_t>(part_b) * inc + beg;
-            for(size_t x=part_b; x<part_e; x++, idx += inc) {
+            // the index is not advanced past the last iteration, which could overflow the index type
+            for(size_t x=part_b+1; x<part_e; x++, idx += inc) {
               c(idx);
             }
+            c(idx);
           });
         });
         (++w == W || (curr_b += chunk_size) >= N) ? task() : rt.silent_async(task);
@@ -139,9 +143,11 @@ auto make_for_each_index_task(B b, E e, S s, C c, P part = P()){
         auto task = part([=] () mutable {
           part.loop(N, W, *next, [=] (size_t part_b, size_t part_e) mutable {
             auto idx = static_cast<B_t>(part_b) * inc + beg;
-            for(size_t x=part_b; x<part_e; x++, idx += inc) {
+            // the index is not advanced past the last iteration, which could overflow the index type
+            for(size_t x=part_b+1; x<part_e; x++, idx += inc) {
               c(idx);
             }
+            c(idx);
           });
         });
         (++w == W) ? task() : rt.silent_async(task);
