@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
+#include <ranges>
 #include <taskflow/taskflow.hpp>
 #include <taskflow/algorithm/find.hpp>
 
@@ -1027,4 +1028,42 @@ TEST_CASE("FindIf.SilentAsync.7threads" * doctest::timeout(300)) {
 
 TEST_CASE("FindIf.SilentAsync.8threads" * doctest::timeout(300)) {
   silent_dependent_async(8);
+}
+
+TEST_CASE("find_if.SentinelRange" * doctest::timeout(300)) {
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
+
+  auto view = std::views::iota(0);
+  auto itr = view.begin();
+  auto expected = std::find_if(view.begin(), std::unreachable_sentinel, [](int i) {
+    return i == 42;
+  });
+
+  taskflow.find_if(view.begin(), std::unreachable_sentinel, itr, [](int i) {
+    return i == 42;
+  }, tf::StaticPartitioner(1));
+
+  executor.run(taskflow).wait();
+  REQUIRE(itr == expected);
+  REQUIRE(*itr == 42);
+}
+
+TEST_CASE("find_if_not.SentinelRange" * doctest::timeout(300)) {
+  tf::Executor executor(4);
+  tf::Taskflow taskflow;
+
+  auto view = std::views::iota(0);
+  auto itr = view.begin();
+  auto expected = std::find_if_not(view.begin(), std::unreachable_sentinel, [](int i) {
+    return i < 42;
+  });
+
+  taskflow.find_if_not(view.begin(), std::unreachable_sentinel, itr, [](int i) {
+    return i < 42;
+  }, tf::StaticPartitioner(1));
+
+  executor.run(taskflow).wait();
+  REQUIRE(itr == expected);
+  REQUIRE(*itr == 42);
 }
