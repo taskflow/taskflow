@@ -388,6 +388,7 @@ configure_package_config_file(
 write_basic_package_version_file(
   ${PROJECT_NAME}ConfigVersion.cmake 
   COMPATIBILITY SameMinorVersion
+  ARCH_INDEPENDENT
 )
 
 install(
@@ -403,5 +404,5 @@ install(
 configure_file(taskflow.pc.in taskflow.pc @ONLY)
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/taskflow.pc
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig
 )
