@@ -176,14 +176,18 @@ struct TaggedHead64 {
 
   /**
   @brief mask isolating the address field
+
+  The mask and the packed word are always 64 bits wide, independent of
+  @c sizeof(uintptr_t), so the type also works on 32-bit platforms where
+  @c PtrBits is 32 and @c uintptr_t cannot hold the shifted tag.
   */
-  static constexpr pointer_type PTR_MASK = (pointer_type{1} << PTR_BITS) - 1;
+  static constexpr uint64_t PTR_MASK = (uint64_t{1} << PTR_BITS) - 1;
 
   /**
   @brief packed word: high @c TAG_BITS bits hold the version tag, low
          @c PTR_BITS bits hold the address
   */
-  uintptr_t bits {0};
+  uint64_t bits {0};
 
   /**
   @brief constructs a null, zero-tagged head
@@ -201,7 +205,7 @@ struct TaggedHead64 {
   @endcode
   */
   TaggedHead64(pointer_type p, tag_type t) noexcept
-    : bits{ (p & PTR_MASK) | (static_cast<uintptr_t>(t) << PTR_BITS) } {}
+    : bits{ (static_cast<uint64_t>(p) & PTR_MASK) | (static_cast<uint64_t>(t) << PTR_BITS) } {}
 
   /**
   @brief returns the block address
@@ -211,7 +215,7 @@ struct TaggedHead64 {
   auto p = head.get_ptr();  // p == reinterpret_cast<uintptr_t>(block)
   @endcode
   */
-  pointer_type get_ptr() const noexcept { return bits & PTR_MASK; }
+  pointer_type get_ptr() const noexcept { return static_cast<pointer_type>(bits & PTR_MASK); }
 
   /**
   @brief returns the 16-bit ABA version counter
