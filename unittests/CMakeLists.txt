@@ -1,6 +1,16 @@
 enable_testing()
 
-include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
+# Distributions build the tests against an installed doctest instead of the
+# copy in 3rd-party/doctest.
+option(TF_USE_SYSTEM_DOCTEST "Build unit tests with an installed doctest" OFF)
+if(TF_USE_SYSTEM_DOCTEST)
+  find_package(doctest REQUIRED)
+  include(${doctest_DIR}/doctest.cmake)
+  find_path(TF_DOCTEST_INCLUDE_DIR doctest.h PATH_SUFFIXES doctest REQUIRED)
+else()
+  include(${TF_3RD_PARTY_DIR}/doctest/doctest.cmake)
+  set(TF_DOCTEST_INCLUDE_DIR ${TF_3RD_PARTY_DIR}/doctest)
+endif()
 
 list(APPEND TF_UNITTESTS 
   test_utility 
@@ -59,7 +69,7 @@ endif()
 foreach(unittest IN LISTS TF_UNITTESTS)
   add_executable(${unittest} ${unittest}.cpp)
   target_link_libraries(${unittest} ${PROJECT_NAME} ${ATOMIC_LIBRARY} tf::default_settings)
-  target_include_directories(${unittest} PRIVATE ${TF_3RD_PARTY_DIR}/doctest)
+  target_include_directories(${unittest} PRIVATE ${TF_DOCTEST_INCLUDE_DIR})
   doctest_discover_tests(${unittest})
 endforeach()
 
