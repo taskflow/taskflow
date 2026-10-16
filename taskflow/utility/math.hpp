@@ -343,6 +343,8 @@ inline T seed() noexcept {
 @return the largest number < @c N that is coprime to N
 
 This function finds the largest number less than N that is coprime (i.e., has a greatest common divisor of 1) with @c N.
+Consecutive integers are always coprime (any common divisor of @c N and @c N-1 also divides
+their difference, 1), so the answer is simply @c N-1 and runs in constant time.
 If @c N is less than 3, it returns 1 as a default coprime.
 
 @code{.cpp}
@@ -353,12 +355,7 @@ constexpr size_t coprime(size_t N) {
   if(N < 3) {
     return 1;
   }
-  for (size_t x = N; --x > 0;) {
-    if (std::gcd(x, N) == 1) {
-      return x;
-    }
-  }
-  return 1;
+  return N - 1;
 }
 
 /**
