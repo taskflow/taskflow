@@ -52,7 +52,6 @@ export namespace tf {
     using tf::unique_variant;
     using tf::unique_variant_t;
     using tf::is_std_compare;
-    using tf::all_same;
     using tf::deref_t;
     using tf::UUID;
     
@@ -75,7 +74,6 @@ export namespace tf {
     using tf::is_pod_v;
     using tf::get_index_v;
     using tf::is_std_compare_v;
-    using tf::all_same_v;
     using tf::is_random_access_iterator;
 
     using tf::is_index_range_invalid;

@@ -1,8 +1,20 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
+#include <atomic>
+#include <vector>
 
 import tf;
+import test_tf;
+
+TEST_CASE("CxxModule.TransitiveImport" * doctest::timeout(300)) {
+  for(unsigned workers : {1u, 2u, 4u, 8u}) {
+    REQUIRE(module_async(workers) == 46);
+    REQUIRE(module_subflow(workers) == 3);
+    REQUIRE(module_profile(workers));
+  }
+  REQUIRE(module_hash());
+}
 
 // --------------------------------------------------------
 // Testcase: CxxModule.Basic

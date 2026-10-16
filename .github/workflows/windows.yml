@@ -4,6 +4,20 @@ on: [push, pull_request]
 
 jobs:
 
+  cxx-modules:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        config: [Debug, Release]
+    steps:
+    - uses: actions/checkout@v3
+    - name: cmake
+      run: cmake -S . -B build -DTF_BUILD_MODULES=ON -DTF_BUILD_EXAMPLES=OFF -DCMAKE_CXX_FLAGS="/EHsc /utf-8"
+    - name: build
+      run: cmake --build build --config ${{ matrix.config }} --target test_cxx_modules --parallel 4
+    - name: test
+      run: ctest --test-dir build -C ${{ matrix.config }} -R "^CxxModule" --output-on-failure
+
 ###############################################################################
 # C++ 20 standard test:
 ###############################################################################
@@ -30,4 +44,3 @@ jobs:
     - name: test
       run: cd build ; ctest --exclude-regex "test-unicode" --output-on-failure
   
-
