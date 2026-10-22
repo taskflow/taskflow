@@ -34,7 +34,9 @@ constexpr size_t parallel_sort_cutoff() {
 
 template<typename T, size_t cacheline_size=64>
 inline T* align_cacheline(T* p) {
-#if defined(UINTPTR_MAX) && __cplusplus >= 201103L
+  // std::uintptr_t is a type the standard defines as optional. Use it
+  // when possible.
+#if defined(UINTPTR_MAX)
   std::uintptr_t ip = reinterpret_cast<std::uintptr_t>(p);
 #else
   std::size_t ip = reinterpret_cast<std::size_t>(p);
