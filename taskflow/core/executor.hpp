@@ -1734,6 +1734,11 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
   // Here, we do tear_down_invoke since async tasks may also get cancelled where
   // we need to recycle the node.
   if(node->_is_parent_cancelled()) {
+    if(node->_semaphores && !node->_semaphores->to_release.empty()) {
+      SmallVector<Node*> waiters;
+      node->_release_all(waiters);
+      _bulk_schedule(worker, waiters.begin(), waiters.size());
+    }
     _tear_down_invoke(worker, node, cache);
     TF_INVOKE_CONTINUATION();
     return;
@@ -1959,6 +1964,21 @@ inline void Executor::_process_exception(Worker&, Node* node) {
       ia = ea;
     }
     ea = ea->_parent;
+  }
+
+  // Drain any tasks stranded in semaphores belonging to this topology
+  if(auto tpg = node->_topology; tpg) {
+    SmallVector<Node*> stranded;
+    for(auto n : tpg->_taskflow._graph) {
+      if(n->_semaphores) {
+        for(auto sem : n->_semaphores->to_acquire) {
+          sem->_drain_waiters(stranded);
+        }
+      }
+    }
+    if(!stranded.empty()) {
+      _bulk_schedule(stranded.begin(), stranded.size());
+    }
   }
   
   // flag used to ensure execution is caught in a thread-safe manner

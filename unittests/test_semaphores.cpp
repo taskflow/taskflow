@@ -409,3 +409,37 @@ TEST_CASE("Semaphore.Deadlock.8threads" * doctest::timeout(300)) {
   deadlock(8);
 }
 */
+
+TEST_CASE("Semaphore.ExceptionDeadlock.Issue732" * doctest::timeout(10)) {
+  const int semaphore_size = 4;
+  tf::Executor executor(semaphore_size * 4);
+  tf::Taskflow taskflow;
+  tf::Semaphore semaphore(semaphore_size);
+
+  auto work_noop = []() {};
+  auto work_fail = []() {
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    throw std::runtime_error("simulated failure in task");
+  };
+
+  tf::Task init = taskflow.emplace(work_noop);
+  for (size_t i = 0; i < semaphore_size * 4; ++i) {
+    tf::Task A = taskflow.emplace(work_noop);
+    tf::Task B = taskflow.emplace(work_fail);
+    tf::Task C = taskflow.emplace(work_noop);
+    tf::Task D = taskflow.emplace(work_noop);
+
+    init.precede(A);
+    A.precede(B);
+    B.precede(C);
+    C.precede(D);
+
+    A.acquire(semaphore);
+    D.release(semaphore);
+  }
+
+  auto future = executor.run(taskflow);
+
+  REQUIRE_THROWS_AS(future.get(), std::runtime_error);
+  REQUIRE(semaphore.num_waiters() == 0);
+}
