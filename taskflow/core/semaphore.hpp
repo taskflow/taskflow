@@ -111,7 +111,10 @@ class Semaphore {
   @brief resets the semaphores to a clean state with the given new maximum value
   */
   void reset(size_t new_max_value);
-
+  /**
+  @brief queries the number of waiting nodes
+  */
+  size_t num_waiters() const;
   private:
 
   mutable std::mutex _mtx;
@@ -124,6 +127,8 @@ class Semaphore {
   bool _try_acquire_or_wait(Node*);
 
   void _release(SmallVector<Node*>&);
+
+  void _drain_waiters(SmallVector<Node*>&);
 };
 
 inline Semaphore::Semaphore(size_t max_value) :
@@ -163,6 +168,12 @@ inline void Semaphore::_release(SmallVector<Node*>& dst) {
   }
 }
 
+inline void Semaphore::_drain_waiters(SmallVector<Node*>& nodes) {
+  std::lock_guard<std::mutex> lock(_mtx);
+  nodes.insert(nodes.end(), _waiters.begin(), _waiters.end());
+  _waiters.clear();
+}
+
 inline size_t Semaphore::max_value() const {
   return _max_value; 
 }
@@ -170,6 +181,11 @@ inline size_t Semaphore::max_value() const {
 inline size_t Semaphore::value() const {
   std::lock_guard<std::mutex> lock(_mtx);
   return _cur_value;
+}
+
+inline size_t Semaphore::num_waiters() const {
+  std::lock_guard<std::mutex> lock(_mtx);
+  return _waiters.size();
 }
 
 inline void Semaphore::reset() {
