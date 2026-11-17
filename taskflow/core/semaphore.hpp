@@ -94,66 +94,66 @@ class Semaphore {
 
   public:
 
-    /**
-    @brief constructs a default semaphore
+  /**
+  @brief constructs a default semaphore
 
-    A default semaphore has the value of zero. Users can call tf::Semaphore::reset
-    to reassign a new value to the semaphore.
-    */
-    Semaphore() = default;
+  A default semaphore has the value of zero. Users can call tf::Semaphore::reset
+  to reassign a new value to the semaphore.
+  */
+  Semaphore() = default;
 
-    /**
-    @brief constructs a semaphore with the given value (i.e., counter)
+  /**
+  @brief constructs a semaphore with the given value (i.e., counter)
 
-    A semaphore creates a constraint that limits the maximum concurrency,
-    i.e., the number of workers, in a set of tasks.
+  A semaphore creates a constraint that limits the maximum concurrency,
+  i.e., the number of workers, in a set of tasks.
 
-    @code{.cpp}
-    tf::Semaphore semaphore(4);  // concurrency constraint of 4 workers
-    @endcode
-    */
-    explicit Semaphore(size_t max_value);
+  @code{.cpp}
+  tf::Semaphore semaphore(4);  // concurrency constraint of 4 workers
+  @endcode
+  */
+  explicit Semaphore(size_t max_value);
 
-    /**
-    @brief queries the current counter value
-    */
-    size_t value() const noexcept;
+  /**
+  @brief queries the current counter value
+  */
+  size_t value() const noexcept;
 
-    /**
-    @brief queries the maximum allowable value of this semaphore
-    */
-    size_t max_value() const noexcept;
+  /**
+  @brief queries the maximum allowable value of this semaphore
+  */
+  size_t max_value() const noexcept;
 
-    /**
-    @brief resets the semaphores to a clean state
-    */
-    void reset();
+  /**
+  @brief resets the semaphores to a clean state
+  */
+  void reset();
 
-    /**
-    @brief resets the semaphores to a clean state with the given new maximum value
-    */
-    void reset(size_t new_max_value);
+  /**
+  @brief resets the semaphores to a clean state with the given new maximum value
+  */
+  void reset(size_t new_max_value);
 
   private:
 
-    // _max_value is set at construction / reset and never modified concurrently.
-    size_t _max_value{0};
+  // _max_value is set at construction / reset and never modified concurrently.
+  size_t _max_value{0};
 
-    // Hot-path: lock-free token counter.
-    // Decremented on acquire via CAS loop (fast path, no lock) or under _mtx
-    // (slow path, double-check).  Incremented on release under _mtx.
-    alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _cur_value{0};
+  // Hot-path: lock-free token counter.
+  // Decremented on acquire via CAS loop (fast path, no lock) or under _mtx
+  // (slow path, double-check).  Incremented on release under _mtx.
+  alignas(TF_CACHELINE_SIZE) std::atomic<size_t> _cur_value{0};
 
-    // Guards _cur_value for the release increment and the _waiters list.
-    // Also taken in the acquire slow path for a double-check.
-    mutable std::mutex _mtx;
+  // Guards _cur_value for the release increment and the _waiters list.
+  // Also taken in the acquire slow path for a double-check.
+  mutable std::mutex _mtx;
 
-    // Parked nodes waiting for a token.  Protected by _mtx.
-    SmallVector<Node*> _waiters;
+  // Parked nodes waiting for a token.  Protected by _mtx.
+  SmallVector<Node*> _waiters;
 
-    bool _try_acquire_or_wait(Node*);
+  bool _try_acquire_or_wait(Node*);
 
-    void _release(SmallVector<Node*>&);
+  void _release(SmallVector<Node*>&);
 };
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,243 @@
+namespace tf {
+
+/** @page ExamplesGraphColoring Graph Coloring
+
+We implement a parallel graph coloring solver using tf::TaskGroup for
+recursive task parallelism.
+This example demonstrates branch-and-bound search with symmetry breaking
+on a dynamically growing task tree, and shows how tf::TaskGroup enables
+efficient parallel exploration of combinatorial search spaces.
+
+@tableofcontents
+
+@section GCIntroduction What is Graph Coloring?
+
+%Graph coloring assigns a color to each vertex of a graph such that no two
+adjacent vertices (vertices connected by an edge) share the same color.
+The goal is to find an assignment that uses as few colors as possible.
+The minimum number of colors needed is called the chromatic number of the
+graph.
+
+@image html images/gc_example.svg
+
+%Graph coloring appears throughout computer science and engineering.
+In compiler register allocation, each variable is a vertex and two variables
+share an edge if they are live at the same time; coloring the graph assigns
+registers to variables without conflicts.
+In exam scheduling, each course is a vertex and two courses share an edge
+if any student is enrolled in both; coloring assigns time slots with no
+student taking two exams simultaneously.
+In wireless network frequency assignment, transmitters that could interfere
+with each other share an edge; coloring assigns frequencies to avoid
+interference.
+
+Finding the chromatic number is NP-hard in general.
+The only known exact algorithms explore an exponential search space, which
+makes parallelism essential for large graphs.
+Each branch of the search can be explored independently on a separate CPU
+core, and branches that cannot improve on the best coloring found so far
+can be pruned immediately.
+
+@section GCWalkthrough Concrete Walkthrough
+
+Consider the following 5-vertex graph, which is a 5-cycle (0-1-2-3-4-0)
+with one additional edge between vertices 0 and 2:
+
+@dotfile images/gc_graph.dot
+
+The edges are: 0-1, 0-2, 0-4, 1-2, 2-3, 3-4.
+The chromatic number of this graph is 3: vertices 0, 1, and 2 form a
+triangle (all mutually adjacent), so they each need a distinct color, and
+the remaining vertices can reuse those three colors.
+The branch-and-bound algorithm assigns colors to vertices one by one in
+order (0, 1, 2, 3, 4).
+At each vertex it tries all valid colors and prunes whenever the partial
+coloring already uses as many colors as the best complete coloring found
+so far.
+
+Since colors are interchangeable labels, we can apply symmetry breaking to avoid redundancy
+by swapping all
+occurrences of color 0 and color 1 throughout a valid coloring gives an
+equally valid coloring.
+Without any constraint, the search tree explores all these equivalent
+relabelings and wastes time on duplicate work.
+The fix is to require colors to be introduced in order: the first vertex
+always gets color 0, and a new color @c k+1 may only be assigned to a
+vertex if color @c k has already been used somewhere.
+This ensures each structurally distinct coloring is explored exactly once.
+
+@note
+To better understand why this symmetry breaking works, think of colors as being "introduced" for the first time as we assign vertices in order. Color 0 is introduced when we assign vertex 0. Color 1 is introduced the first time we assign a vertex that cannot use color 0. Color 2 is introduced the first time we need a third color. By requiring that colors are always introduced in order 0, 1, 2, ... we pick exactly one canonical representative from all the equivalent relabelings.
+
+In our example, vertex 0 must be color 0 (only choice by symmetry breaking).
+Vertex 1 is adjacent to vertex 0, so it cannot be color 0; by symmetry
+breaking it can only be color 1 (introducing color 1 for the first time).
+Vertex 2 is adjacent to both 0 and 1, so it cannot be 0 or 1; symmetry
+breaking allows color 2 (introducing it for the first time).
+From here the branching opens up for vertex 3.
+
+The figure below shows the complete search tree.
+Peach nodes are explored, red nodes are pruned, yellow nodes are complete
+colorings that are not improvements, and the green node is the first optimal
+3-coloring found:
+
+@dotfile images/gc_tree.dot
+
+After the first leaf @c [0,1,2,0,1] establishes @c best=3, the branches
+@c v3=1 and @c v3=3 are immediately pruned: assigning color 1 to vertex 3
+keeps @c max_color=2 (3 colors) which equals @c best and cannot improve it,
+and assigning color 3 to vertex 3 introduces a 4th color which is worse.
+Only 8 nodes are evaluated out of a much larger unconstrained tree.
+
+@section GCImplementation Implementation
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+const int N = 5;
+const std::vector<std::vector<int>> adj = {
+  {1, 2, 4},   // vertex 0: neighbors are 1, 2, 4
+  {0, 2},      // vertex 1: neighbors are 0, 2
+  {0, 1, 3},   // vertex 2: neighbors are 0, 1, 3
+  {2, 4},      // vertex 3: neighbors are 2, 4
+  {0, 3},      // vertex 4: neighbors are 0, 3
+};
+
+tf::Executor executor;
+std::atomic<int> best_colors{N};   // worst case: N colors (one per vertex)
+
+void color_graph(
+  int v,                          // current vertex to color
+  std::vector<int> colors,        // colors[i] = color assigned to vertex i (-1 if unassigned)
+  int max_introduced              // highest color index introduced so far
+) {
+
+  // pruning: even in the best case, this branch needs at least max_introduced+1
+  // colors (those already introduced). if that already equals or exceeds the
+  // best known coloring, there is no point exploring further.
+  if(max_introduced + 1 >= best_colors.load(std::memory_order_relaxed)) return;
+
+  // all vertices colored: try to update the best known coloring.
+  // compare_exchange_weak retries if another worker concurrently updates
+  // best_colors, ensuring only the true minimum is stored.
+  if(v == N) {
+    int num_colors = max_introduced + 1;
+    int cur = best_colors.load(std::memory_order_relaxed);
+    while(num_colors < cur &&
+          !best_colors.compare_exchange_weak(cur, num_colors,
+            std::memory_order_relaxed, std::memory_order_relaxed));
+    return;
+  }
+
+  // determine which colors are forbidden for vertex v:
+  // any color already assigned to one of its neighbors.
+  std::vector<bool> forbidden(max_introduced + 2, false);
+  for(int u : adj[v]) {
+    if(colors[u] >= 0) forbidden[colors[u]] = true;
+  }
+
+  // try each valid color in order (symmetry breaking: only introduce a new
+  // color max_introduced+1 if all lower colors are forbidden for this vertex).
+  // this guarantees colors are introduced in strictly increasing order across
+  // the entire search, eliminating equivalent relabelings.
+  auto tg = executor.task_group();
+  bool first = true;
+
+  for(int c = 0; c <= max_introduced + 1; c++) {
+    if(forbidden[c]) continue;
+
+    std::vector<int> new_colors = colors;
+    new_colors[v] = c;
+    int new_max = std::max(max_introduced, c);
+
+    if(first) {
+      // explore the first valid color directly on the current worker
+      first = false;
+      color_graph(v + 1, new_colors, new_max);
+    }
+    else {
+      // spawn remaining valid colors as parallel branches
+      tg.silent_async([=]() {
+        color_graph(v + 1, new_colors, new_max);
+      });
+    }
+  }
+
+  // cooperatively wait for all spawned branches to complete.
+  // corun() keeps the worker active in the executor's work-stealing loop
+  // rather than blocking, enabling efficient cooperative execution.
+  tg.corun();
+}
+
+int main() {
+
+  std::vector<int> colors(N, -1);   // -1 means unassigned
+
+  // the root call must run inside a worker so that task_group() is valid.
+  // vertex 0 always gets color 0 by symmetry breaking (max_introduced starts at 0).
+  executor.async([&]() {
+    colors[0] = 0;
+    color_graph(1, colors, 0);   // start from vertex 1 with color 0 already introduced
+  }).get();
+
+  printf("Chromatic number: %d\n", best_colors.load());
+
+  return 0;
+}
+@endcode
+
+The expected output is:
+
+@code{.bash}
+Chromatic number: 3
+@endcode
+
+@section GCDesignPoints Design Points
+
+There are a few important design points worth noting for this example,
+which also apply generally to parallel search algorithms:
+
+  + Symmetry breaking eliminates redundant search:
+Without symmetry breaking, swapping two color labels anywhere in the
+tree produces a structurally identical coloring that would be explored
+separately. 
+For a graph with chromatic number @c k, this causes up to @c k! times
+more work than necessary.
+The constraint that colors must be introduced in order 0, 1, 2, ... ensures
+each distinct coloring structure is visited exactly once.
+For our 3-colorable example this is a 3! = 6x reduction in the number of
+candidate colorings explored.
+
+  + Pruning propagates instantly across all workers: The shared @c std::atomic<int> @c best_colors is checked at the entry of
+every recursive call.
+When any worker finds a @c k-coloring, all other workers immediately see
+the tighter bound and prune any branch that would need @c k or more colors.
+This is the same mechanism as in the TSP example: shared atomic state
+turns the parallel search into a cooperative effort rather than independent
+races.
+
+  + %TaskGroup per recursive call: Each call to @c color_graph creates its own @c tg via
+@c executor.task_group(), valid because every call runs inside a worker
+thread.
+The first valid color is explored on the current worker to avoid task
+overhead, and remaining valid colors are spawned as @c tg.silent_async
+tasks.
+@c tg.corun() then cooperatively waits for all spawned branches without
+blocking the worker thread.
+
+  + Vertex ordering affects performance: Coloring vertices in order of decreasing degree (most-constrained-first)
+tends to find good colorings earlier, tightening the pruning bound sooner
+and reducing the total search space.
+The implementation above uses a fixed order for clarity; a production
+solver would sort vertices by degree before starting.
+
+@note
+The @c colors and @c forbidden vectors are copied on each recursive call,
+which is simple and correct but not memory-efficient for large graphs.
+For graphs with hundreds of vertices, a bitmask representation of the
+color assignment and a single stack-allocated forbidden set would
+significantly reduce allocation overhead.
+
+*/
+
+}

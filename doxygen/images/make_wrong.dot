@@ -1,0 +1,50 @@
+digraph BuildGraphWrong {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.6, ranksep=0.9];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.10,0.04"];
+  edge  [arrowsize=0.6, fontname="Helvetica", fontsize=8];
+
+  // sources — regular tasks
+  main_c [label="main.c",  fillcolor="#cce5ff"];
+  util_c [label="util.c",  fillcolor="#cce5ff"];
+  util_h [label="util.h",  fillcolor="#cce5ff"];
+  math_c [label="math.c",  fillcolor="#cce5ff"];
+  math_h [label="math.h",  fillcolor="#cce5ff"];
+
+  // condition tasks (diamond shape, aquamarine as per Taskflow convention)
+  main_cond [label="main.o?", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+  util_cond [label="util.o?", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+  math_cond [label="math.o?", shape=diamond, style=filled, fillcolor=aquamarine, color=black];
+
+  // compile tasks
+  main_cc [label="cc main.o", fillcolor="#fff3cd"];
+  util_cc [label="cc util.o", fillcolor="#fff3cd"];
+  math_cc [label="cc math.o", fillcolor="#fff3cd"];
+
+  // app — raced
+  app [label="app", fillcolor="#f8d7da", penwidth=2.5, color=crimson,
+       xlabel="⚠ task race:\nscheduled up to 3×"];
+
+  // strong edges: sources -> condition tasks
+  main_c -> main_cond [color="#555555"];
+  util_h -> main_cond [color="#555555"];
+  math_h -> main_cond [color="#555555"];
+  util_c -> util_cond [color="#555555"];
+  util_h -> util_cond [color="#555555"];
+  math_c -> math_cond [color="#555555"];
+  math_h -> math_cond [color="#555555"];
+
+  // weak edges: condition -> compile (rebuild) or app (skip) — WRONG
+  main_cond -> main_cc [style=dashed, label="1", color="#555555"];
+  main_cond -> app     [style=dashed, label="0", color=crimson, fontcolor=crimson];
+  util_cond -> util_cc [style=dashed, label="1", color="#555555"];
+  util_cond -> app     [style=dashed, label="0", color=crimson, fontcolor=crimson];
+  math_cond -> math_cc [style=dashed, label="1", color="#555555"];
+  math_cond -> app     [style=dashed, label="0", color=crimson, fontcolor=crimson];
+
+  // strong edges: compile -> app
+  main_cc -> app [color="#555555"];
+  util_cc -> app [color="#555555"];
+  math_cc -> app [color="#555555"];
+}

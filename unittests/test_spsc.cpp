@@ -1,7 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include <doctest.h>
-#include <taskflow/taskflow.hpp>
+#include <taskflow/utility/spsc.hpp>
 
 #include <atomic>
 #include <thread>

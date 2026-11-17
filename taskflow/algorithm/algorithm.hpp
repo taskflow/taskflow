@@ -1,14 +1,18 @@
 #pragma once
 
+#include "../core/graph.hpp"
+
 namespace tf {
 
+/**
+@private
+*/
 class Algorithm {
 
   public:
 
-  template <typename T>
-  static auto make_module_task(T&&);
-
+  template <GraphLike T>
+  static auto make_module_task(T&);
 };
 
 }  // end of namespace tf -----------------------------------------------------

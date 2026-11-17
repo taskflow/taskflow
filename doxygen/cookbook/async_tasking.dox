@@ -2,73 +2,120 @@ namespace tf {
 
 /** @page AsyncTasking Asynchronous Tasking
 
-This chapters discusses how to launch tasks asynchronously 
-so that you can incorporate independent, dynamic parallelism in your taskflows.
+%Taskflow provides mechanisms to launch tasks asynchronously, enabling
+dynamic parallelism that goes beyond static task graphs.
 
 @tableofcontents
 
-@section LaunchAsynchronousTasksFromAnExecutor Launch Asynchronous Tasks from an Executor
+@section WhatIsAnAsyncTask What is an Async Task?
 
-%Taskflow's executor provides an STL-style method, tf::Executor::async,
-that allows you to run a callable object asynchronously.
-This method returns a std::future which will eventually hold the result of the function call.
+An async task is a callable object submitted for execution without being
+embedded in a pre-defined task graph.
+Unlike regular taskflow tasks whose dependencies are declared upfront,
+async tasks are created and dispatched on the fly, making them suitable for
+dynamic, recursive, or data-dependent parallelism that cannot be fully
+determined at graph construction time.
+
+The C++ standard library provides @c std::async for this purpose.
+However, @c std::async has fundamental limitations that make it ill-suited
+for high-performance parallel programs:
+
+@code{.cpp}
+// std::async typically spawns a new OS thread for each call
+std::future<int> f1 = std::async(std::launch::async, []() { return 1; });
+std::future<int> f2 = std::async(std::launch::async, []() { return 2; });
+std::future<int> f3 = std::async(std::launch::async, []() { return 3; });
+// ... spawning N tasks creates N threads, each with its own stack and
+// OS overhead — expensive to create, destroy, and context-switch
+@endcode
+
+The three core problems with @c std::async are:
+
+- @b No @b thread @b pool: each call to @c std::async typically creates a
+  brand-new OS thread, incurring significant creation and destruction overhead.
+  Spawning hundreds of async tasks means hundreds of threads competing for CPU time.
+
+- @b No @b scheduler: there is no work-stealing or load balancing between
+  @c std::async tasks. If one task finishes early, its thread sits idle rather
+  than picking up work from overloaded threads.
+
+- @b No @b task @b graph @b integration: @c std::async tasks are isolated
+  from one another. You cannot express dependencies between them, embed them
+  in a larger task graph, or coordinate them with other parallel work.
+
+%Taskflow's async tasking addresses all three problems.
+Async tasks run on the executor's existing thread pool under the same
+work-stealing scheduler, integrate naturally with taskflows and runtimes,
+and can be launched from any thread without additional overhead.
+
+@section LaunchAsynchronousTasksFromAnExecutor Launch Async Tasks from an Executor
+
+tf::Executor::async runs a callable asynchronously on the thread pool and
+returns a @c std::future that will eventually hold the result:
 
 @code{.cpp}
 std::future<int> future = executor.async([](){ return 1; });
 assert(future.get() == 1);
 @endcode
 
-If you do not need the return value or do not require a std::future for synchronization,
-you should use tf::Executor::silent_async.
-This method returns nothing and incurs less overhead than tf::Executor::async,
-as it avoids the cost of managing a shared state for std::future.
+If you do not need the return value or do not require a @c std::future for
+synchronisation, use tf::Executor::silent_async instead.
+It returns nothing and incurs less overhead than tf::Executor::async,
+as it avoids the cost of managing a shared state:
 
 @code{.cpp}
 executor.silent_async([](){});
 @endcode
 
-
-Launching asynchronous tasks from an executor is @em thread-safe and can be invoked from multiple threads, including both worker threads inside the executor and external threads outside of it.
-The scheduler automatically detects the source of the submission and employs work-stealing to schedule the task efficiently, ensuring balanced workload distribution across workers.
+Both tf::Executor::async and tf::Executor::silent_async are @em thread-safe
+and can be called from any thread — including worker threads already running
+inside the executor and external threads outside of it.
+The scheduler automatically detects the submission source and applies
+work-stealing to distribute the task efficiently across workers:
 
 @code{.cpp}
-tf::Task my_task = taskflow.emplace([&](){
-  // launch an asynchronous task from my_task
-  executor.async([&](){
-    // launch another asynchronous task that may be run by another worker
-    executor.async([&](){});
-  })
+tf::Task my_task = taskflow.emplace([&]() {
+  // launch an async task from a worker thread inside the executor
+  executor.async([&]() {
+    // launch another async task from yet another worker thread
+    executor.async([&]() {});
+  });
 });
 executor.run(taskflow);
-executor.wait_for_all();   // wait for all tasks to finish
+executor.wait_for_all();
 @endcode
 
-@attention
-Asynchronous tasks created from an executor do not belong to any taskflow.
-Their lifetime is automatically managed by the executor that created them.
+@note
+Async tasks created from an executor do not belong to any taskflow.
+Their lifetime is automatically managed by the executor.
 
+@section LaunchAsynchronousTasksFromARuntime Launch Async Tasks from a Runtime
 
-@section LaunchAsynchronousTasksFromARuntime Launch Asynchronous Tasks from a Runtime
+tf::Runtime::async and tf::Runtime::silent_async let you launch async tasks
+from within a running task that has access to a tf::Runtime object.
+Like their executor counterparts, both methods are @em thread-safe and can
+be called from any context within the runtime's scope.
 
-You can launch asynchronous tasks from a runtime object (tf::Runtime) using
-tf::Runtime::async or tf::Runtime::silent_async.
-Unlike creating asynchronous tasks from an executor,
-tasks created from a runtime object belong to that runtime and
-are implicitly joined at the end of the runtime's scope.
-For example, the code below creates 100 asynchronous tasks from a runtime,
-and these 100 tasks are guaranteed to finish before the runtime completes.
+Unlike executor-level async tasks, tasks created from a runtime belong to
+that runtime and are implicitly joined at the end of its scope — meaning
+all async tasks spawned inside a runtime are guaranteed to finish before
+the runtime completes and control returns to the next task in the graph.
+
+The example below spawns 100 async tasks from a runtime.
+Because of the implicit join, task @c B is guaranteed to see @c counter == 100:
 
 @code{.cpp}
 tf::Taskflow taskflow;
 tf::Executor executor;
 std::atomic<int> counter{0};
 
-tf::Task A = taskflow.emplace([&] (tf::Runtime& rt){
-  for(int i=0; i<100; i++) {
-    rt.silent_async([&](){ ++counter; }));
+tf::Task A = taskflow.emplace([&](tf::Runtime& rt) {
+  for(int i = 0; i < 100; i++) {
+    rt.silent_async([&](){ ++counter; });
   }
-});  // implicit join at the end of the runtime's scope
-tf::Task B = taskflow.emplace([](){
+});  // implicit join: all 100 tasks finish before A completes
+
+tf::Task B = taskflow.emplace([&]() {
   assert(counter == 100);
 });
 A.precede(B);
@@ -76,30 +123,38 @@ A.precede(B);
 executor.run(taskflow).wait();
 @endcode
 
-Creating asynchronous tasks from a runtime enables efficient implementation of recursive parallel algorithms,
-such as parallel iteration, reduction, and sorting, that require dynamic task creation at runtime.
+Launching async tasks from a runtime is the key enabler for dynamic parallel
+algorithms — parallel reduction, divide-and-conquer, and recursive patterns
+— that need to create work at runtime rather than at graph construction time.
 
-@section LaunchAsynchronousTasksRecursivelyFromARuntime Launch Asynchronous Tasks Recursively from a Runtime
+@section LaunchAsynchronousTasksRecursivelyFromARuntime Launch Async Tasks Recursively from a Runtime
 
-Asynchronous tasks can also leverage runtime tasking, allowing them to recursively launch additional asynchronous tasks.
-Combined with tf::Runtime::corun, this enables the implementation of various recursive parallelism patterns, including parallel sort, divide-and-conquer algorithms, and the [fork-join model](https://en.wikipedia.org/wiki/Fork%E2%80%93join_model).
-For instance, the example below demonstrates a parallel recursive implementation of Fibonacci numbers using recursive asynchronous tasking from tf::Runtime:
+Async tasks spawned from a runtime can themselves accept a tf::Runtime
+reference, allowing them to recursively spawn further async tasks.
+Combined with tf::Runtime::corun, this enables fork-join style
+divide-and-conquer parallelism where each level of recursion fans out work
+to available workers without blocking any thread.
+
+The example below implements parallel Fibonacci using recursive async tasking:
 
 @code{.cpp}
 #include <taskflow/taskflow.hpp>
 
 size_t fibonacci(size_t N, tf::Runtime& rt) {
 
-  if(N < 2) return N; 
+  if(N < 2) return N;
 
   size_t res1, res2;
-  rt.silent_async([N, &res1](tf::Runtime& rt1){ res1 = fibonacci(N-1, rt1); });
-  
-  // tail optimization for the right child
+
+  // spawn the left child asynchronously
+  rt.silent_async([N, &res1](tf::Runtime& rt1) {
+    res1 = fibonacci(N-1, rt1);
+  });
+
+  // compute the right child inline (tail optimisation)
   res2 = fibonacci(N-2, rt);
 
-  // use corun to avoid blocking the worker from waiting the two children tasks 
-  // to finish
+  // wait for all async children without blocking the worker thread
   rt.corun();
 
   return res1 + res2;
@@ -108,9 +163,11 @@ size_t fibonacci(size_t N, tf::Runtime& rt) {
 int main() {
 
   tf::Executor executor;
-  
+
   size_t N = 5, res;
-  executor.silent_async([N, &res](tf::Runtime& rt){ res = fibonacci(N, rt); });
+  executor.silent_async([N, &res](tf::Runtime& rt) {
+    res = fibonacci(N, rt);
+  });
   executor.wait_for_all();
 
   std::cout << N << "-th Fibonacci number is " << res << '\n';
@@ -119,12 +176,18 @@ int main() {
 }
 @endcode
 
-The figure below shows the execution diagram, where the suffix *_1 represent the left child spawned by its parent runtime.
+@note
+@c rt.corun() without arguments waits for all async tasks spawned within
+the current runtime scope to complete, without blocking the underlying
+worker thread from executing other work in the meantime.
+This is what allows the recursive pattern to scale efficiently — a blocked
+worker can participate in executing the spawned children rather than idling.
+
+The figure below shows the execution diagram for @c fibonacci(4).
+The suffix @em _1 denotes the left child spawned by its parent runtime:
 
 @dotfile images/fibonacci_4_tail_optimized.dot
 
 */
 
 }
-
-

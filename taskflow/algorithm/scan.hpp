@@ -158,14 +158,14 @@ void scan_loop(
 
 
 // Function: make_inclusive_scan_task
-template <typename B, typename E, typename D, typename BOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP>
 auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop) {
    
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -230,14 +230,14 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop) {
 }
 
 // Function: make_inclusive_scan_task
-template <typename B, typename E, typename D, typename BOP, typename T>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP, typename T>
 auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop, T init) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -309,16 +309,16 @@ auto make_inclusive_scan_task(B first, E last, D d_first, BOP bop, T init) {
 // ----------------------------------------------------------------------------
 
 // Function: transform_inclusive_scan
-template <typename B, typename E, typename D, typename BOP, typename UOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP, typename UOP>
 auto make_transform_inclusive_scan_task(
   B first, E last, D d_first, BOP bop, UOP uop
 ) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -383,16 +383,16 @@ auto make_transform_inclusive_scan_task(
 }
 
 // Function: transform_inclusive_scan
-template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP, typename UOP, typename T>
 auto make_transform_inclusive_scan_task(
   B first, E last, D d_first, BOP bop, UOP uop, T init
 ) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -462,16 +462,16 @@ auto make_transform_inclusive_scan_task(
 // ----------------------------------------------------------------------------
 
 // Function: make_exclusive_scan_task
-template <typename B, typename E, typename D, typename T, typename BOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename T, typename BOP>
 auto make_exclusive_scan_task(
   B first, E last, D d_first, T init, BOP bop
 ) {
 
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -549,16 +549,16 @@ auto make_exclusive_scan_task(
 // ----------------------------------------------------------------------------
 
 // Function: 
-template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename T, typename BOP, typename UOP>
 auto make_transform_exclusive_scan_task(
   B first, E last, D d_first, T init, BOP bop, UOP uop
 ) {
 
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using D_t = std::decay_t<unwrap_ref_decay_t<D>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using D_t = std::decay_t<std::unwrap_ref_decay_t<D>>;
   using value_type = typename std::iterator_traits<B_t>::value_type;
   
   return [=] (Runtime& rt) mutable {
@@ -637,13 +637,13 @@ auto make_transform_exclusive_scan_task(
 // ----------------------------------------------------------------------------
 
 // Function: inclusive_scan
-template <typename B, typename E, typename D, typename BOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP>
 Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop) {
   return emplace(make_inclusive_scan_task(first, last, d_first, bop));
 }
 
 // Function: inclusive_scan
-template <typename B, typename E, typename D, typename BOP, typename T>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP, typename T>
 Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop, T init) {
   return emplace(make_inclusive_scan_task(first, last, d_first, bop, init));
 }
@@ -653,7 +653,7 @@ Task FlowBuilder::inclusive_scan(B first, E last, D d_first, BOP bop, T init) {
 // ----------------------------------------------------------------------------
 
 // Function: transform_inclusive_scan
-template <typename B, typename E, typename D, typename BOP, typename UOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP, typename UOP>
 Task FlowBuilder::transform_inclusive_scan(
   B first, E last, D d_first, BOP bop, UOP uop
 ) {
@@ -663,7 +663,7 @@ Task FlowBuilder::transform_inclusive_scan(
 }
 
 // Function: transform_inclusive_scan
-template <typename B, typename E, typename D, typename BOP, typename UOP, typename T>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename BOP, typename UOP, typename T>
 Task FlowBuilder::transform_inclusive_scan(
   B first, E last, D d_first, BOP bop, UOP uop, T init
 ) {
@@ -677,7 +677,7 @@ Task FlowBuilder::transform_inclusive_scan(
 // ----------------------------------------------------------------------------
 
 // Function: exclusive_scan
-template <typename B, typename E, typename D, typename T, typename BOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename T, typename BOP>
 Task FlowBuilder::exclusive_scan(B first, E last, D d_first, T init, BOP bop) {
   return emplace(make_exclusive_scan_task(first, last, d_first, init, bop));
 }
@@ -687,7 +687,7 @@ Task FlowBuilder::exclusive_scan(B first, E last, D d_first, T init, BOP bop) {
 // ----------------------------------------------------------------------------
 
 // Function: transform_exclusive_scan
-template <typename B, typename E, typename D, typename T, typename BOP, typename UOP>
+template <InputIteratorLike B, InputIteratorLike E, typename D, typename T, typename BOP, typename UOP>
 Task FlowBuilder::transform_exclusive_scan(
   B first, E last, D d_first, T init, BOP bop, UOP uop
 ) {
@@ -697,5 +697,3 @@ Task FlowBuilder::transform_exclusive_scan(
 }
 
 }  // end of namespace tf -----------------------------------------------------
-
-

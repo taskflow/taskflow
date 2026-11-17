@@ -21,8 +21,18 @@ struct NSTATE {
   constexpr static underlying_type RETAIN_SUBFLOW      = 0x40000000;
   constexpr static underlying_type JOINED_SUBFLOW      = 0x80000000;
 
-  // mask to isolate state bits - non-state bits store # weak dependents
+#ifdef TF_ENABLE_TASK_PRIORITY
+  // priority encoding (2 bits): 00=HIGH, 01=NORMAL, 10=LOW (11 unused)
+  constexpr static underlying_type PRIORITY_SHIFT      = 26;
+  constexpr static underlying_type PRIORITY_MASK       = 0x0C000000;
+
+  // mask to isolate state bits - non-state bits store # strong dependents
+  // (2 fewer bits than baseline to make room for the priority bits above)
+  constexpr static underlying_type STRONG_DEPENDENCIES_MASK = 0x03FFFFFF;
+#else
+  // mask to isolate state bits - non-state bits store # strong dependents
   constexpr static underlying_type STRONG_DEPENDENCIES_MASK = 0x0FFFFFFF;
+#endif
 };
 
 using nstate_t = NSTATE::underlying_type;
@@ -46,12 +56,19 @@ struct ESTATE {
   constexpr static underlying_type EXPLICITLY_ANCHORED = 0x80000000;
   
   // Async task state
-  //constexpr static underlying_type UNFINISHED = 0x00000000;
   constexpr static underlying_type LOCKED              = 0x01000000;
   constexpr static underlying_type FINISHED            = 0x02000000;
   
-  // mask to isolate state bits - non-state bits store # weak dependents
+  // mask to isolate the 8 state bits in the upper byte
   constexpr static underlying_type MASK                = 0xFF000000;
+
+  // lower 24 bits: shared reference count for AsyncTask (dependent-async only).
+  // supports up to 2^24 = 16,777,216 concurrent owners, which is safe in practice.
+  // arithmetic on these bits never interferes with the state bits above since
+  // normal refcount operations (fetch_add/fetch_sub by REFCOUNT_ONE) cannot carry
+  // into bit 24 as long as the count stays below 2^24.
+  constexpr static underlying_type REFCOUNT_MASK       = 0x00FFFFFF;
+  constexpr static underlying_type REFCOUNT_ONE        = 0x00000001;
 };
 
 using estate_t = ESTATE::underlying_type;
@@ -91,5 +108,3 @@ void throw_re(const char* fname, const size_t line, ArgsT&&... args) {
       _process_exception(worker, node);            \
     }
 #endif
-
-

@@ -1,0 +1,80 @@
+digraph Cholesky {
+  rankdir=TB;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.4, ranksep=0.5];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.08,0.04"];
+  edge  [arrowsize=0.55, color="#555555"];
+
+  // panel k=0
+  { rank=same;
+    potrf_0 [label="potrf(0,0)", fillcolor="#fde8d0"];
+    trsm_0_1 [label="trsm(1,0)", fillcolor="#cce5ff"];
+    trsm_0_2 [label="trsm(2,0)", fillcolor="#cce5ff"];
+    trsm_0_3 [label="trsm(3,0)", fillcolor="#cce5ff"];
+  }
+  { rank=same;
+    syrk_0_1 [label="syrk(1,0)", fillcolor="#d4edda"];
+    syrk_0_2 [label="syrk(2,0)", fillcolor="#d4edda"];
+    syrk_0_3 [label="syrk(3,0)", fillcolor="#d4edda"];
+    gemm_0_2_1 [label="gemm(2,1,0)", fillcolor="#fff3cd"];
+    gemm_0_3_1 [label="gemm(3,1,0)", fillcolor="#fff3cd"];
+    gemm_0_3_2 [label="gemm(3,2,0)", fillcolor="#fff3cd"];
+  }
+
+  // panel k=1
+  { rank=same;
+    potrf_1 [label="potrf(1,1)", fillcolor="#fde8d0"];
+    trsm_1_2 [label="trsm(2,1)", fillcolor="#cce5ff"];
+    trsm_1_3 [label="trsm(3,1)", fillcolor="#cce5ff"];
+  }
+  { rank=same;
+    syrk_1_2 [label="syrk(2,1)", fillcolor="#d4edda"];
+    syrk_1_3 [label="syrk(3,1)", fillcolor="#d4edda"];
+    gemm_1_3_2 [label="gemm(3,2,1)", fillcolor="#fff3cd"];
+  }
+
+  // panel k=2
+  { rank=same;
+    potrf_2 [label="potrf(2,2)", fillcolor="#fde8d0"];
+    trsm_2_3 [label="trsm(3,2)", fillcolor="#cce5ff"];
+  }
+  { rank=same;
+    syrk_2_3 [label="syrk(3,2)", fillcolor="#d4edda"];
+  }
+
+  // panel k=3
+  { rank=same;
+    potrf_3 [label="potrf(3,3)", fillcolor="#fde8d0"];
+  }
+
+  potrf_0 -> trsm_0_1;
+  potrf_0 -> trsm_0_2;
+  potrf_0 -> trsm_0_3;
+  trsm_0_1 -> syrk_0_1;
+  trsm_0_2 -> syrk_0_2;
+  trsm_0_3 -> syrk_0_3;
+  trsm_0_2 -> gemm_0_2_1;
+  trsm_0_1 -> gemm_0_2_1;
+  trsm_0_3 -> gemm_0_3_1;
+  trsm_0_1 -> gemm_0_3_1;
+  trsm_0_3 -> gemm_0_3_2;
+  trsm_0_2 -> gemm_0_3_2;
+  syrk_0_1 -> potrf_1;
+  syrk_0_2 -> potrf_2;
+  syrk_0_3 -> potrf_3;
+  gemm_0_2_1 -> trsm_1_2;
+  gemm_0_3_1 -> trsm_1_3;
+  gemm_0_3_2 -> trsm_2_3;
+  potrf_1 -> trsm_1_2;
+  potrf_1 -> trsm_1_3;
+  trsm_1_2 -> syrk_1_2;
+  trsm_1_3 -> syrk_1_3;
+  trsm_1_3 -> gemm_1_3_2;
+  trsm_1_2 -> gemm_1_3_2;
+  syrk_1_2 -> potrf_2;
+  syrk_1_3 -> potrf_3;
+  gemm_1_3_2 -> trsm_2_3;
+  potrf_2 -> trsm_2_3;
+  trsm_2_3 -> syrk_2_3;
+  syrk_2_3 -> potrf_3;
+}

@@ -5,13 +5,13 @@
 namespace tf {
 
 // Function: make_find_if_task
-template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename UOP, PartitionerLike P = DefaultPartitioner>
 auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) {
   
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -21,6 +21,11 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      result = end;
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -42,7 +47,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -67,7 +72,7 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, *next, 
+          part.loop(N, W, *next, 
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -91,13 +96,13 @@ auto make_find_if_task(B first, E last, T& result, UOP predicate, P part = P()) 
 }
 
 // Function: make_find_if_not_task
-template <typename B, typename E, typename T, typename UOP, typename P = DefaultPartitioner>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename UOP, PartitionerLike P = DefaultPartitioner>
 auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P()) {
   
   using namespace std::string_literals;
   
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -107,6 +112,11 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      result = end;
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -127,7 +137,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, curr_b, chunk_size,
+          part.loop(N, W, curr_b, chunk_size,
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -152,7 +162,7 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
       auto next = std::make_shared<std::atomic<size_t>>(0);
       for(size_t w=0; w<W;) {
         auto task = part([=, &result] () mutable {
-          part.loop_until(N, W, *next, 
+          part.loop(N, W, *next, 
             [=, &result, prev_e=size_t{0}](size_t part_b, size_t part_e) mutable {
               std::advance(beg, part_b - prev_e);
               for(size_t x = part_b; x<part_e; x++) {
@@ -176,13 +186,13 @@ auto make_find_if_not_task(B first, E last, T& result, UOP predicate, P part = P
 }
 
 // Function: make_min_element_task
-template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -192,6 +202,11 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      result = end;
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -318,13 +333,13 @@ auto make_min_element_task(B first, E last, T& result, C comp, P part = P()) {
 }
 
 // Function: make_max_element_task
-template <typename B, typename E, typename T, typename C, typename P = DefaultPartitioner>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename C, PartitionerLike P = DefaultPartitioner>
 auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &result] (Runtime& rt) mutable {
 
@@ -334,6 +349,11 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      result = end;
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -461,13 +481,13 @@ auto make_max_element_task(B first, E last, T& result, C comp, P part = P()) {
 
 
 // Function: find_if
-template <typename B, typename E, typename T, typename UOP, typename P>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename UOP, PartitionerLike P>
 Task tf::FlowBuilder::find_if(B first, E last, T& result, UOP predicate, P part) {
   return emplace(make_find_if_task(first, last, result, predicate, part));
 }
 
 // Function: find_if_not
-template <typename B, typename E, typename T, typename UOP, typename P>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename UOP, PartitionerLike P>
 Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P part) {
   return emplace(make_find_if_not_task(first, last, result, predicate, part));
 }
@@ -477,7 +497,7 @@ Task tf::FlowBuilder::find_if_not(B first, E last, T& result, UOP predicate, P p
 // ----------------------------------------------------------------------------
 
 // Function: min_element
-template <typename B, typename E, typename T, typename C, typename P>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename C, PartitionerLike P>
 Task FlowBuilder::min_element(B first, E last, T& result, C comp, P part) {
   return emplace(make_min_element_task(first, last, result, comp, part));
 }
@@ -487,7 +507,7 @@ Task FlowBuilder::min_element(B first, E last, T& result, C comp, P part) {
 // ----------------------------------------------------------------------------
 
 // Function: max_element
-template <typename B, typename E, typename T, typename C, typename P>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename C, PartitionerLike P>
 Task FlowBuilder::max_element(B first, E last, T& result, C comp, P part) {
   return emplace(make_max_element_task(first, last, result, comp, part));
 }

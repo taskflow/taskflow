@@ -1,0 +1,15 @@
+graph GC {
+  graph [fontname="Helvetica", fontsize=11, layout=circo];
+  node  [fontname="Helvetica", fontsize=12, style=filled,
+         shape=circle, width=0.5, fixedsize=true, fillcolor=white];
+  edge  [color="#555555", penwidth=1.5];
+
+  0; 1; 2; 3; 4;
+
+  0 -- 1;
+  0 -- 2;
+  0 -- 4;
+  1 -- 2;
+  2 -- 3;
+  3 -- 4;
+}

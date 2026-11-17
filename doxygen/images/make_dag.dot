@@ -1,0 +1,36 @@
+digraph BuildGraph {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.5, ranksep=0.7];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.28, margin="0.10,0.04"];
+  edge  [arrowsize=0.6, color="#555555"];
+
+  // source files (no dependencies)
+  main_c [label="main.c",  fillcolor="#cce5ff"];
+  util_c [label="util.c",  fillcolor="#cce5ff"];
+  util_h [label="util.h",  fillcolor="#cce5ff"];
+  math_c [label="math.c",  fillcolor="#cce5ff"];
+  math_h [label="math.h",  fillcolor="#cce5ff"];
+
+  // object files
+  main_o [label="main.o",  fillcolor="#fff3cd"];
+  util_o [label="util.o",  fillcolor="#fff3cd"];
+  math_o [label="math.o",  fillcolor="#fff3cd"];
+
+  // final binary
+  app    [label="app",     fillcolor="#d4edda", penwidth=2.0];
+
+  // compile rules
+  main_c -> main_o;
+  util_h -> main_o;
+  math_h -> main_o;
+  util_c -> util_o;
+  util_h -> util_o;
+  math_c -> math_o;
+  math_h -> math_o;
+
+  // link rule
+  main_o -> app;
+  util_o -> app;
+  math_o -> app;
+}

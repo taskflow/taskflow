@@ -333,6 +333,3 @@ inline cudaScopedDevice::~cudaScopedDevice() {
 }  // end of namespace cuda ---------------------------------------------------
 
 
-
-
-

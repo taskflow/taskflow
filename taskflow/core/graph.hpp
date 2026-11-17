@@ -15,8 +15,8 @@
 #include "../utility/lazy_string.hpp"
 #include "error.hpp"
 #include "declarations.hpp"
-#include "semaphore.hpp"
 #include "environment.hpp"
+#include "semaphore.hpp"
 #include "topology.hpp"
 #include "wsq.hpp"
 
@@ -133,8 +133,59 @@ class Graph {
 };
 
 // ----------------------------------------------------------------------------
+// TaskPriority
+// ----------------------------------------------------------------------------
+
+/**
+@enum TaskPriority
+
+@brief enumeration of all task priority levels
+
+A priority level determines the order in which a task is picked up by a worker
+when tasks are ready to execute. Tasks with higher priority (lower numerical value)
+are executed before tasks with lower priority (higher numerical value).
+
+@note
+Priority scheduling only takes effect when the library is built with
+@c TF_ENABLE_TASK_PRIORITY defined; otherwise task priorities are ignored.
+*/
+enum class TaskPriority : unsigned {
+  /** @brief the highest task priority level (most urgent) */
+  HIGH = 0,
+  /** @brief the normal task priority level */
+  NORMAL = 1,
+  /** @brief the lowest task priority level (least urgent) */
+  LOW = 2,
+};
+
+// ----------------------------------------------------------------------------
 // TaskParams
 // ----------------------------------------------------------------------------
+
+/**
+@brief concept to check if a type is convertible to std::string_view
+
+A type satisfies tf::StringLike if it is convertible to std::string_view, including:
+  + std::string
+  + std::string_view
+  + const char*
+  + any type that provides an implicit conversion to std::string_view
+
+@code{.cpp}
+static_assert(tf::StringLike<std::string>);
+static_assert(tf::StringLike<std::string_view>);
+static_assert(tf::StringLike<const char*>);
+
+// custom type with implicit conversion
+struct MyString {
+  operator std::string_view() const { return _data; }
+  std::string _data;
+};
+static_assert(tf::StringLike<MyString>);
+@endcode
+*/
+template <typename T>
+concept StringLike = std::convertible_to<T, std::string_view>;
 
 /**
 @class TaskParams
@@ -166,18 +217,28 @@ class TaskParams {
 class DefaultTaskParams {};
 
 /**
-@brief determines if the given type is a task parameter type
+@brief concept to check if a type is a task parameter
 
-Task parameters can be specified in one of the following types:
+A type satisfies tf::TaskParams if it is one of the following:
   + tf::TaskParams
   + tf::DefaultTaskParams
-  + std::string
+  + tf::StringLike
 */
 template <typename P>
-constexpr bool is_task_params_v =
-  std::is_same_v<std::decay_t<P>, TaskParams> ||
-  std::is_same_v<std::decay_t<P>, DefaultTaskParams> ||
-  std::is_constructible_v<std::string, P>;
+concept TaskParamsLike =
+  std::same_as<std::decay_t<P>, TaskParams> ||
+  std::same_as<std::decay_t<P>, DefaultTaskParams> ||
+  StringLike<P>;
+
+/**
+@brief concept that determines if a type is a task parameter type (variable template)
+
+@tparam P type to check
+
+Equivalent to tf::TaskParameters<P>. Provided for backward compatibility.
+*/
+template <typename P>
+constexpr bool is_task_params_v = TaskParamsLike<P>;
 
 // ----------------------------------------------------------------------------
 // NodeBase
@@ -203,24 +264,39 @@ class NodeBase {
   friend class TaskGroup;
   friend class Algorithm;
   
+  public:
+
+#ifdef TF_ENABLE_TASK_PRIORITY
+  size_t priority() const {
+    return static_cast<size_t>((_nstate & NSTATE::PRIORITY_MASK) >> NSTATE::PRIORITY_SHIFT);
+  }
+#endif
+
   protected:
-  
+
   nstate_t _nstate              {NSTATE::NONE};
   std::atomic<estate_t> _estate {ESTATE::NONE};
 
   NodeBase* _parent {nullptr};
   std::atomic<size_t> _join_counter {0};
-  
+
   std::exception_ptr _exception_ptr {nullptr};
 
   NodeBase() = default;
 
   NodeBase(nstate_t nstate, estate_t estate, NodeBase* parent, size_t join_counter) :
-    _nstate {nstate}, 
+    _nstate {nstate},
     _estate {estate},
     _parent {parent},
     _join_counter {join_counter} {
   }
+
+#ifdef TF_ENABLE_TASK_PRIORITY
+  void _set_priority([[maybe_unused]] TaskPriority p) {
+    nstate_t encoded = (static_cast<nstate_t>(p)) << NSTATE::PRIORITY_SHIFT;
+    _nstate = (_nstate & ~NSTATE::PRIORITY_MASK) | encoded;
+  }
+#endif
   
   void _rethrow_exception() {
     if(_exception_ptr) {
@@ -265,7 +341,7 @@ class Topology : public NodeBase {
 
   std::function<bool()> _predicate;
   std::function<void()> _on_finish;
-  
+
   void _carry_out_promise();
 };
 
@@ -319,10 +395,6 @@ class Node : public NodeBase {
   friend class TaskGroup;
   friend class Algorithm;
   friend class Semaphore;
-
-#ifdef TF_ENABLE_TASK_POOL
-  TF_ENABLE_POOLABLE_ON_THIS;
-#endif
 
   using Placeholder = std::monostate;
 
@@ -383,10 +455,17 @@ class Node : public NodeBase {
   // module work handle
   struct Module {
 
-    template <typename T>
-    Module(T&);
+    Module(Graph&);
 
     Graph& graph;
+  };
+  
+  // adopted module work handle
+  struct AdoptedModule {
+
+    AdoptedModule(Graph&&);
+
+    Graph graph;
   };
 
   // Async work
@@ -414,7 +493,9 @@ class Node : public NodeBase {
       std::function<void(tf::Runtime&, bool)>  // async
     > work;
    
-    std::atomic<size_t> use_count {1};
+    // use_count is packed into the lower 24 bits of NodeBase::_estate
+    // (ESTATE::REFCOUNT_MASK) to avoid a separate atomic and a std::get_if
+    // call on every AsyncTask copy/move/destroy. see ESTATE::REFCOUNT_ONE.
   };
 
   using handle_t = std::variant<
@@ -426,6 +507,7 @@ class Node : public NodeBase {
     Condition,            // conditional tasking
     MultiCondition,       // multi-conditional tasking
     Module,               // composable tasking
+    AdoptedModule,        // composable tasking with move semantics
     Async,                // async tasking
     DependentAsync        // dependent async tasking
   >;
@@ -446,6 +528,7 @@ class Node : public NodeBase {
   constexpr static auto CONDITION             = get_index_v<Condition, handle_t>;
   constexpr static auto MULTI_CONDITION       = get_index_v<MultiCondition, handle_t>;
   constexpr static auto MODULE                = get_index_v<Module, handle_t>;
+  constexpr static auto ADOPTED_MODULE        = get_index_v<AdoptedModule, handle_t>;
   constexpr static auto ASYNC                 = get_index_v<Async, handle_t>;
   constexpr static auto DEPENDENT_ASYNC       = get_index_v<DependentAsync, handle_t>;
 
@@ -456,6 +539,9 @@ class Node : public NodeBase {
   
   template <typename... Args>
   Node(nstate_t, estate_t, const DefaultTaskParams&, Topology*, NodeBase*, size_t, Args&&...);
+  
+  template <StringLike S, typename... Args>
+  Node(nstate_t, estate_t, S&&, Topology*, NodeBase*, size_t, Args&&...);
 
   size_t num_successors() const;
   size_t num_predecessors() const;
@@ -469,7 +555,7 @@ class Node : public NodeBase {
   std::string _name;
   
   void* _data {nullptr};
-  
+
   Topology* _topology {nullptr};
 
   size_t _num_successors {0};
@@ -546,8 +632,11 @@ Node::MultiCondition::MultiCondition(C&& c) : work {std::forward<C>(c)} {
 // ----------------------------------------------------------------------------
 
 // Constructor
-template <typename T>
-inline Node::Module::Module(T& obj) : graph{ obj.graph() } {
+inline Node::Module::Module(Graph& g) : graph(g){
+}
+
+// Constructor
+inline Node::AdoptedModule::AdoptedModule(Graph&& g) : graph(std::move(g)){
 }
 
 // ----------------------------------------------------------------------------
@@ -602,6 +691,23 @@ Node::Node(
   Args&&... args
 ) :
   NodeBase(nstate, estate, parent, join_counter),
+  _topology {topology},
+  _handle   {std::forward<Args>(args)...} {
+}
+
+// Constructor
+template <StringLike S, typename... Args>
+Node::Node(
+  nstate_t nstate,
+  estate_t estate,
+  S&& name,
+  Topology* topology, 
+  NodeBase* parent, 
+  size_t join_counter,
+  Args&&... args
+) :
+  NodeBase(nstate, estate, parent, join_counter),
+  _name     {std::forward<S>(name)},
   _topology {topology},
   _handle   {std::forward<Args>(args)...} {
 }
@@ -804,11 +910,16 @@ class ExplicitAnchorGuard {
 // Node Object Pool
 // ----------------------------------------------------------------------------
 
+#ifdef TF_ENABLE_TASK_POOL
 /**
 @private
 */
-#ifdef TF_ENABLE_TASK_POOL
-inline ObjectPool<Node> _node_pool;
+using NodePool = std::conditional_t<
+  std::atomic<tf::TaggedHead128>::is_always_lock_free,
+  ObjectPool<Node, tf::TaggedHead128>,
+  ObjectPool<Node, tf::TaggedHead64<>>
+>;
+inline NodePool _node_pool;
 #endif
 
 /**
@@ -925,51 +1036,82 @@ Node* Graph::_emplace_back(ArgsT&&... args) {
 // Graph checker
 // ----------------------------------------------------------------------------
 
-/**
-@private
- */
-template <typename T, typename = void>
-struct has_graph : std::false_type {};
 
 /**
-@private
- */
+@brief concept to check if a type owns or provides access to a tf::Graph
+
+A type satisfies @c tf::GraphLike if it meets one of the following two criteria:
+  + **Inheritance**: The type is derived from @c tf::Graph.
+  + **Composition**: The type provides a @c graph() method that returns a reference convertible to @c tf::Graph&.
+
+This concept is used by @c tf::retrieve_graph to abstract the way graphs are
+accessed across different taskflow components.
+
+@code{.cpp}
+// Satisfies via inheritance
+struct CustomGraph1 : public tf::Graph {};
+static_assert(tf::GraphLike<CustomGraph1>);
+
+// Satisfies via composition
+struct CustomGraph2 {
+  tf::Graph& graph() { return _g; }
+  tf::Graph _g;
+};
+static_assert(tf::GraphLike<CustomGraph2>);
+
+// Fails: does not meet inheritance or method requirements
+struct InvalidType {
+void handle() {}
+};
+static_assert(!tf::GraphLike<InvalidType>);
+@endcode
+*/
 template <typename T>
-struct has_graph<T, std::void_t<decltype(std::declval<T>().graph())>>
-    : std::is_same<decltype(std::declval<T>().graph()), Graph&> {};
+concept GraphLike = std::derived_from<T, Graph> ||
+                   requires(T& t) {
+                     { t.graph() } -> std::convertible_to<Graph&>;
+                   };
 
 /**
- * @brief determines if the given type has a member function `Graph& graph()`
- *
- * This trait determines if the provided type `T` contains a member function
- * with the exact signature `tf::Graph& graph()`. It uses SFINAE and `std::void_t`
- * to detect the presence of the member function and its return type.
- *
- * @tparam T The type to inspect.
- * @retval true If the type `T` has a member function `tf::Graph& graph()`.
- * @retval false Otherwise.
- *
- * Example usage:
- * @code
- *
- * struct A {
- *   tf::Graph& graph() { return my_graph; };
- *   tf::Graph my_graph;
- *
- *   // other custom members to alter my_graph
- * };
- *
- * struct C {}; // No graph function
- *
- * static_assert(has_graph_v<A>, "A has graph()");
- * static_assert(!has_graph_v<C>, "C does not have graph()");
- * @endcode
- */
-template <typename T>
-constexpr bool has_graph_v = has_graph<T>::value;
+@brief retrieves a reference to the underlying tf::Graph from an object
 
+This helper function abstracts the retrieval of a graph reference. It uses 
+compile-time introspection to determine if the object provides a @c graph() 
+member function or if it should be treated as a @c tf::Graph directly.
+
+@tparam T type satisfying the @c tf::GraphLike concept
+@param target object from which to retrieve the graph
+@return a reference to the underlying @c tf::Graph
+
+@code{.cpp}
+// Case 1: T has a .graph() member (composition)
+struct CustomGraph1 {
+  tf::Graph& graph() { return _graph; }
+  tf::Graph _graph;
+};
+
+// Case 2: T is derived from tf::Graph (inheritance)
+struct CustomGraph2 : public tf::Graph { 
+// ... 
+};
+
+CustomGraph1 custom_graph1;
+CustomGraph2 custom_graph2;
+
+tf::Graph& g1 = tf::retrieve_graph(custom_graph1);
+tf::Graph& g2 = tf::retrieve_graph(custom_graph2);
+@endcode
+
+@note This function is evaluated at compile time via @c if @c constexpr, 
+resulting in zero runtime overhead.
+*/
+template <GraphLike T>
+Graph& retrieve_graph(T& target) {
+  if constexpr (requires { target.graph(); }) {
+    return target.graph();
+  } else {
+    return static_cast<Graph&>(target);
+  }
+}
 
 }  // end of namespace tf. ----------------------------------------------------
-
-
-

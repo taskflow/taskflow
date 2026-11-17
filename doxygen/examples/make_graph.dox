@@ -1,0 +1,339 @@
+namespace tf {
+
+/** @page ExamplesMakeGraph Incremental Build Graph
+
+We implement a @em make-style @em incremental @em build @em system as a
+tf::Taskflow that uses condition tasks to skip up-to-date targets and
+recompile only what is stale.
+This example demonstrates how condition tasks express data-dependent
+branching in a structurally fixed graph, and how to apply the
+@em auxiliary @em join @em task pattern to avoid the task race that
+arises at every multi-predecessor join point in the build graph.
+
+@tableofcontents
+
+@section MakeGraphIntroduction What is an Incremental Build?
+
+A build system such as @c make or @c ninja maintains a directed acyclic
+graph of @em targets: source files, object files, libraries, and final
+binaries.
+Each directed edge means "this target depends on that file."
+When a build is requested, the build system traverses the graph and
+recompiles only the targets whose inputs have changed since they were
+last built — the target is @em stale.
+Targets whose inputs are all newer than the target are silently skipped.
+
+The staleness check is a simple timestamp comparison: if any input file
+has a modification time newer than the target, the target must be
+rebuilt.
+This conditional skip-or-rebuild decision is exactly what condition
+tasks are designed to express — a task that inspects runtime state and
+routes the scheduler down one of two paths.
+
+@section MakeGraphProblem A Concrete Build Graph
+
+Consider a small C project with three translation units and a single
+binary:
+
+@code
+  Sources:  main.c   util.c   math.c
+  Headers:  util.h   math.h
+
+  Compile rules:
+    main.o  <- main.c, util.h, math.h
+    util.o  <- util.c, util.h
+    math.o  <- math.c, math.h
+
+  Link rule:
+    app     <- main.o, util.o, math.o
+@endcode
+
+The dependency graph is:
+
+@dotfile images/make_dag.dot
+
+Source and header files (blue) have no dependencies and always exist on
+disk.
+Object files (yellow) depend on their source and included headers.
+The final binary (green) depends on all three object files.
+@c main.o, @c util.o, and @c math.o have no mutual dependency and can
+be processed simultaneously on separate cores.
+
+@section MakeGraphConditionTask Using Condition Tasks for Staleness
+
+Each object file target has two possible outcomes at runtime: either it
+is up-to-date (skip compilation) or it is stale (run the compiler).
+This is a binary branch — the natural role for a condition task.
+Each condition task checks the timestamps of its inputs against its
+output and returns @c 0 to skip or @c 1 to rebuild.
+
+Condition tasks fit naturally here because the @em graph @em structure
+is entirely static — it is determined by the build rules, not by file
+contents — while the @em routing @em decision is dynamic, determined at
+runtime by timestamp comparison.
+Static tasks handle the fixed structure; condition tasks handle the
+dynamic branch.
+
+@section MakeGraphPitfall The Task Race at the Join Point
+
+A first attempt might wire the condition tasks directly to @c app:
+each condition task returns @c 1 to run the compile step, which then
+feeds @c app with a strong edge, and returns @c 0 to route directly to
+@c app via a weak edge, skipping compilation.
+
+@dotfile images/make_wrong.dot
+
+This graph has a fatal flaw.
+%Task @c app sits at the junction of three condition tasks' outputs.
+All three condition tasks can complete simultaneously — if all three
+find their object files stale, all three fire their @c "1 (rebuild)"
+branch and the three compile tasks each try to satisfy @c app's strong
+dependency counter concurrently.
+This is the correct path.
+But if some condition tasks return @c 0 (skip), they schedule @c app
+directly through a weak edge at the same time that other compile tasks
+are also converging on @c app via strong edges.
+@c app can be scheduled more than once, which is undefined behaviour.
+
+This is precisely @b Pitfall @b 2 (%Task Race) from @ref AvoidCommonPitfalls where
+a task sitting at the convergence of multiple condition task outputs
+is at risk of being scheduled concurrently by different paths.
+
+@section MakeGraphJoinTask The Auxiliary Join Task Pattern
+
+The fix is to insert one @em join task per object file between the
+condition task and @c app.
+Each join task is a lightweight no-op that serves as a controlled
+merge point for the skip and rebuild paths of a single object file.
+@c app then has exactly three strong dependencies — one per join task —
+and is enqueued exactly once, after all three join tasks have completed.
+
+@dotfile images/make_correct.dot
+
+For each object file the structure is:
+
+@code
+  sources --> obj.cond --0 (skip)----> obj.join
+                       --1 (rebuild)-> cc obj.o --> obj.join
+  obj.join --> app
+@endcode
+
+The join task has one weak dependency (from the condition task on the
+skip path) and one strong dependency (from the compile task on the
+rebuild path).
+Exactly one of these two paths activates the join task on any given run,
+so it is scheduled exactly once.
+The following table lists the strong and weak dependency counts for all
+tasks in the graph:
+
+<div align="center">
+| %Task | Strong | Weak | Total |
+|:-----|:------:|:----:|:-----:|
+| main.c, util.c, util.h, math.c, math.h | 0 | 0 | 0 |
+| main.o? | 3 | 0 | 3 |
+| util.o? | 2 | 0 | 2 |
+| math.o? | 2 | 0 | 2 |
+| cc main.o | 0 | 1 | 1 |
+| cc util.o | 0 | 1 | 1 |
+| cc math.o | 0 | 1 | 1 |
+| main.o (join) | 1 | 1 | 2 |
+| util.o (join) | 1 | 1 | 2 |
+| math.o (join) | 1 | 1 | 2 |
+| app | 3 | 0 | 3 |
+</div>
+
+Every task has a unique, unambiguous activation path.
+No task can be scheduled more than once simultaneously.
+
+@section MakeGraphImplementation Implementation
+
+We represent each build target as a @c Target struct carrying its
+output path, input paths, and compile command.
+The staleness check compares modification times; condition tasks return
+the result.
+Join tasks are plain no-op lambdas whose only purpose is to serve as
+the controlled merge point described above.
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+#include <filesystem>
+
+namespace fs = std::filesystem;
+
+// Returns true if output is missing or older than any input.
+bool is_stale(const std::string& output,
+              const std::vector<std::string>& inputs) {
+  if(!fs::exists(output)) return true;
+  auto out_time = fs::last_write_time(output);
+  for(auto& in : inputs) {
+    if(fs::exists(in) && fs::last_write_time(in) > out_time) return true;
+  }
+  return false;
+}
+
+int main() {
+
+  tf::Executor executor;
+  tf::Taskflow taskflow("incremental-build");
+
+  // ── source/header leaf tasks ────────────────────────────────────
+  // These always exist and are never stale; they act only as
+  // dependency anchors.
+  tf::Task main_c = taskflow.emplace([](){}).name("main.c");
+  tf::Task util_c = taskflow.emplace([](){}).name("util.c");
+  tf::Task util_h = taskflow.emplace([](){}).name("util.h");
+  tf::Task math_c = taskflow.emplace([](){}).name("math.c");
+  tf::Task math_h = taskflow.emplace([](){}).name("math.h");
+
+  // ── condition tasks: check staleness, return 0=skip, 1=rebuild ──
+  tf::Task main_cond = taskflow.emplace([]() -> int {
+    return is_stale("main.o", {"main.c", "util.h", "math.h"}) ? 1 : 0;
+  }).name("main.o?");
+
+  tf::Task util_cond = taskflow.emplace([]() -> int {
+    return is_stale("util.o", {"util.c", "util.h"}) ? 1 : 0;
+  }).name("util.o?");
+
+  tf::Task math_cond = taskflow.emplace([]() -> int {
+    return is_stale("math.o", {"math.c", "math.h"}) ? 1 : 0;
+  }).name("math.o?");
+
+  // ── compile tasks: invoked only on the rebuild (return 1) path ──
+  tf::Task main_cc = taskflow.emplace([](){
+    printf("[build] cc main.o\n");
+    std::system("cc -c main.c -o main.o");
+  }).name("cc main.o");
+
+  tf::Task util_cc = taskflow.emplace([](){
+    printf("[build] cc util.o\n");
+    std::system("cc -c util.c -o util.o");
+  }).name("cc util.o");
+
+  tf::Task math_cc = taskflow.emplace([](){
+    printf("[build] cc math.o\n");
+    std::system("cc -c math.c -o math.o");
+  }).name("cc math.o");
+
+  // ── join tasks: no-op merge point for skip and rebuild paths ────
+  // Each join task is activated by exactly one of its two incoming
+  // paths (skip via weak dep, or rebuild via strong dep from compile).
+  // This guarantees app has exactly 3 strong deps satisfied before
+  // it is enqueued.
+  tf::Task main_join = taskflow.emplace([](){}).name("main.o (join)");
+  tf::Task util_join = taskflow.emplace([](){}).name("util.o (join)");
+  tf::Task math_join = taskflow.emplace([](){}).name("math.o (join)");
+
+  // ── link task ───────────────────────────────────────────────────
+  tf::Task app = taskflow.emplace([](){
+    if(is_stale("app", {"main.o", "util.o", "math.o"})) {
+      printf("[build] link app\n");
+      std::system("cc main.o util.o math.o -o app");
+    } else {
+      printf("[up-to-date] app\n");
+    }
+  }).name("app");
+
+  // ── wire the graph ──────────────────────────────────────────────
+
+  // sources feed condition tasks (strong dependencies)
+  main_cond.succeed(main_c, util_h, math_h);
+  util_cond.succeed(util_c, util_h);
+  math_cond.succeed(math_c, math_h);
+
+  // condition tasks route: 0 -> join (skip), 1 -> compile (rebuild)
+  main_cond.precede(main_join, main_cc);  // 0=main_join, 1=main_cc
+  util_cond.precede(util_join, util_cc);
+  math_cond.precede(math_join, math_cc);
+
+  // compile tasks feed join tasks (strong dependency — satisfies
+  // join's strong dep counter on the rebuild path)
+  main_cc.precede(main_join);
+  util_cc.precede(util_join);
+  math_cc.precede(math_join);
+
+  // join tasks feed app (strong dependencies — app runs exactly once)
+  app.succeed(main_join, util_join, math_join);
+
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+On a fully clean build the expected output is:
+
+@code{.bash}
+[build] cc main.o
+[build] cc util.o
+[build] cc math.o
+[build] link app
+@endcode
+
+After touching only @c util.c and rebuilding:
+
+@code{.bash}
+[build] cc util.o
+[build] link app
+@endcode
+
+@c main.o and @c math.o are skipped because their condition tasks
+return @c 0 and route directly to their join tasks, bypassing
+compilation entirely.
+@c app runs its own link check and finds @c util.o newer than @c app,
+so it relinks.
+
+@section MakeGraphDesignPoints Design Points
+
+  + Condition tasks express the skip-or-rebuild branch cleanly:
+The decision of whether to recompile is made at the condition task,
+not scattered through the task bodies.
+The condition task queries the filesystem and routes the scheduler;
+the compile task only compiles.
+This separation keeps each task's responsibility narrow and makes the
+graph readable: a diamond node in the dump output signals a binary
+routing decision, and its two outgoing dashed edges show exactly what
+each outcome triggers.
+
+  + The join task is the canonical fix for Pitfall 2 at build join points:
+Without join tasks, @c app sits at the convergence of three condition
+task outputs and can be scheduled up to three times simultaneously.
+The join task absorbs this convergence: it has one weak incoming edge
+(from the skip path) and one strong incoming edge (from the compile
+path), so exactly one path activates it per run.
+@c app then has only strong incoming edges and is enqueued exactly once.
+This is the @em auxiliary @em task pattern described in
+@ref AvoidCommonPitfalls, applied systematically at every join point
+in the build graph.
+
+  + @c taskflow.dump() makes the routing explicit:
+Calling @c taskflow.dump(std::cout) before running the executor emits a
+Graphviz description of the full graph, including the dashed weak edges
+from condition tasks.
+Inspecting the strong and weak dependency counts of each task (see
+@ref TaskSchedulingPolicy) provides a quick sanity check: any task with
+multiple incoming weak edges from concurrently executable condition tasks
+is a potential race site, and should be given an auxiliary join task.
+
+  + The link task performs its own staleness check:
+Unlike object file targets, the link step cannot be expressed as a
+condition task because it must always run @em after all three join tasks
+complete — its strong dependency count of three already guarantees the
+correct ordering.
+The staleness check inside @c app's lambda is a secondary guard that
+avoids re-linking when all three join tasks came through the skip path
+and no object file changed.
+This is consistent with how @c make behaves: the link rule runs its
+recipe only when its inputs are newer than its output.
+
+@note
+This example models a three-target project for clarity.
+A real build system with hundreds of targets follows the same pattern:
+one condition task and one join task per non-leaf target, wired
+according to the project's dependency declarations.
+The number of tasks grows linearly with the number of targets, and the
+executor automatically exploits all available parallelism among
+independent targets in the same topological level.
+
+*/
+
+}

@@ -14,16 +14,14 @@ __global__ void cuda_single_task(C callable) {
 }
 
 // Function: single_task
-template <typename Creator, typename Deleter>
 template <typename C>
-cudaTask cudaGraphBase<Creator, Deleter>::single_task(C c) {
+cudaTask cudaGraph::single_task(C c) {
   return kernel(1, 1, 0, cuda_single_task<C>, c);
 }
 
 // Function: single_task
-template <typename Creator, typename Deleter>
 template <typename C>
-void cudaGraphExecBase<Creator, Deleter>::single_task(cudaTask task, C c) {
+void cudaGraphExec::single_task(cudaTask task, C c) {
   return kernel(task, 1, 1, 0, cuda_single_task<C>, c);
 }
 

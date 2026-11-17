@@ -1,0 +1,117 @@
+<svg viewBox="0 0 760 384" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+
+  <rect width="760" height="384" fill="#FAFAFA" rx="8"/>
+
+  <!-- Title -->
+  <text x="380" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">Co-rank: finding the correct split point for rank = 5</text>
+  <text x="380" y="44" text-anchor="middle" font-size="12" fill="#555">seq1 has n=6 elements, seq2 has m=6 elements.  Find i such that i+j=5 and the partition is valid.</text>
+
+  <!-- ══════════ LEFT PANEL: wrong split (i=2, j=3) ══════════ -->
+  <text x="175" y="63" text-anchor="middle" font-size="13" font-weight="bold" fill="#C0392B">✗  Candidate i=2, j=3  (too small)</text>
+
+  <!-- seq1 row -->
+  <text x="22" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#2874A6">seq1</text>
+  <!-- cells -->
+  <rect x="40"  y="88" width="48" height="30" fill="#AED6F1" stroke="#2874A6" stroke-width="1.2"/>
+  <rect x="88"  y="88" width="48" height="30" fill="#AED6F1" stroke="#2874A6" stroke-width="1.2"/>
+  <rect x="136" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="184" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="232" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="280" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <text x="64"  y="108" text-anchor="middle" font-size="12" fill="#1a5276">1</text>
+  <text x="112" y="108" text-anchor="middle" font-size="12" fill="#1a5276">3</text>
+  <text x="160" y="108" text-anchor="middle" font-size="12" fill="#555">5</text>
+  <text x="208" y="108" text-anchor="middle" font-size="12" fill="#555">7</text>
+  <text x="256" y="108" text-anchor="middle" font-size="12" fill="#555">9</text>
+  <text x="304" y="108" text-anchor="middle" font-size="12" fill="#555">11</text>
+  <!-- boundary line after i=2 -->
+  <line x1="136" y1="82" x2="136" y2="124" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="5,3"/>
+  <text x="136" y="78" text-anchor="middle" font-size="10" fill="#C0392B" font-weight="bold">i=2</text>
+  <!-- seq1[i-1] and seq1[i] labels -->
+  <text x="112" y="135" text-anchor="middle" font-size="10" fill="#C0392B">seq1[i-1]=3</text>
+  <text x="160" y="135" text-anchor="middle" font-size="10" fill="#555">seq1[i]=5</text>
+
+  <!-- seq2 row -->
+  <text x="22" y="193" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E8449">seq2</text>
+  <rect x="40"  y="175" width="48" height="30" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="88"  y="175" width="48" height="30" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="136" y="175" width="48" height="30" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="184" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="232" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="280" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <text x="64"  y="195" text-anchor="middle" font-size="12" fill="#1E5631">2</text>
+  <text x="112" y="195" text-anchor="middle" font-size="12" fill="#1E5631">4</text>
+  <text x="160" y="195" text-anchor="middle" font-size="12" fill="#1E5631">6</text>
+  <text x="208" y="195" text-anchor="middle" font-size="12" fill="#555">8</text>
+  <text x="256" y="195" text-anchor="middle" font-size="12" fill="#555">10</text>
+  <text x="304" y="195" text-anchor="middle" font-size="12" fill="#555">12</text>
+  <!-- boundary line after j=3 -->
+  <line x1="184" y1="169" x2="184" y2="211" stroke="#C0392B" stroke-width="2.5" stroke-dasharray="5,3"/>
+  <text x="184" y="165" text-anchor="middle" font-size="10" fill="#C0392B" font-weight="bold">j=3</text>
+  <text x="160" y="222" text-anchor="middle" font-size="10" fill="#C0392B">seq2[j-1]=6</text>
+  <text x="208" y="222" text-anchor="middle" font-size="10" fill="#555">seq2[j]=8</text>
+
+  <!-- Violation box -->
+  <rect x="14" y="235" width="322" height="66" rx="5" fill="#FADBD8" stroke="#C0392B" stroke-width="1"/>
+  <text x="175" y="253" text-anchor="middle" font-size="11" fill="#922B21">Check: seq2[j-1]=6  ≤  seq1[i]=5 ?</text>
+  <text x="175" y="269" text-anchor="middle" font-size="11" font-weight="bold" fill="#922B21">6 &gt; 5  →  FAIL: i is too small, increase i</text>
+  <text x="175" y="285" text-anchor="middle" font-size="11" fill="#922B21">seq2 gave up too many elements — 6 belongs after 5</text>
+
+  <!-- ══════════ RIGHT PANEL: correct split (i=3, j=2) ══════════ -->
+  <text x="565" y="63" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E8449">✓  Candidate i=3, j=2  (correct)</text>
+
+  <!-- seq1 row -->
+  <text x="412" y="102" text-anchor="middle" font-size="12" font-weight="bold" fill="#2874A6">seq1</text>
+  <rect x="430" y="88" width="48" height="30" fill="#AED6F1" stroke="#2874A6" stroke-width="1.2"/>
+  <rect x="478" y="88" width="48" height="30" fill="#AED6F1" stroke="#2874A6" stroke-width="1.2"/>
+  <rect x="526" y="88" width="48" height="30" fill="#AED6F1" stroke="#2874A6" stroke-width="1.2"/>
+  <rect x="574" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="622" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="670" y="88" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <text x="454" y="108" text-anchor="middle" font-size="12" fill="#1a5276">1</text>
+  <text x="502" y="108" text-anchor="middle" font-size="12" fill="#1a5276">3</text>
+  <text x="550" y="108" text-anchor="middle" font-size="12" fill="#1a5276">5</text>
+  <text x="598" y="108" text-anchor="middle" font-size="12" fill="#555">7</text>
+  <text x="646" y="108" text-anchor="middle" font-size="12" fill="#555">9</text>
+  <text x="694" y="108" text-anchor="middle" font-size="12" fill="#555">11</text>
+  <!-- boundary line after i=3 -->
+  <line x1="574" y1="82" x2="574" y2="124" stroke="#1E8449" stroke-width="2.5"/>
+  <text x="574" y="78" text-anchor="middle" font-size="10" fill="#1E8449" font-weight="bold">i=3</text>
+  <text x="550" y="135" text-anchor="middle" font-size="10" fill="#1E8449">seq1[i-1]=5</text>
+  <text x="598" y="135" text-anchor="middle" font-size="10" fill="#555">seq1[i]=7</text>
+
+  <!-- seq2 row -->
+  <text x="412" y="193" text-anchor="middle" font-size="12" font-weight="bold" fill="#1E8449">seq2</text>
+  <rect x="430" y="175" width="48" height="30" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="478" y="175" width="48" height="30" fill="#A9DFBF" stroke="#1E8449" stroke-width="1.2"/>
+  <rect x="526" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="574" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="622" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <rect x="670" y="175" width="48" height="30" fill="#FDFEFE" stroke="#888"    stroke-width="1.2"/>
+  <text x="454" y="195" text-anchor="middle" font-size="12" fill="#1E5631">2</text>
+  <text x="502" y="195" text-anchor="middle" font-size="12" fill="#1E5631">4</text>
+  <text x="550" y="195" text-anchor="middle" font-size="12" fill="#555">6</text>
+  <text x="598" y="195" text-anchor="middle" font-size="12" fill="#555">8</text>
+  <text x="646" y="195" text-anchor="middle" font-size="12" fill="#555">10</text>
+  <text x="694" y="195" text-anchor="middle" font-size="12" fill="#555">12</text>
+  <!-- boundary line after j=2 -->
+  <line x1="526" y1="169" x2="526" y2="211" stroke="#1E8449" stroke-width="2.5"/>
+  <text x="526" y="165" text-anchor="middle" font-size="10" fill="#1E8449" font-weight="bold">j=2</text>
+  <text x="502" y="222" text-anchor="middle" font-size="10" fill="#1E8449">seq2[j-1]=4</text>
+  <text x="550" y="222" text-anchor="middle" font-size="10" fill="#555">seq2[j]=6</text>
+
+  <!-- Correct box -->
+  <rect x="404" y="235" width="342" height="66" rx="5" fill="#D5F5E3" stroke="#1E8449" stroke-width="1"/>
+  <text x="575" y="253" text-anchor="middle" font-size="11" fill="#1E5631">Check: seq2[j-1]=4  ≤  seq1[i]=7 ?</text>
+  <text x="575" y="269" text-anchor="middle" font-size="11" font-weight="bold" fill="#1E5631">4 ≤ 7  →  PASS: i=3, j=2 is the correct split</text>
+  <text x="575" y="285" text-anchor="middle" font-size="11" fill="#1E5631">Take seq1[0..3) and seq2[0..2) → merge → [1,2,3,4,5]  ✓</text>
+
+  <!-- divider -->
+  <line x1="380" y1="60" x2="380" y2="314" stroke="#CCCCCC" stroke-width="1" stroke-dasharray="4,4"/>
+
+  <!-- bottom note -->
+  <rect x="14" y="317" width="732" height="52" rx="5" fill="#EBF5FB" stroke="#2874A6" stroke-width="1"/>
+  <text x="380" y="334" text-anchor="middle" font-size="12" fill="#1a5276">Binary search finds the crossover: as i increases, seq2[j-1] decreases and seq1[i] increases.</text>
+  <text x="380" y="354" text-anchor="middle" font-size="12" fill="#1a5276">The condition seq2[j-1] ≤ seq1[i] transitions from false → true exactly once — the first true is the answer.</text>
+
+</svg>

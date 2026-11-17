@@ -1,0 +1,38 @@
+digraph PERTCriticalPath {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.5, ranksep=0.7];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.30, margin="0.10,0.05"];
+  edge  [arrowsize=0.6, fontname="Helvetica", fontsize=8];
+
+  // ES = earliest start, EF = earliest finish
+  // Critical path: A(0-3) -> C(3-5) -> E(5-9) -> G(9-11) -> H(11-14) -> I(14-15)
+  // total project duration = 15 days
+
+  // critical path nodes (red border, bold)
+  A  [label="A: Requirements\n(3 d)  ES=0  EF=3",   fillcolor="#fde8d0", color=crimson, penwidth=2.5];
+  C  [label="C: UI Mockups\n(2 d)  ES=3  EF=5",     fillcolor="#fde8d0", color=crimson, penwidth=2.5];
+  E  [label="E: Frontend\n(4 d)  ES=5  EF=9",       fillcolor="#fde8d0", color=crimson, penwidth=2.5];
+  G  [label="G: Integration\n(2 d)  ES=9  EF=11",   fillcolor="#fde8d0", color=crimson, penwidth=2.5];
+  H  [label="H: QA Testing\n(3 d)  ES=11  EF=14",   fillcolor="#fde8d0", color=crimson, penwidth=2.5];
+  I  [label="I: Deployment\n(1 d)  ES=14  EF=15",   fillcolor="#f8d7da", color=crimson, penwidth=2.5];
+
+  // off-critical nodes with slack annotation
+  B  [label="B: Architecture\n(2 d)  ES=3  EF=5\n  slack=1", fillcolor="#e8e8e8", color="#888888"];
+  D  [label="D: Backend API\n(3 d)  ES=5  EF=8\n  slack=1",  fillcolor="#e8e8e8", color="#888888"];
+  F  [label="F: Database\n(2 d)  ES=5  EF=7\n  slack=2",     fillcolor="#e8e8e8", color="#888888"];
+
+  // critical path edges (red, bold)
+  A -> C [color=crimson, penwidth=2.2];
+  C -> E [color=crimson, penwidth=2.2];
+  E -> G [color=crimson, penwidth=2.2];
+  G -> H [color=crimson, penwidth=2.2];
+  H -> I [color=crimson, penwidth=2.2];
+
+  // off-critical edges (grey)
+  A -> B [color="#aaaaaa"];
+  B -> D [color="#aaaaaa"];
+  B -> F [color="#aaaaaa"];
+  D -> G [color="#aaaaaa"];
+  F -> G [color="#aaaaaa"];
+}

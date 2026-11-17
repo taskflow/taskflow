@@ -41,7 +41,7 @@ for example, many training epochs in machine learning workloads.
 In that case, the initial costs of building and launching the graph will be amortized 
 over the entire training iterations. 
 
-@attention
+@note
 A comprehensive introduction about CUDA %Graph can be referred to 
 the [CUDA %Graph Programming Guide](https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#cuda-graphs).
 
@@ -160,8 +160,8 @@ tf::cudaScopedDevice is an RAII-styled wrapper to perform @em scoped switch
 to the given GPU context.
 When the scope is destroyed, it switches back to the original context.
 
-@attention
-tf::cudaScopedDevice allows you to place a CUDA Graph on a particular GPU device,
+@note
+tf::cudaScopedDevice allows you to place a CUDA %Graph on a particular GPU device,
 but it is your responsibility to ensure correct memory access.
 For example, you may not allocate a memory block on GPU @c 2 while
 accessing it from a kernel on GPU @c 0.
@@ -262,7 +262,7 @@ However, you must @em NOT change the topology of the CUDA graph,
 such as adding a new task or adding a new dependency.
 This is the limitation of Nvidia CUDA %Graph.
 
-@attention
+@note
 There are a few restrictions on updating task parameters in an executable CUDA graph:
 + You cannot change a task to a different type
 + kernel task

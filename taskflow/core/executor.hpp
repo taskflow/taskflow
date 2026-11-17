@@ -1,6 +1,6 @@
 #pragma once
 
-#include "observer.hpp"
+#include "../observer/tfprof.hpp"
 #include "taskflow.hpp"
 #include "async_task.hpp"
 
@@ -85,7 +85,7 @@ class Executor {
   Users can alter the worker behavior, such as changing thread affinity,
   via deriving an instance from tf::WorkerInterface.
 
-  @attention
+  @note
   An exception will be thrown if executor construction fails.
   */
   explicit Executor(
@@ -414,7 +414,7 @@ class Executor {
   @brief runs a target graph and waits until it completes using 
          an internal worker of this executor
   
-  @tparam T target type which has `tf::Graph& T::graph()` defined
+  @tparam T target type which is either convertible to `tf::Graph` or has `tf::Graph& T::graph()` defined
   @param target the target task graph object
 
   The method coruns a target graph cooperatively with other workers in the same executor
@@ -446,7 +446,7 @@ class Executor {
   The method is thread-safe as long as the target is not concurrently
   ran by two or more threads.
 
-  @attention
+  @note
   You must call tf::Executor::corun from a worker of the calling executor
   or an exception will be thrown.
   */
@@ -477,7 +477,7 @@ class Executor {
   });
   @endcode
 
-  @attention
+  @note
   You must call tf::Executor::corun_until from a worker of the calling executor
   or an exception will be thrown.
   */
@@ -620,7 +620,7 @@ class Executor {
   /**
   @brief creates a parameterized asynchronous task to run the given function
 
-  @tparam P task parameter type
+  @tparam P task parameter type satisfying tf::TaskParamsLike
   @tparam F callable type
 
   @param params task parameters
@@ -642,7 +642,7 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F>
+  template <TaskParamsLike P, typename F>
   auto async(P&& params, F&& func);
 
   /**
@@ -674,6 +674,7 @@ class Executor {
   /**
   @brief similar to tf::Executor::async but does not return a future object
 
+  @tparam P task parameter type satisfying tf::TaskParamsLike
   @tparam F callable type
 
   @param params task parameters
@@ -694,7 +695,7 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F>
+  template <TaskParamsLike P, typename F>
   void silent_async(P&& params, F&& func);
   
   /**
@@ -753,15 +754,14 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, AsyncTaskHandleLike... Tasks>
   tf::AsyncTask silent_dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief runs the given function asynchronously 
          when the given predecessors finish
   
+  @tparam P task parameter type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
 
@@ -789,9 +789,7 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsLike P, typename F, AsyncTaskHandleLike... Tasks>
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -826,15 +824,14 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename I, 
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, std::input_iterator I>
   tf::AsyncTask silent_dependent_async(F&& func, I first, I last);
   
   /**
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
+  @tparam P task parameter type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam I iterator type 
 
@@ -865,9 +862,7 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename I, 
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   tf::AsyncTask silent_dependent_async(P&& params, F&& func, I first, I last);
   
   // --------------------------------------------------------------------------
@@ -911,16 +906,14 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename... Tasks,
-    std::enable_if_t<all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <typename F, AsyncTaskHandleLike... Tasks>
   auto dependent_async(F&& func, Tasks&&... tasks);
   
   /**
   @brief runs the given function asynchronously
          when the given predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam Tasks task types convertible to tf::AsyncTask
   
@@ -957,9 +950,7 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename... Tasks,
-    std::enable_if_t<is_task_params_v<P> && all_same_v<AsyncTask, std::decay_t<Tasks>...>, void>* = nullptr
-  >
+  template <TaskParamsLike P, typename F, AsyncTaskHandleLike... Tasks>
   auto dependent_async(P&& params, F&& func, Tasks&&... tasks);
   
   /**
@@ -1002,16 +993,14 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename F, typename I,
-    std::enable_if_t<!std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <typename F, std::input_iterator I>
   auto dependent_async(F&& func, I first, I last);
   
   /**
   @brief runs the given function asynchronously 
          when the given range of predecessors finish
   
-  @tparam P task parameters type
+  @tparam P task parameters type satisfying tf::TaskParamsLike
   @tparam F callable type
   @tparam I iterator type 
   
@@ -1051,9 +1040,7 @@ class Executor {
 
   This member function is thread-safe.
   */
-  template <typename P, typename F, typename I,
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   auto dependent_async(P&& params, F&& func, I first, I last);
 
   // ----------------------------------------------------------------------------------------------
@@ -1102,7 +1089,7 @@ class Executor {
   
   This member function is thread-safe.
 
-  @attention
+  @note
   Due to cooperative execution, a task group can only be created by a worker of an executor.
   */
   TaskGroup task_group();
@@ -1112,7 +1099,7 @@ class Executor {
   struct Buffer {
     std::mutex mutex;
     UnboundedWSQ<Node*> queue;
-  };  
+  };
   
   std::vector<Worker> _workers;
   std::vector<Buffer> _buffers;
@@ -1156,6 +1143,7 @@ class Executor {
   bool _wait_for_task(Worker&, Node*&);
   bool _invoke_subflow_task(Worker&, Node*);
   bool _invoke_module_task(Worker&, Node*);
+  bool _invoke_adopted_module_task(Worker&, Node*);
   bool _invoke_module_task_impl(Worker&, Node*, Graph&);
   bool _invoke_async_task(Worker&, Node*);
   bool _invoke_dependent_async_task(Worker&, Node*);
@@ -1168,38 +1156,37 @@ class Executor {
   template <typename P>
   void _corun_until(Worker&, P&&);
 
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_schedule(Worker&, I, size_t);
 
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_schedule(I, size_t);
 
-  template <typename I>
+  template <std::input_iterator I>
   void _bulk_spill(I, size_t);
+  
+  template <std::input_iterator I>
+  void _bulk_spill_round_robin(I, size_t);
 
   template <size_t N>
   void _bulk_update_cache(Worker&, Node*&, Node*, std::array<Node*, N>&, size_t&);
 
-  template <typename P, typename F>
+  template <TaskParamsLike P, typename F>
   auto _async(P&&, F&&, Topology*, NodeBase*);
 
-  template <typename P, typename F>
+  template <TaskParamsLike P, typename F>
   void _silent_async(P&&, F&&, Topology*, NodeBase*);
 
-  template <typename P, typename F, typename I,
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   auto _dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
-  template <typename P, typename F, typename I, 
-    std::enable_if_t<is_task_params_v<P> && !std::is_same_v<std::decay_t<I>, AsyncTask>, void>* = nullptr
-  >
+  template <TaskParamsLike P, typename F, std::input_iterator I>
   auto _silent_dependent_async(P&&, F&&, I, I, Topology*, NodeBase*);
   
   template <typename... ArgsT>
   void _schedule_async_task(ArgsT&&...);
   
-  template <typename I, typename... ArgsT>
+  template <std::input_iterator I, typename... ArgsT>
   AsyncTask _schedule_dependent_async_task(I, I, size_t, ArgsT&&...);
 };
 
@@ -1372,11 +1359,69 @@ inline void Executor::_spawn(size_t N, std::shared_ptr<WorkerInterface> wif) {
 
 // Function: _explore_task
 inline bool Executor::_explore_task(Worker& w, Node*& t) {
-  
-  // Early pruning does not always give consistent performance gain.
-  //if(_num_topologies.load(std::memory_order_acquire) == 0) {
-  //  return !(w._done.test(std::memory_order_relaxed));
-  //}
+
+  // Fast path: if no topologies are live, all queues are guaranteed empty
+  // by the executor's invariant (num_topologies reaches zero only after all
+  // nodes have been scheduled and their queues flushed). Skip the entire
+  // steal loop and return immediately so the caller enters _wait_for_task
+  // to sleep. relaxed ordering is sufficient — this is a hint, and any
+  // missed update is caught safely by the 2PC guard in _wait_for_task.
+  if(_num_topologies.load(std::memory_order_relaxed) == 0) {
+    return true;
+  }
+
+  const size_t MAX_VICTIM = num_queues();  // guaranteed >= 2 by constructor
+  const size_t MAX_STEALS = ((MAX_VICTIM + 1) << 1);
+
+  // local aliases for steal protocol sentinels — these are properties of the
+  // steal protocol, not of any specific queue type
+  size_t num_steals = 0;
+  size_t vtm = w._sticky_victim;
+
+  while(true) {
+
+    t = (vtm < _workers.size())
+      ? _workers[vtm]._wsq.steal()
+      : _buffers[vtm - _workers.size()].queue.steal();
+
+    if(t) {
+      w._sticky_victim = vtm;
+      break;
+    }
+
+    // EMPTY: pick a new victim excluding self since our own queue is likely empty.
+    // map [0, MAX_VICTIM-1) over [0, MAX_VICTIM) \ {w._id} — always safe since MAX_VICTIM >= 2.
+    vtm = w._rdgen() % (MAX_VICTIM - 1);
+    if(vtm >= w._id) vtm++;
+
+    if(++num_steals > MAX_STEALS) {
+      std::this_thread::yield();
+      if(num_steals > 150 + MAX_STEALS) {
+        break;
+      }
+    }
+
+    if(w._done.test(std::memory_order_relaxed)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/*
+// Function: _explore_task
+inline bool Executor::_explore_task(Worker& w, Node*& t) {
+
+  // Fast path: if no topologies are live, all queues are guaranteed empty
+  // by the executor's invariant (num_topologies reaches zero only after all
+  // nodes have been scheduled and their queues flushed). Skip the entire
+  // steal loop and return immediately so the caller enters _wait_for_task
+  // to sleep. relaxed ordering is sufficient — this is a hint, and any
+  // missed update is caught safely by the 2PC guard in _wait_for_task.
+  if(_num_topologies.load(std::memory_order_relaxed) == 0) {
+    return true;
+  }
 
   //assert(!t);
   const size_t MAX_VICTIM = num_queues();
@@ -1417,6 +1462,7 @@ inline bool Executor::_explore_task(Worker& w, Node*& t) {
   } 
   return true;
 }
+*/
 
 // Procedure: _exploit_task
 inline void Executor::_exploit_task(Worker& w, Node*& t) {
@@ -1434,7 +1480,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
   if(_explore_task(w, t) == false) {
     return false;
   }
-  
+
   // Go exploit the task if we successfully steal one.
   if(t) {
     return true;
@@ -1442,7 +1488,22 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
 
   // Entering the 2PC guard as all queues are likely empty after many stealing attempts.
   _notifier.prepare_wait(w._id);
-  
+
+  // Fast path: if no topologies are live, all queues are guaranteed empty.
+  // Skip the O(N) buffer and worker queue scans and go directly to sleep.
+  // This is safe because prepare_wait has already been called — any notify
+  // that arrives after this check but before commit_wait will be caught by
+  // the 2PC guarantee of the notifier.
+  if(_num_topologies.load(std::memory_order_relaxed) == 0) {
+    // still check done flag before committing to sleep
+    if(w._done.test(std::memory_order_relaxed)) {
+      _notifier.cancel_wait(w._id);
+      return false;
+    }
+    _notifier.commit_wait(w._id);
+    goto explore_task;
+  }
+
   // Condition #1: buffers should be empty
   for(size_t b=0; b<_buffers.size(); ++b) {
     if(!_buffers[b].queue.empty()) {
@@ -1451,7 +1512,7 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
       goto explore_task;
     }
   }
-  
+
   // Condition #2: worker queues should be empty
   // Note: We need to use index-based looping to avoid data race with _spawn
   // which initializes other worker data structure at the same time.
@@ -1464,13 +1525,13 @@ inline bool Executor::_wait_for_task(Worker& w, Node*& t) {
       goto explore_task;
     }
   }
-  
+
   // Condition #3: worker should be alive
   if(w._done.test(std::memory_order_relaxed)) {
     _notifier.cancel_wait(w._id);
     return false;
   }
-  
+
   // Now I really need to relinquish myself to others.
   _notifier.commit_wait(w._id);
   goto explore_task;
@@ -1521,16 +1582,41 @@ inline void Executor::_spill(Node* item) {
   _buffers[b].queue.push(item);
 }
 
-// Procedure: _bulk_spill
-template <typename I>
+// Procedure: _bulk_spill (single batch to one buffer)
+// Uses Knuth multiplicative hash on the first pointer to select a buffer,
+// providing better bit diffusion than the shift-based approach, especially
+// when the allocator returns pointers with regular low-bit patterns.
+template <std::input_iterator I>
 void Executor::_bulk_spill(I first, size_t N) {
-  // assert(N != 0);
-  // Since pointers are aligned to 8 bytes, we perform a simple hash to avoid 
-  // contention caused by hashing to the same slot.
-  auto p = reinterpret_cast<uintptr_t>(*first) >> 16;
-  auto b = (p ^ (N << 6)) % _buffers.size();
+  //assert(N != 0);
+  auto b = ((reinterpret_cast<uintptr_t>(*first) * 2654435761ULL) >> 32) % _buffers.size();
   std::scoped_lock lock(_buffers[b].mutex);
   _buffers[b].queue.bulk_push(first, N);
+}
+
+// Procedure: _bulk_spill
+// Distributes a batch of N spilled nodes across all buffers in round-robin
+// order starting from a hash of the first node's pointer. Each buffer's lock
+// is held only for its chunk, reducing contention compared to sending the
+// entire batch to a single buffer.
+template <std::input_iterator I>
+void Executor::_bulk_spill_round_robin(I first, size_t N) {
+
+  // assert(N != 0);
+  const size_t B     = _buffers.size();
+  const size_t start = ((reinterpret_cast<uintptr_t>(*first) * 2654435761ULL) >> 32) % B;
+  const size_t per_buf = (N + B - 1) / B;
+  size_t remaining = N;
+  for(size_t i = 0; i < B && remaining > 0; ++i) {
+    size_t b     = (start + i) % B;
+    size_t chunk = std::min(per_buf, remaining);
+    {
+      std::scoped_lock lock(_buffers[b].mutex);
+      _buffers[b].queue.bulk_push(first, chunk);
+    }
+    // terminates early via remaining > 0, so we don't acquire unnecessary locks on empty chunks.
+    remaining -= chunk;
+  }
 }
 
 // Procedure: _schedule
@@ -1550,7 +1636,7 @@ inline void Executor::_schedule(Node* node) {
 }
 
 // Procedure: _schedule
-template <typename I>
+template <std::input_iterator I>
 void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
 
   if(num_nodes == 0) {
@@ -1558,7 +1644,7 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
   }
 
   // NOTE: We cannot use first/last in the for-loop (e.g., for(; first != last; ++first)).
-  // This is because when a node v is inserted into the queue, v can run and finish 
+  // This is because when a node v is inserted into the queue, v can run and finish
   // immediately. If v is the last node in the graph, it will tear down the parent task vector
   // which cause the last ++first to fail. This problem is specific to MSVC which has a stricter
   // iterator implementation in std::vector than GCC/Clang.
@@ -1575,7 +1661,7 @@ void Executor::_bulk_schedule(Worker& worker, I first, size_t num_nodes) {
 }
 
 // Procedure: _schedule
-template <typename I>
+template <std::input_iterator I>
 inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
   
   if(num_nodes == 0) {
@@ -1593,10 +1679,21 @@ inline void Executor::_bulk_schedule(I first, size_t num_nodes) {
 
 // Function: _update_cache
 TF_FORCE_INLINE void Executor::_update_cache(Worker& worker, Node*& cache, Node* node) {
+#ifdef TF_ENABLE_TASK_PRIORITY
+  if(cache) {
+    if(node->priority() < cache->priority()) {
+      std::swap(cache, node);
+    }
+    _schedule(worker, node);
+  } else {
+    cache = node;
+  }
+#else
   if(cache) {
     _schedule(worker, cache);
   }
   cache = node;
+#endif
 }
 
 // Function: _bulk_update_cache
@@ -1614,7 +1711,7 @@ TF_FORCE_INLINE void Executor::_bulk_update_cache(
   }
   cache = node;
 }
-  
+
 // Procedure: _invoke
 inline void Executor::_invoke(Worker& worker, Node* node) {
 
@@ -1650,7 +1747,7 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
       return;
     }
   }
-  
+
   invoke_task:
   
   SmallVector<int> conds;
@@ -1700,6 +1797,14 @@ inline void Executor::_invoke(Worker& worker, Node* node) {
     // module task
     case Node::MODULE: {
       if(_invoke_module_task(worker, node)) {
+        return;
+      }
+    }
+    break;
+    
+    // adopted module task
+    case Node::ADOPTED_MODULE: {
+      if(_invoke_adopted_module_task(worker, node)) {
         return;
       }
     }
@@ -1963,6 +2068,11 @@ inline bool Executor::_invoke_module_task(Worker& w, Node* node) {
   return _invoke_module_task_impl(w, node, std::get_if<Node::Module>(&node->_handle)->graph);  
 }
 
+// Procedure: _invoke_adopted_module_task
+inline bool Executor::_invoke_adopted_module_task(Worker& w, Node* node) {
+  return _invoke_module_task_impl(w, node, std::get_if<Node::AdoptedModule>(&node->_handle)->graph);  
+}
+
 // Procedure: _invoke_module_task_impl
 inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& graph) {
 
@@ -1973,17 +2083,11 @@ inline bool Executor::_invoke_module_task_impl(Worker& w, Node* node, Graph& gra
 
   // first entry - not spawned yet
   if((node->_nstate & NSTATE::PREEMPTED) == 0) {
-    // observe module start
-    //_observer_prologue(w, node);
-
     // signal the executor to preempt this node
     node->_nstate |= NSTATE::PREEMPTED;
     _schedule_graph(w, graph, node->_topology, node);
     return true;
   }
-
-  // observe module end
-  //_observer_epilogue(w, node);
 
   // second entry - already spawned
   node->_nstate &= ~NSTATE::PREEMPTED;
@@ -2156,6 +2260,59 @@ void Executor::corun_until(P&& predicate) {
   _corun_until(*w, std::forward<P>(predicate));
 }
 
+/*
+// Function: _corun_until
+template <typename P>
+void Executor::_corun_until(Worker& w, P&& stop_predicate) {
+ 
+  const size_t MAX_VICTIM = num_queues();
+  const size_t MAX_STEALS = ((MAX_VICTIM + 1) << 1);
+ 
+  bool stop = false;
+ 
+  while(!stop && !(stop = stop_predicate())) {
+ 
+    // try local queue first — only one task at a time to avoid deep
+    // recursive corun calls causing stack overflow
+    if(auto t = w._wsq.pop(); t) {
+      _invoke(w, t);
+      continue;
+    }
+ 
+    // local queue empty: steal from others until stop_predicate or stolen.
+    // stop is set by the inner loop condition so when predicate becomes true
+    // the outer loop exits immediately without calling stop_predicate again.
+    size_t num_steals = 0;
+    size_t vtm = w._sticky_victim;
+ 
+    while(!(stop = stop_predicate())) {
+ 
+      auto t = (vtm < _workers.size())
+        ? _workers[vtm]._wsq.steal()
+        : _buffers[vtm - _workers.size()].queue.steal();
+ 
+      if(t) {
+        // STOLEN: invoke task then return to outer loop to re-check
+        // local queue and stop_predicate
+        _invoke(w, t);
+        w._sticky_victim = vtm;
+        break;
+      }
+ 
+      // pick a new victim excluding self
+      vtm = w._rdgen() % (MAX_VICTIM - 1);
+      if(vtm >= w._id) vtm++;
+ 
+      if(++num_steals > MAX_STEALS) {
+        // unlike _explore_task we cannot sleep here — the calling worker
+        // is blocked inside a task and must keep making progress to avoid
+        // deadlock. yield to let other threads run and make progress.
+        std::this_thread::yield();
+      }
+    }
+  }
+}*/
+ 
 // Function: _corun_until
 template <typename P>
 void Executor::_corun_until(Worker& w, P&& stop_predicate) {
@@ -2205,15 +2362,13 @@ void Executor::_corun_until(Worker& w, P&& stop_predicate) {
 template <typename T>
 void Executor::corun(T& target) {
 
-  static_assert(has_graph_v<T>, "target must define a member function 'Graph& graph()'");
-  
   Worker* w = this_worker();
   if(w == nullptr) {
     TF_THROW("corun must be called by a worker of the executor");
   }
 
   NodeBase anchor;
-  _corun_graph(*w, target.graph(), nullptr, &anchor);
+  _corun_graph(*w, retrieve_graph(target), nullptr, &anchor);
 }
 
 // Procedure: _corun_graph
@@ -2287,7 +2442,11 @@ inline size_t Executor::_set_up_graph(Graph& graph, Topology* tpg, NodeBase* par
     auto node = *first;
     node->_topology = tpg;
     node->_parent = parent;
-    node->_nstate = NSTATE::NONE;
+#ifdef TF_ENABLE_TASK_PRIORITY
+    node->_nstate &= NSTATE::PRIORITY_MASK;
+#else
+    node->_nstate &= NSTATE::NONE;
+#endif
     node->_estate.store(ESTATE::NONE, std::memory_order_relaxed);
     node->_set_up_join_counter();
     node->_exception_ptr = nullptr;
@@ -2331,7 +2490,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       tpg = f._topologies.front().get();
 
       lock.unlock();
-      
+
       // Soon after we carry out the promise, the associate taskflow may got destroyed
       // from the user side, and we should never tough it again.
       fetched_tpg->_carry_out_promise();
@@ -2350,7 +2509,7 @@ inline void Executor::_tear_down_topology(Worker& worker, Topology* tpg, Node*& 
       f._topologies.pop();
 
       lock.unlock();
-      
+
       // Soon after we carry out the promise, the associate taskflow may got destroyed
       // from the user side, and we should never tough it again.
       fetched_tpg->_carry_out_promise();
@@ -2393,9 +2552,3 @@ inline void Subflow::join() {
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-
-
-
-

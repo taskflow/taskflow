@@ -1,0 +1,178 @@
+namespace tf {
+
+/** @page ExamplesDynamicDependencyGraph Dynamic Dependency Graph
+
+We study a workload whose task graph topology is determined entirely at
+runtime, where the number of tasks, their work, and which task depends on
+which are all read from external data rather than hard-coded.
+This example showcases dependent-async tasks as the right tool when static
+task graph construction is not possible.
+
+@tableofcontents
+
+@section DynamicDependencyGraphProblem Problem Formulation
+
+Consider a computational workflow described by an external source such as
+a configuration file, a database, or the output of a previous computation.
+Each workflow step has a unique identifier, a list of steps that must
+complete before it starts, and a function to execute.
+
+For concreteness we represent this as a vector of @c Step structures:
+
+@code{.cpp}
+struct Step {
+  int  id;
+  std::vector<int> deps;   // ids of predecessor steps
+  std::function<void()> work;
+};
+@endcode
+
+The steps might be loaded at startup from a JSON file, a database query,
+or any external source.
+The key point is that neither their count nor their dependency graph is
+known when the program is compiled.
+
+@section DynamicDependencyGraphStaticFails Why Static Construction Fails
+
+The standard %Taskflow pattern builds the entire graph with
+tf::Taskflow::emplace, wires all edges, then calls tf::Executor::run.
+This requires the full graph to be known before execution begins.
+When the graph depends on external data, all the data must be loaded
+first, then the entire taskflow is built, then execution starts.
+This means @em all the data must be loaded before @em any computation
+begins.
+
+For large workflows this is wasteful: if step 0 has no dependencies, it
+could start executing the moment it is read, while the remaining steps are
+still being loaded.
+Dependent-async tasks solve this by scheduling each task the moment it is
+created, overlapping graph construction with task execution.
+
+@section DynamicDependencyGraphImplementation Implementation
+
+We process the workflow one step at a time.
+For each step we create a dependent-async task whose predecessors are the
+tf::AsyncTask handles of previously created steps.
+The executor begins running each task the moment its predecessors finish,
+overlapping graph construction with task execution:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+int main() {
+
+  tf::Executor executor;
+
+  // workflow loaded from an external source at runtime
+  // (hard-coded here for illustration)
+  //
+  //   0 ──► 1 ──► 3
+  //   │           ▲
+  //   └──► 2 ─────┘
+  //
+  struct Step {
+    int id;
+    std::vector<int> deps;
+  };
+
+  std::vector<Step> workflow = {
+    {0, {}     },   // no predecessors
+    {1, {0}    },   // runs after step 0
+    {2, {0}    },   // runs after step 0
+    {3, {1, 2} },   // runs after steps 1 and 2
+  };
+
+  // map from step id to its AsyncTask handle
+  std::vector<tf::AsyncTask> handles(workflow.size());
+
+  for(const auto& step : workflow) {
+
+    // collect predecessor handles
+    std::vector<tf::AsyncTask> preds;
+    for(int dep : step.deps) {
+      preds.push_back(handles[dep]);
+    }
+
+    // create and immediately schedule the task,
+    // which runs as soon as all predecessors complete
+    handles[step.id] = executor.silent_dependent_async(
+      [id = step.id]() {
+        printf("executing step %d\n", id);
+      },
+      preds.begin(), preds.end()
+    );
+  }
+
+  executor.wait_for_all();
+
+  return 0;
+}
+@endcode
+
+The key loop processes one step at a time.
+By the time we create the task for step 3, step 0 may already be running
+(or even done), because its task was submitted with no predecessors and
+began executing immediately.
+The graph is built and executed simultaneously rather than sequentially.
+
+@section DynamicDependencyGraphBranchingTopology Branching Based on Runtime Conditions
+
+The topology itself can branch based on properties evaluated during
+execution.
+In the example below, the graph structure after step 0 depends on a
+condition that is only known after step 0 completes:
+
+@code{.cpp}
+tf::Executor executor;
+
+// step 0: load or compute something whose result drives the rest of the graph
+auto [step0, fu0] = executor.dependent_async([]() -> int {
+  return compute_initial_result();
+});
+
+// wait cooperatively until step 0 finishes
+executor.corun_until([&]() { return step0.is_done(); });
+
+int result = fu0.get();
+
+if(result > 0) {
+  // branch A: two parallel tasks followed by a merge
+  auto [A1, fuA1] = executor.dependent_async([]() {
+    printf("branch A: task 1\n");
+  }, step0);
+
+  auto [A2, fuA2] = executor.dependent_async([]() {
+    printf("branch A: task 2\n");
+  }, step0);
+
+  executor.silent_dependent_async([]() {
+    printf("branch A: merge\n");
+  }, A1, A2);
+}
+else {
+  // branch B: a single deeper processing step
+  executor.silent_dependent_async([]() {
+    printf("branch B: deep processing\n");
+  }, step0);
+}
+
+executor.wait_for_all();
+@endcode
+
+This pattern is impossible to express with a static tf::Taskflow, where
+there is no way to know which branch to build before
+@c compute_initial_result has run.
+Dependent-async tasks make the runtime decision a natural part of the
+program's control flow.
+
+@note
+tf::Executor::corun_until is used here instead of @c fu0.get() to keep
+the calling thread active in the work-stealing loop.
+If the calling thread is itself one of the executor's workers, calling
+@c fu0.get() would block the thread, reducing the available parallelism
+for the tasks it could otherwise be executing.
+See @ref DependentAsyncTasking for a full discussion.
+
+*/
+
+}

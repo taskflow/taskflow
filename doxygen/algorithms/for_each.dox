@@ -2,222 +2,504 @@ namespace tf {
 
 /** @page ParallelIterations Parallel Iterations
 
-%Taskflow provides template functions for constructing
-tasks to perform parallel iterations over ranges of items.
+%Taskflow provides template functions for constructing tasks to perform
+parallel iterations over ranges of items.
 
 @tableofcontents
 
 @section ParallelIterationsIncludeTheHeader Include the Header
 
-You need to include the header file, `%taskflow/algorithm/for_each.hpp`, 
+You need to include the header file, `%taskflow/algorithm/for_each.hpp`,
 for using parallel-iteration algorithms.
 
 @code{.cpp}
 #include <taskflow/algorithm/for_each.hpp>
 @endcode
 
-@section A1IndexBasedParallelFor Create an Index-based Parallel-Iteration Task
+@section ParallelIterationsIndexBased Create an Index-based Parallel-Iteration Task
 
-Index-based parallel-for performs parallel iterations over a range <tt>[first, last)</tt> with the given @c step size.
-The task created by tf::Taskflow::for_each_index(B first, E last, S step, C callable, P part) 
+Index-based parallel-for performs parallel iterations over a range
+<tt>[first, last)</tt> with the given @c step size.
+The task created by
+tf::Taskflow::for_each_index(B first, E last, S step, C callable, P part)
 represents parallel execution of the following loop:
 
 @code{.cpp}
 // positive step
-for(auto i=first; i<last; i+=step) {
+for(auto i = first; i < last; i += step) {
   callable(i);
 }
 
 // negative step
-for(auto i=first; i>last; i+=step) {
+for(auto i = first; i > last; i += step) {
   callable(i);
 }
 @endcode
 
-We support only integer-based range. The range can go positive or negative direction. 
+We support only integer-based ranges.
+The range can go in a positive or negative direction.
 
 @code{.cpp}
-taskflow.for_each_index(0, 100,  2, [](int i) { });  // 50 loops with a + step
-taskflow.for_each_index(100, 0, -2, [](int i) { });  // 50 loops with a - step
+taskflow.for_each_index(0, 100,  2, [](int i) { });  // 50 iterations with a positive step
+taskflow.for_each_index(100, 0, -2, [](int i) { });  // 50 iterations with a negative step
 @endcode
 
-Notice that either positive or negative direction is defined in terms of the range,
-<tt>[first, last)</tt>, where @c end is excluded.
-In the positive case, the 50 items are 0, 2, 4, 6, 8, ..., 96, 98.
-In the negative case, the 50 items are 100, 98, 96, 04, ... 4, 2.
-An example of the %Taskflow graph for the positive case under 12 workers is depicted below:
+Notice that the direction is defined in terms of the half-open range <tt>[first, last)</tt>,
+where @c last is excluded.
+In the positive case, the 50 items are 0, 2, 4, 6, ..., 96, 98.
+In the negative case, the 50 items are 100, 98, 96, 94, ..., 4, 2.
+An example of the %Taskflow graph for the positive case under 5 workers is depicted below:
 
-
-<!-- @image html images/parallel_for_1.svg width=100% -->
 @dotfile images/parallel_for_1.dot
 
-Instead of explicitly specifying the index range and the callable for each index invocation,
-the overload 
-tf::Taskflow::for_each_by_index(R range, C callable, P part) provides you with a more flexible way to 
-iterate over subranges of indices.
-This overload uses tf::IndexRange to partition the range into subranges, 
-allowing finer control over how each subrange is processed.
-For instance, the code below does the same thing using two different approaches:
+@subsection ParallelForEachCaptureIndicesByReference Capture Indices by Reference
+
+You can pass indices by reference using @std_ref to marshal parameter
+updates between dependent tasks.
+This is useful when the range is not known at the time the task graph is
+constructed but is initialized by an upstream task.
 
 @code{.cpp}
-std::vector<int> data1(100), data2(100);
-
-// Approach 1: initialize data1 using explicit index range
-taskflow.for_each_index(0, 100, 1, [&](int i){ data1[i] = 10; });
-
-// Approach 2: initialize data2 using tf::IndexRange
-tf::IndexRange<int> range(0, 100, 1);
-taskflow.for_each_by_index(range, [&](tf::IndexRange<int> subrange){
-  for(int i=subrange.begin(); i<subrange.end(); i+=subrange.step_size()) {
-    data2[i] = 10;
-  }
-});
-@endcode
-
-Both approaches produce the same result, but the second approach offers more flexibility
-in terms of how each partitioned subrange is iterated. 
-This is particularly useful for applications that benefit from SIMD optimizations or 
-other range-based processing strategies.
-
-
-@section ParallelForEachCaptureIndicesByReference Capture Indices by Reference
-
-You can pass indices by reference using @std_ref
-to marshal parameter update between dependent tasks.
-This is especially useful when the range indices are unknown
-at the time of creating a for-each-index task,
-but is initialized from another task.
-
-@code{.cpp}
-int* vec;
 int first, last;
+int* vec;
 
 auto init = taskflow.emplace([&](){
   first = 0;
   last  = 1000;
-  vec = new int[1000];  
+  vec   = new int[1000];
 });
 
-auto pf = taskflow.for_each_index(std::ref(first), std::ref(last), 1, 
-  [&] (int i) {
-    std::cout << "parallel iteration on index " << vec[i] << '\n';
+auto pf = taskflow.for_each_index(
+  std::ref(first), std::ref(last), 1,
+  [&](int i) {
+    std::cout << "parallel iteration on index " << i << '\n';
   }
 );
 
-// wrong! must use std::ref, or first and last are captured by copy
-// auto pf = taskflow.for_each_index(first, last, 1, [&](int i) {
-//   std::cout << "parallel iteration on index " << vec[i] << '\n';
-// });
+// The code below is wrong! first and last are captured by copy at construction time
+// auto pf = taskflow.for_each_index(first, last, 1, [&](int i) { });
 
 init.precede(pf);
 @endcode
 
-When @c init finishes, the parallel-for task @c pf will see @c first as 0 and @c last as 1000 and performs parallel iterations over the 1000 items.
+When @c init finishes, the parallel-for task @c pf will see @c first as 0
+and @c last as 1000 and performs parallel iterations over the 1000 indices.
 
+@section ParallelIterationsIndexRangeBased Create an IndexRange-based Parallel-Iteration Task
 
-@section A1IteratorBasedParallelFor Create an Iterator-based Parallel-Iteration Task
+While tf::Taskflow::for_each_index gives each worker a single scalar index,
+tf::Taskflow::for_each_by_index gives each worker a contiguous @em sub-range
+(or @em sub-box in multiple dimensions) of the iteration space.
+This distinction is significant: instead of processing one element at a time,
+the callable operates on an entire block of consecutive indices in a single
+invocation, enabling block algorithms that exploit data locality,
+facilitate SIMD vectorisation, and reduce scheduling overhead.
 
-Iterator-based parallel-for performs parallel iterations over a range specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>, @c first and @c last. 
-The task created by tf::Taskflow::for_each(B first, E last, C callable, P part) represents 
-a parallel execution of the following loop:
+@par What is an IndexRange?
+
+A tf::IndexRange describes a typed, half-open index range
+<tt>[begin, end)</tt> with a step size.
+There are two variants:
+
+- `tf::IndexRange<T>` (an alias for `tf::IndexRanges<T, 1>`): A 1D range of
+  integral indices.  It is defined by three parameters: @c begin, @c end, and
+  @c step_size.  The elements are @c begin, @c begin+step, @c begin+2*step, ...
+  up to (but not including) @c end.
 
 @code{.cpp}
-for(auto i=first; i<last; i++) {
+// elements: 2, 5, 8, 11  (step = 3, size = 4)
+tf::IndexRange<int> r(2, 14, 3);
+
+r.begin();      // 2
+r.end();        // 14
+r.step_size();  // 3
+r.size();       // 4
+@endcode
+
+@dotfile images/indexrange_1d.dot
+
+- `tf::IndexRanges<T, N>`: An N-dimensional Cartesian product of N independent
+  1D ranges, one per dimension.  Dimension 0 is the outermost (slowest varying)
+  and dimension N-1 is the innermost (fastest varying), matching the natural
+  nesting of C-style for-loops (row-major order).  Each dimension is stored as
+  a <tt>std::tuple<T, T, T></tt> of (begin, end, step_size), accessible and
+  mutable through @c dim(d).
+
+@code{.cpp}
+// 2D range: i in [0,3), j in [0,4) — a 3x4 grid of 12 index pairs
+tf::IndexRanges<int, 2> r(
+  tf::IndexRange<int>(0, 3, 1),   // dim 0: i = 0, 1, 2
+  tf::IndexRange<int>(0, 4, 1)    // dim 1: j = 0, 1, 2, 3
+);
+
+r.size();     // 12  (3 x 4)
+r.size(0);    //  3  (elements along dim 0)
+r.size(1);    //  4  (elements along dim 1)
+r.dim(0);     // std::tuple<int,int,int>{0, 3, 1}
+r.dim(1);     // std::tuple<int,int,int>{0, 4, 1}
+
+auto [b0, e0, s0] = r.dim(0);  // structured-binding access: b0=0, e0=3, s0=1
+@endcode
+
+@dotfile images/indexrange_2d.dot
+
+The key advantage of tf::IndexRanges<T, N> over a raw scalar index is that the
+callable receives the full sub-range (or sub-box) at once, allowing it to
+implement cache-friendly block algorithms, apply SIMD over contiguous indices,
+or exploit any other block-level optimisation.
+
+@par Create a Parallel-Iteration Task over a 1D IndexRange
+
+Passing a 1D @c tf::IndexRange<T> to tf::Taskflow::for_each_by_index creates
+a parallel task whose callable receives one contiguous sub-range of the original
+range per invocation:
+
+@code{.cpp}
+tf::IndexRange<int> range(0, 100, 1);
+
+taskflow.for_each_by_index(range, [](tf::IndexRange<int> sub) {
+  // sub is a contiguous slice of [0, 100)
+  for(int i = sub.begin(); i < sub.end(); i += sub.step_size()) {
+    process(i);
+  }
+});
+@endcode
+
+Because the callable sees the full sub-range at once, it can implement
+cache-friendly block algorithms that would be impossible when receiving a
+single index at a time.
+For instance, a worker assigned <tt>[32, 64)</tt> can prefetch that entire
+cache line before processing, rather than incurring per-element dispatch overhead.
+
+@par Create a Parallel-Iteration Task over a Multi-dimensional IndexRange
+
+Passing an N-dimensional @c tf::IndexRanges<T, N> to
+tf::Taskflow::for_each_by_index creates a parallel task whose callable receives
+one orthogonal @em sub-box of the full ND space per invocation.
+A sub-box is a valid hyperrectangle — a contiguous, axis-aligned tile that
+preserves the original step sizes of every dimension.
+The figure below shows a 2x3x4 range decomposed into two sub-boxes (one per
+outer-dimension value), each a 3x4 slice:
+
+@image html images/indexrange_3d.svg width=90%
+
+For a 2D range, the parallel task represents:
+
+@code{.cpp}
+tf::IndexRanges<int, 2> range(
+  tf::IndexRange<int>(0, rows, 1),   // dimension 0: rows
+  tf::IndexRange<int>(0, cols, 1)    // dimension 1: columns
+);
+
+taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 2>& tile) {
+  // tile is an orthogonal sub-box of the full 2D range
+  auto [i0, i1, is] = tile.dim(0);
+  auto [j0, j1, js] = tile.dim(1);
+  for(int i = i0; i < i1; i += is) {
+    for(int j = j0; j < j1; j += js) {
+      process(i, j);
+    }
+  }
+});
+@endcode
+
+Each sub-box preserves the original step sizes for every dimension, so the
+inner loops are identical to what you would write for sequential code.
+The same pattern extends naturally to three or more dimensions:
+
+@code{.cpp}
+tf::IndexRanges<int, 3> range(
+  tf::IndexRange<int>(0, depth,  1),
+  tf::IndexRange<int>(0, height, 1),
+  tf::IndexRange<int>(0, width,  1)
+);
+
+taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 3>& sub) {
+  auto [d0, d1, ds] = sub.dim(0);
+  auto [h0, h1, hs] = sub.dim(1);
+  auto [w0, w1, ws] = sub.dim(2);
+  for(int i = d0; i < d1; i += ds) {
+    for(int j = h0; j < h1; j += hs) {
+      for(int k = w0; k < w1; k += ws) {
+        process(i, j, k);
+      }
+    }
+  }
+});
+@endcode
+
+@par Zero-size Dimensions
+
+When a dimension has zero size, it and all dimensions inner to it produce no
+iterations — but outer dimensions are unaffected.
+This matches the behaviour of sequential nested loops: a zero-size inner loop
+simply never executes, while the outer loops still run.
+
+@code{.cpp}
+// The middle dimension has zero iterations (j_begin == j_end).
+// The outer i-loop still has work; the j/k body never executes.
+tf::IndexRanges<int, 3> range(
+  tf::IndexRange<int>(0, 100, 1),   // i: 100 iterations
+  tf::IndexRange<int>(0,   0, 1),   // j:   0 iterations — body never runs
+  tf::IndexRange<int>(0, 100, 1)    // k: 100 iterations (never reached)
+);
+// range.size() == 100  (outer i-loop only)
+
+taskflow.for_each_by_index(range, [](const tf::IndexRanges<int, 3>& sub) {
+  // Each sub-box covers a slice of the active i-dimension.
+  // Only process(i) is ever called — the j-loop never executes,
+  // so process(i, j) and process(i, j, k) are never reached.
+  auto [i0, i1, is] = sub.dim(0);
+  auto [j0, j1, js] = sub.dim(1);
+  auto [k0, k1, ks] = sub.dim(2);
+  for(int i = i0; i < i1; i += is) {
+    process(i);                         // <-- called for every i
+    for(int j = j0; j < j1; j += js) {  // never entered
+      process(i, j);                    // <-- never called
+      for(int k = k0; k < k1; k += ks) {
+        process(i, j, k);               // <-- never called
+      }
+    }
+  }
+});
+@endcode
+
+This is equivalent to the sequential nested loop:
+
+@code{.cpp}
+for(int i = 0; i < 100; ++i) {
+  process(i);                           // <-- called for every i
+  for(int j = 0; j < 0; ++j) {         // zero iterations — body skipped
+    process(i, j);                      // <-- never called
+    for(int k = 0; k < 100; ++k) {
+      process(i, j, k);                 // <-- never called
+    }
+  }
+}
+@endcode
+
+@note
+This differs from OpenMP's @c collapse clause, which treats the entire
+iteration space as a Cartesian product and yields zero total iterations when
+any dimension is empty.  %Taskflow preserves the sequential semantics of
+nested loops: outer dimensions always execute independently of inner ones.
+
+@par Understand the Scheduling Algorithm
+
+%Taskflow schedules parallel iterations over an index range by mapping
+the N-dimensional space to a 1D flat index space and distributing chunks of
+that flat space among workers.
+Specifically, the full ND range is first linearized in row-major order into a flat index space of
+size @c N = @c range.size(). For a 3x4 2D range, this looks like:
+
+@dotfile images/indexrange_flat.dot
+
+Then, workers claim contiguous chunks of the flat index space, either pre-assigned
+(static partitioner) or on demand via an atomic cursor (dynamic partitioners).
+During the assignment, each flat chunk boundary coincides with a @em hyperplane @em boundary, i.e.,
+a suffix product of the dimension sizes (1, `dim[N-1]`, `dim[N-1]` x `dim[N-2]`, ...).
+This is the critical constraint: only boundaries that align to a complete inner
+row (or slice, or hyper-slice) produce a valid rectangular sub-box.
+The figure below illustrates why alignment matters for a 3x4 grid:
+
+@image html images/indexrange_alignment.svg width=90%
+
+A cut at flat index 6 (mid-row) would split row @c i=1 between two workers,
+producing an L-shaped non-rectangular region that cannot be expressed as a
+single @c IndexRanges sub-box.
+A cut at flat index 8 (row boundary) produces two clean rectangular sub-boxes.
+%Taskflow enforces this automatically.
+The @c chunk_size hint is always snapped to the nearest hyperplane boundary
+via @c IndexRanges::ceil():
+
+@code{.cpp}
+// For a 3x4 range with 3 workers:
+// raw N/W = 12/3 = 4  ->  r.ceil(4) = 4  (already a row boundary)
+// For a 3x5 range with 2 workers:
+// raw N/W = 15/2 = 7  ->  r.ceil(7) = 10  (next row boundary = 2 full rows)
+@endcode
+
+@par Static vs dynamic partitioners
+
+With a static partitioner, each worker's chunk is pre-assigned before
+execution and never changes.
+The figure below shows a 3x4 range evenly split among 3 workers, each
+receiving exactly one aligned row:
+
+@image html images/indexrange_partition.svg width=80%
+
+With a dynamic partitioner, workers pull chunks from a shared
+atomic cursor.
+The chunk may overshoot to the next hyperplane boundary when
+the requested size does not align exactly, but the cursor self-corrects so no
+element is visited twice.
+
+@note
+You do not need to think about alignment explicitly.  %Taskflow handles it
+automatically — the @c chunk_size you pass to the partitioner is a @em hint,
+and the scheduler snaps it to the nearest valid boundary before distributing work.
+
+@par Capture Range by Reference
+
+When the range bounds are not known at task-graph construction time, pass
+the range by @std_ref so that an upstream task can set the bounds before
+the parallel loop runs.
+This works for both 1D and multi-dimensional ranges.
+
+@code{.cpp}
+tf::IndexRanges<int, 2> range(
+  tf::IndexRange<int>(0, 0, 1),   // placeholder — filled by init
+  tf::IndexRange<int>(0, 0, 1)
+);
+
+auto init = taskflow.emplace([&](){
+  range.dim(0) = {0, rows, 1};
+  range.dim(1) = {0, cols, 1};
+});
+
+auto pf = taskflow.for_each_by_index(
+  std::ref(range),
+  [](tf::IndexRanges<int, 2> tile) {
+    auto [i0, i1, is] = tile.dim(0);
+    auto [j0, j1, js] = tile.dim(1);
+    for(int i = i0; i < i1; i += is) {
+      for(int j = j0; j < j1; j += js) {
+        process(i, j);
+      }
+    }
+  }
+);
+
+// The code below is wrong! range is captured by copy at construction time
+// auto pf = taskflow.for_each_by_index(range, callable);
+
+init.precede(pf);
+@endcode
+
+When @c init finishes, @c pf reads the updated range and partitions the
+<tt>rows x cols</tt> space among workers.
+
+@section ParallelIterationsIteratorBased Create an Iterator-based Parallel-Iteration Task
+
+Iterator-based parallel-for performs parallel iterations over a range
+specified by two <a href="https://en.cppreference.com/w/cpp/iterator/iterator">STL-styled iterators</a>,
+@c first and @c last.
+The task created by
+tf::Taskflow::for_each(B first, E last, C callable, P part)
+represents parallel execution of the following loop:
+
+@code{.cpp}
+for(auto i = first; i != last; i++) {
   callable(*i);
 }
 @endcode
 
-tf::Taskflow::for_each(B first, E last, C callable, P part) 
-simultaneously applies the callable to the object obtained by dereferencing every iterator 
-in the range <tt>[first, last)</tt>.
-It is user's responsibility for ensuring that the range is valid within the execution of the parallel-for task. Iterators must have the post-increment operator @++ defined. 
+tf::Taskflow::for_each simultaneously applies the callable to the object
+obtained by dereferencing every iterator in the range <tt>[first, last)</tt>.
+It is the user's responsibility to ensure the range is valid within the
+execution of the parallel-for task.
+Iterators must have the post-increment operator @c ++ defined.
 
 @code{.cpp}
 std::vector<int> vec = {1, 2, 3, 4, 5};
-taskflow.for_each(vec.begin(), vec.end(), [](int i){ 
-  std::cout << "parallel for on item " << i << '\n';  
-});
 
-std::list<std::string> list = {"hi", "from", "t", "a", "s", "k", "f", "low"};
-taskflow.for_each(list.begin(), list.end(), [](const std::string& str){ 
-  std::cout << "parallel for on item " << str << '\n';  
+taskflow.for_each(vec.begin(), vec.end(), [](int i) {
+  std::cout << "parallel for on item " << i << '\n';
 });
 @endcode
 
-@section ParallelForEachCaptureIteratorsByReference Capture Iterators by Reference
+@subsection ParallelForEachCaptureIteratorsByReference Capture Iterators by Reference
 
-Similar to tf::Taskflow::for_each_index, iterators of tf::Taskflow::for_each 
-are templated to allow capturing range parameters by reference, such that one task can
-set up the range before another task performs the parallel-for algorithm.
-For example:
+Similar to index-based parallel-for, iterators can be passed by reference
+using @std_ref so that one task can set up the range before another task
+performs the parallel-for.
 
 @code{.cpp}
 std::vector<int> vec;
-std::vector<int>::iterator first, last;;
+std::vector<int>::iterator first, last;
 
-tf::Task init = taskflow.emplace([&](){
+auto init = taskflow.emplace([&](){
   vec.resize(1000);
   first = vec.begin();
   last  = vec.end();
 });
 
-tf::Task pf = taskflow.for_each(std::ref(first), std::ref(last), [&](int i) {
-  std::cout << "parallel iteration on item " << i << '\n';
-});
+auto pf = taskflow.for_each(
+  std::ref(first), std::ref(last),
+  [](int i) {
+    std::cout << "parallel iteration on item " << i << '\n';
+  }
+);
 
-// wrong! must use std::ref, or first and last are captured by copy
-// tf::Task pf = taskflow.for_each(first, last, [&](int i) {
-//   std::cout << "parallel iteration on item " << i << '\n';
-// });
+// The code below is wrong! first and last are captured by copy at construction time
+// auto pf = taskflow.for_each(first, last, [](int i) { });
 
 init.precede(pf);
 @endcode
 
-When @c init finishes, the parallel-for task @c pf will see @c first pointing to the beginning of @c vec and @c last pointing to the end of @c vec and performs parallel iterations over the 1000 items. The two tasks form an end-to-end task graph where the parameters of parallel-for are computed on the fly.
+When @c init finishes, @c pf will see @c first pointing to the beginning
+of @c vec and @c last pointing to the end of @c vec and performs parallel
+iterations over the 1000 items.
 
 @section ParallelIterationsConfigureAPartitioner Configure a Partitioner
 
-You can configure a partitioner for parallel-iteration tasks
-to run with different scheduling methods, 
-such as guided partitioning, dynamic partitioning, and static partitioning.
-The following example creates two parallel-iteration tasks using two different
-partitioners, one with the static partitioning algorithm and 
-another one with the guided partitioning algorithm:
+A partitioner controls how the iteration space is divided among workers.
+%Taskflow provides four partitioners, each suited to different workload
+characteristics:
+
+- tf::StaticPartitioner divides the range into equal-sized chunks ahead of
+  execution and assigns them to workers in order.
+  It has the lowest scheduling overhead and delivers the best performance
+  when every iteration costs roughly the same amount of work.
+
+- tf::DynamicPartitioner distributes fixed-sized chunks to workers on demand
+  as they become available.
+  It adapts well to workloads where iteration cost varies, at the expense of
+  slightly higher coordination overhead.
+
+- tf::GuidedPartitioner distributes chunks whose size decreases adaptively
+  as work is consumed — large chunks early to reduce overhead, smaller chunks
+  late to balance the tail.
+  This is the default partitioner and delivers stable, near-optimal
+  performance across a wide range of workloads.
+
+- tf::RandomPartitioner distributes chunks of randomly sampled sizes, which
+  can help avoid systematic load imbalances caused by data-dependent cost
+  patterns.
+
+The following example creates two parallel-iteration tasks with different
+partitioners:
 
 @code{.cpp}
 std::vector<int> vec(1024, 0);
 
-// create two partitioners with a chunk size of 10
-tf::StaticPartitioner static_partitioner(10);
-tf::GuidedPartitioner guided_partitioner(10);
+tf::StaticPartitioner  static_partitioner(10);   // chunk size of 10
+tf::GuidedPartitioner  guided_partitioner(10);   // minimum chunk size of 10
 
-// create a parallel-iteration task with static partitioner
 taskflow.for_each(
-  vec.begin(), vec.end(), [&](int i) {
-    std::cout << "parallel iteration on item " << i << '\n';
-  },
+  vec.begin(), vec.end(),
+  [](int i) { std::cout << "static:  " << i << '\n'; },
   static_partitioner
 );
 
-// create a parallel-iteration task with guided partitioner
 taskflow.for_each(
-  vec.begin(), vec.end(), [&](int i) {
-    std::cout << "parallel iteration on item " << i << '\n';
-  },
+  vec.begin(), vec.end(),
+  [](int i) { std::cout << "guided:  " << i << '\n'; },
   guided_partitioner
 );
 @endcode
 
-@attention
+As a rule of thumb, prefer tf::StaticPartitioner for uniform workloads
+(e.g., element-wise arithmetic on arrays) and tf::GuidedPartitioner for
+irregular workloads (e.g., graph traversal, variable-length processing).
+tf::DynamicPartitioner is a good choice when chunks must be kept small and
+strictly equal in size.
+
+@note
 By default, parallel-iteration tasks use tf::DefaultPartitioner
-if no partitioner is specified. 
+(currently tf::GuidedPartitioner) if no partitioner is specified.
 
 */
 
 }
-
-
-
-
-
 

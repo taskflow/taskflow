@@ -86,82 +86,235 @@ inline const char* to_string(TaskType type) {
 // ----------------------------------------------------------------------------
 
 /**
-@private
-*/
-template <typename C, typename = void>
-struct is_static_task : std::false_type {};
+@brief concept to check if a callable is a static task
 
-/**
-@private
+A static task is a callable object that takes no arguments and returns void.
+It is constructible from std::function<void()>.
+
+@par Requirements
+- Must be invocable with no arguments
+- Must return void
+
+@par Examples
+
+@code{.cpp}
+// Valid static tasks (satisfy StaticTaskLike)
+
+// Simple lambda capturing nothing
+auto static_task1 = []() {};
+static_assert(StaticTaskLike<decltype(static_task1)>);
+
+// Lambda capturing variables
+int x = 10;
+auto static_task2 = [x]() { std::cout << x << '\n'; };
+static_assert(StaticTaskLike<decltype(static_task2)>);
+
+// Function object (functor)
+struct SimpleTask {
+  void operator()() const { std::cout << "task\n"; }
+};
+static_assert(StaticTaskLike<SimpleTask>);
+
+// Free function
+void my_task() { std::cout << "free function task\n"; }
+static_assert(StaticTaskLike<decltype(&my_task)>);
+
+// Use in taskflow
+tf::Taskflow taskflow;
+auto task = taskflow.emplace(static_task1).name("static");
+@endcode
+
+@par Invalid Examples
+
+@code{.cpp}
+// Invalid: takes parameters
+auto task_with_param = [](int a) { std::cout << a << '\n'; };
+// static_assert(StaticTaskLike<decltype(task_with_param)>);  // FAILS
+
+// Invalid: returns non-void
+auto task_returns_int = []() { return 42; };
+// static_assert(StaticTaskLike<decltype(task_returns_int)>);  // FAILS
+@endcode
 */
 template <typename C>
-struct is_static_task<C, std::enable_if_t<std::is_invocable_v<C>>>
-  : std::is_same<std::invoke_result_t<C>, void> {};
+concept StaticTaskLike = std::invocable<C> &&
+                         std::same_as<std::invoke_result_t<C>, void>;
 
 /**
-@brief determines if a callable is a static task
+@brief concept to check if a callable is a static task (variable template)
 
-A static task is a callable object constructible from std::function<void()>.
+@tparam C callable type to check
+
+Equivalent to tf::StaticTaskLike<C>.
 */
 template <typename C>
-constexpr bool is_static_task_v = is_static_task<C>::value;
+constexpr bool is_static_task_v = StaticTaskLike<C>;
 
 // ----------------------------------------------------------------------------
 // Subflow Task Trait
 // ----------------------------------------------------------------------------
 
 /**
-@private
-*/
-template <typename C, typename = void>
-struct is_subflow_task : std::false_type {};
+@brief concept to check if a callable is a subflow task
 
-/**
-@private
+A subflow task is a callable object that takes a tf::Subflow& reference and returns void.
+Subflow tasks allow dynamic creation of nested tasks at runtime. It is constructible
+from std::function<void(tf::Subflow&)>.
+
+@par Requirements
+- Must be invocable with a tf::Subflow& argument
+- Must return void
+
+@par Examples
+
+@code{.cpp}
+// Valid subflow tasks (satisfy SubflowTaskLike)
+
+// Basic subflow task
+auto subflow_task = [](tf::Subflow& sf) {
+  auto task1 = sf.emplace([]() { std::cout << "subtask 1\n"; });
+  auto task2 = sf.emplace([]() { std::cout << "subtask 2\n"; });
+  task1.precede(task2);
+};
+static_assert(SubflowTaskLike<decltype(subflow_task)>);
+
+// Subflow with captured context
+int num_tasks = 5;
+auto dynamic_subflow = [num_tasks](tf::Subflow& sf) {
+  for(int i = 0; i < num_tasks; ++i) {
+    sf.emplace([i]() { std::cout << "task " << i << '\n'; });
+  }
+};
+static_assert(SubflowTaskLike<decltype(dynamic_subflow)>);
+
+// Function object
+struct SubflowTask {
+  void operator()(tf::Subflow& sf) const {
+    sf.emplace([]() { std::cout << "nested\n"; });
+  }
+};
+static_assert(SubflowTaskLike<SubflowTask>);
+
+// Use in taskflow
+tf::Taskflow taskflow;
+auto task = taskflow.emplace(subflow_task).name("subflow");
+@endcode
+
+@par Invalid Examples
+
+@code{.cpp}
+// Invalid: takes no parameters
+auto not_subflow1 = []() { std::cout << "no params\n"; };
+// static_assert(SubflowTaskLike<decltype(not_subflow1)>);  // FAILS
+
+// Invalid: takes non-Subflow parameter
+auto not_subflow2 = [](int x) { std::cout << x << '\n'; };
+// static_assert(SubflowTaskLike<decltype(not_subflow2)>);  // FAILS
+
+// Invalid: returns non-void
+auto not_subflow3 = [](tf::Subflow& sf) { return 42; };
+// static_assert(SubflowTaskLike<decltype(not_subflow3)>);  // FAILS
+@endcode
 */
 template <typename C>
-struct is_subflow_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Subflow&>>>
-  : std::is_same<std::invoke_result_t<C, tf::Subflow&>, void> {};
+concept SubflowTaskLike = std::invocable<C, tf::Subflow&> &&
+                          std::same_as<std::invoke_result_t<C, tf::Subflow&>, void>;
 
 /**
-@brief determines if a callable is a subflow task
+@brief concept to check if a callable is a subflow task (variable template)
 
-A subflow task is a callable object constructible from std::function<void(Subflow&)>.
+@tparam C callable type to check
+
+Equivalent to tf::SubflowTaskLike<C>.
 */
 template <typename C>
-constexpr bool is_subflow_task_v = is_subflow_task<C>::value;
+constexpr bool is_subflow_task_v = SubflowTaskLike<C>;
 
 // ----------------------------------------------------------------------------
 // Runtime Task Trait
 // ----------------------------------------------------------------------------
 
 /**
-@private
-*/
-template <typename C, typename = void>
-struct is_runtime_task : std::false_type {};
+@brief concept to check if a callable is a runtime task
 
-/**
-@private
+A runtime task is a callable object that accepts either tf::Runtime& or
+tf::NonpreemptiveRuntime& and returns void. Runtime tasks provide access to
+the executor's runtime information, allowing tasks to spawn work at runtime,
+query the running state, and control execution flow.
+
+@par Requirements
+- Must be invocable with either tf::Runtime& OR tf::NonpreemptiveRuntime&
+- Must return void
+
+@par Examples
+
+@code{.cpp}
+// Valid runtime tasks (satisfy RuntimeTaskLike)
+
+// Runtime task with tf::Runtime
+auto runtime_task1 = [](tf::Runtime& rt) {
+  std::cout << "running with " << rt.num_workers() << " workers\n";
+};
+static_assert(RuntimeTaskLike<decltype(runtime_task1)>);
+
+// Runtime task with tf::NonpreemptiveRuntime
+auto runtime_task2 = [](tf::NonpreemptiveRuntime& rt) {
+  std::cout << "non-preemptive runtime\n";
+};
+static_assert(RuntimeTaskLike<decltype(runtime_task2)>);
+
+// Runtime task spawning nested work
+auto spawn_work = [](tf::Runtime& rt) {
+  // Can query and control execution at runtime
+  rt.spawn([](){ std::cout << "spawned task\n"; });
+};
+static_assert(RuntimeTaskLike<decltype(spawn_work)>);
+
+// Function object
+struct RuntimeTask {
+  void operator()(tf::Runtime& rt) const {
+    std::cout << "runtime task\n";
+  }
+};
+static_assert(RuntimeTaskLike<RuntimeTask>);
+
+// Use in taskflow
+tf::Taskflow taskflow;
+auto task = taskflow.emplace(runtime_task1).name("runtime");
+@endcode
+
+@par Invalid Examples
+
+@code{.cpp}
+// Invalid: no parameters
+auto not_runtime1 = []() { std::cout << "no params\n"; };
+// static_assert(RuntimeTaskLike<decltype(not_runtime1)>);  // FAILS
+
+// Invalid: wrong parameter type
+auto not_runtime2 = [](int x) { std::cout << x << '\n'; };
+// static_assert(RuntimeTaskLike<decltype(not_runtime2)>);  // FAILS
+
+// Invalid: returns non-void
+auto not_runtime3 = [](tf::Runtime& rt) { return 42; };
+// static_assert(RuntimeTaskLike<decltype(not_runtime3)>);  // FAILS
+@endcode
 */
 template <typename C>
-struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::Runtime&>>>
-  : std::is_same<std::invoke_result_t<C, tf::Runtime&>, void> {};
+concept RuntimeTaskLike =
+  (std::invocable<C, tf::Runtime&> &&
+   std::same_as<std::invoke_result_t<C, tf::Runtime&>, void>) ||
+  (std::invocable<C, tf::NonpreemptiveRuntime&> &&
+   std::same_as<std::invoke_result_t<C, tf::NonpreemptiveRuntime&>, void>);
 
 /**
-@private
+@brief concept to check if a callable is a runtime task (variable template)
+
+@tparam C callable type to check
+
+Equivalent to tf::RuntimeTaskLike<C>.
 */
 template <typename C>
-struct is_runtime_task<C, std::enable_if_t<std::is_invocable_v<C, tf::NonpreemptiveRuntime&>>>
-  : std::is_same<std::invoke_result_t<C, tf::NonpreemptiveRuntime&>, void> {};
-
-/**
-@brief determines if a callable is a runtime task
-
-A runtime task is a callable object constructible from std::function<void(Runtime&)>.
-*/
-template <typename C>
-constexpr bool is_runtime_task_v = is_runtime_task<C>::value;
+constexpr bool is_runtime_task_v = RuntimeTaskLike<C>;
 
 
 // ----------------------------------------------------------------------------
@@ -169,21 +322,187 @@ constexpr bool is_runtime_task_v = is_runtime_task<C>::value;
 // ----------------------------------------------------------------------------
 
 /**
-@brief determines if a callable is a condition task
+@brief concept to check if a callable is a condition task
 
-A condition task is a callable object constructible from std::function<int()>.
+A condition task is a callable object that takes no arguments and returns a
+value convertible to int. The returned int value controls which successor branch
+is taken in conditional execution (if-else branching).
+
+@par Requirements
+- Must be invocable with no arguments
+- Must return a value convertible to int
+
+@par Examples
+
+@code{.cpp}
+// Valid condition tasks (satisfy ConditionTaskLike)
+
+// Simple condition returning int
+auto condition_task1 = []() { return 0; };
+static_assert(ConditionTaskLike<decltype(condition_task1)>);
+
+// Condition with captured state
+int counter = 0;
+auto condition_task2 = [counter]() {
+  return (counter > 5) ? 1 : 0;  // returns 1 (true) or 0 (false)
+};
+static_assert(ConditionTaskLike<decltype(condition_task2)>);
+
+// Condition that evaluates runtime state
+auto evaluate_path = []() {
+  // Return branch index (0 for if, 1 for else, etc.)
+  return rand() % 3;
+};
+static_assert(ConditionTaskLike<decltype(evaluate_path)>);
+
+// Function object
+struct ConditionTask {
+  int operator()() const { return 42; }
+};
+static_assert(ConditionTaskLike<ConditionTask>);
+
+// Returns bool (convertible to int)
+auto bool_condition = []() { return true; };
+static_assert(ConditionTaskLike<decltype(bool_condition)>);
+
+// Use in taskflow
+tf::Taskflow taskflow;
+auto [init, cond, branch_a, branch_b] = taskflow.emplace(
+  [](){ std::cout << "init\n"; },
+  condition_task1,
+  [](){ std::cout << "branch a\n"; },
+  [](){ std::cout << "branch b\n"; }
+);
+init.precede(cond);
+cond.precede(branch_a, branch_b);  // branch_a if cond returns 0, branch_b if returns 1
+@endcode
+
+@par Invalid Examples
+
+@code{.cpp}
+// Invalid: takes parameters
+auto not_condition1 = [](int x) { return x; };
+// static_assert(ConditionTaskLike<decltype(not_condition1)>);  // FAILS
+
+// Invalid: returns non-convertible type
+auto not_condition2 = []() { return std::string("hello"); };
+// static_assert(ConditionTaskLike<decltype(not_condition2)>);  // FAILS
+
+// Invalid: returns void
+auto not_condition3 = []() { std::cout << "task\n"; };
+// static_assert(ConditionTaskLike<decltype(not_condition3)>);  // FAILS
+@endcode
 */
 template <typename C>
-constexpr bool is_condition_task_v = std::is_invocable_r_v<int, C>;
+concept ConditionTaskLike = std::invocable<C> &&
+                            std::convertible_to<std::invoke_result_t<C>, int>;
+
+/**
+@brief concept to check if a callable is a condition task (variable template)
+
+@tparam C callable type to check
+
+Equivalent to tf::ConditionTaskLike<C>.
+*/
+template <typename C>
+constexpr bool is_condition_task_v = ConditionTaskLike<C>;
 
 /**
 @brief determines if a callable is a multi-condition task
 
-A multi-condition task is a callable object constructible from
-std::function<tf::SmallVector<int>()>.
+A multi-condition task is a callable object that takes no arguments and returns
+a tf::SmallVector<int>. The returned vector contains branch indices for multiple
+successor branches, enabling complex control flow patterns where a single task
+can activate multiple branches simultaneously.
+
+@par Requirements
+- Must be invocable with no arguments
+- Must return exactly tf::SmallVector<int>
+
+@par Examples
+
+@code{.cpp}
+// Valid multi-condition tasks (satisfy MultiConditionTaskLike)
+
+// Multi-condition returning indices for multiple branches
+auto multi_condition1 = []() {
+  tf::SmallVector<int> branches;
+  branches.push_back(0);  // Take first branch
+  branches.push_back(2);  // Also take third branch
+  return branches;
+};
+static_assert(MultiConditionTaskLike<decltype(multi_condition1)>);
+
+// Dynamic branch selection
+int branch_mask = 5;  // binary: 101 → take branches 0 and 2
+auto select_branches = [branch_mask]() {
+  tf::SmallVector<int> result;
+  for(int i = 0; i < 3; ++i) {
+    if(branch_mask & (1 << i)) {
+      result.push_back(i);
+    }
+  }
+  return result;
+};
+static_assert(MultiConditionTaskLike<decltype(select_branches)>);
+
+// Function object
+struct MultiConditionTask {
+  tf::SmallVector<int> operator()() const {
+    return {0, 1};  // Execute branches 0 and 1
+  }
+};
+static_assert(MultiConditionTaskLike<MultiConditionTask>);
+
+// Use in taskflow
+tf::Taskflow taskflow;
+auto [init, mcond, branch_0, branch_1, branch_2] = taskflow.emplace(
+  [](){ std::cout << "init\n"; },
+  select_branches,
+  [](){ std::cout << "branch 0\n"; },
+  [](){ std::cout << "branch 1\n"; },
+  [](){ std::cout << "branch 2\n"; }
+);
+init.precede(mcond);
+// All three branches become successors (only those returned in SmallVector will execute)
+mcond.precede(branch_0, branch_1, branch_2);
+@endcode
+
+@par Invalid Examples
+
+@code{.cpp}
+// Invalid: takes parameters
+auto not_multi1 = [](int x) {
+  tf::SmallVector<int> v; v.push_back(x); return v;
+};
+// static_assert(MultiConditionTaskLike<decltype(not_multi1)>);  // FAILS
+
+// Invalid: returns wrong container type
+auto not_multi2 = []() { return std::vector<int>{0, 1}; };
+// static_assert(MultiConditionTaskLike<decltype(not_multi2)>);  // FAILS
+
+// Invalid: returns single int instead of SmallVector
+auto not_multi3 = []() { return 0; };
+// static_assert(MultiConditionTaskLike<decltype(not_multi3)>);  // FAILS
+
+// Invalid: returns void
+auto not_multi4 = []() { std::cout << "task\n"; };
+// static_assert(MultiConditionTaskLike<decltype(not_multi4)>);  // FAILS
+@endcode
 */
 template <typename C>
-constexpr bool is_multi_condition_task_v = std::is_invocable_r_v<SmallVector<int>, C>;
+concept MultiConditionTaskLike = std::invocable<C> &&
+                                 std::same_as<std::invoke_result_t<C>, SmallVector<int>>;
+
+/**
+@brief concept to check if a callable is a multi-condition task (variable template)
+
+@tparam C callable type to check
+
+Equivalent to tf::MultiConditionTaskLike<C>.
+*/
+template <typename C>
+constexpr bool is_multi_condition_task_v = MultiConditionTaskLike<C>;
 
 
 // ----------------------------------------------------------------------------
@@ -441,7 +760,8 @@ class Task {
   assert(task.name*) == "foo");
   @endcode
   */
-  Task& name(const std::string& name);
+  template <StringLike S>
+  Task& name(S&& name);
 
   /**
   @brief assigns a callable
@@ -471,7 +791,7 @@ class Task {
   /**
   @brief creates a module task from a taskflow
 
-  @tparam T object type
+  @tparam T type satisfying tf::GraphLike
   @param object a custom object that defines @c T::graph() method
 
   @return @c *this
@@ -485,8 +805,31 @@ class Task {
   To understand how %Taskflow schedules a module task including how to create a schedulable graph,
   pleas refer to @ref CreateACustomComposableGraph.
   */
-  template <typename T>
+  template <GraphLike T>
   Task& composed_of(T& object);
+  
+  /**
+  @brief creates a module task from a graph by taking over its ownership
+  
+  @param graph the graph to adopt (moved into the task)
+  
+  @return a Task handle to the adopted module task
+  
+  Unlike tf::Task::composed_of, which references an externally-owned
+  tf::Taskflow, @c adopt transfers ownership of the given tf::Graph into
+  the task. The graph's lifetime is managed by the executor once adopted,
+  and the caller has no access to the moved-from graph afterward.
+  
+  @code{.cpp}
+  tf::Taskflow taskflow;
+  tf::Graph g;
+  tf::FlowBuilder{g}.emplace([]{ std::cout << "task in adopted graph\n"; });
+  taskflow.adopt(std::move(g)).name("adopted");
+  @endcode
+  
+  @note Please refer to @ref ComposableTasking for details.
+  */
+  Task& adopt(tf::Graph&& graph);
 
   /**
   @brief adds precedence links from this to other tasks
@@ -656,6 +999,53 @@ class Task {
 
   */
   Task& data(void* data);
+
+
+  /**
+  @brief assigns a priority level to the task
+
+  @param p the priority level (tf::TaskPriority::HIGH, tf::TaskPriority::NORMAL, or tf::TaskPriority::LOW)
+  @return @c *this
+
+  A task with a higher priority (lower numerical value) will be executed
+  before tasks with lower priority (higher numerical value) when they are
+  both ready to run.
+
+  @note
+  Priority scheduling is only active when the library is built with
+  @c TF_ENABLE_TASK_PRIORITY defined. Otherwise this call is a no-op and
+  all tasks are scheduled at the default (highest) priority.
+
+  @code{.cpp}
+  tf::Taskflow taskflow;
+  auto [A, B, C] = taskflow.emplace(
+    [](){},
+    [](){},
+    [](){}
+  );
+  A.priority(tf::TaskPriority::HIGH);
+  B.priority(tf::TaskPriority::NORMAL);
+  C.priority(tf::TaskPriority::LOW);
+  @endcode
+  */
+  Task& priority(TaskPriority p);
+
+  /**
+  @brief queries the priority level of the task
+
+  @return the priority level of the task
+
+  @note
+  When the library is built without @c TF_ENABLE_TASK_PRIORITY, priorities
+  are not stored and this always returns tf::TaskPriority::HIGH.
+
+  @code{.cpp}
+  tf::Task task = taskflow.emplace([](){});
+  task.priority(tf::TaskPriority::HIGH);
+  assert(task.priority() == tf::TaskPriority::HIGH);
+  @endcode
+  */
+  TaskPriority priority() const;
   
   /**
   @brief resets the task handle to null
@@ -944,9 +1334,15 @@ Task& Task::remove_successors(Ts&&... tasks) {
 }
 
 // Function: composed_of
-template <typename T>
-Task& Task::composed_of(T& object) {
-  _node->_handle.emplace<Node::Module>(object);
+template <GraphLike T>
+Task& Task::composed_of(T& target) {
+  _node->_handle.emplace<Node::Module>(retrieve_graph(target));
+  return *this;
+}
+
+// Function: adopt
+inline Task& Task::adopt(Graph&& graph) {
+  _node->_handle.emplace<Node::AdoptedModule>(std::move(graph));
   return *this;
 }
 
@@ -973,8 +1369,9 @@ inline bool Task::operator != (const Task& rhs) const {
 }
 
 // Function: name
-inline Task& Task::name(const std::string& name) {
-  _node->_name = name;
+template <StringLike S>
+Task& Task::name(S&& name) {
+  _node->_name = std::forward<S>(name);
   return *this;
 }
 
@@ -1092,6 +1489,7 @@ inline TaskType Task::type() const {
     case Node::CONDITION:             return TaskType::CONDITION;
     case Node::MULTI_CONDITION:       return TaskType::CONDITION;
     case Node::MODULE:                return TaskType::MODULE;
+    case Node::ADOPTED_MODULE:        return TaskType::MODULE;
     case Node::ASYNC:                 return TaskType::ASYNC;
     case Node::DEPENDENT_ASYNC:       return TaskType::ASYNC;
     default:                          return TaskType::UNDEFINED;
@@ -1170,6 +1568,26 @@ inline void* Task::data() const {
 // Function: data
 inline Task& Task::data(void* data) {
   _node->_data = data;
+  return *this;
+}
+
+
+// Function: priority
+inline TaskPriority Task::priority() const {
+#ifdef TF_ENABLE_TASK_PRIORITY
+  // priority bits are stored directly as the TaskPriority value
+  // (HIGH=0, NORMAL=1, LOW=2); an unset priority reads back as HIGH
+  return static_cast<TaskPriority>(_node->priority());
+#else
+  return TaskPriority::HIGH;
+#endif
+}
+
+// Function: priority
+inline Task& Task::priority([[maybe_unused]] TaskPriority p) {
+#ifdef TF_ENABLE_TASK_PRIORITY
+  _node->_set_priority(p);
+#endif
   return *this;
 }
 
@@ -1305,6 +1723,7 @@ inline TaskType TaskView::type() const {
     case Node::CONDITION:             return TaskType::CONDITION;
     case Node::MULTI_CONDITION:       return TaskType::CONDITION;
     case Node::MODULE:                return TaskType::MODULE;
+    case Node::ADOPTED_MODULE:        return TaskType::MODULE;
     case Node::ASYNC:                 return TaskType::ASYNC;
     case Node::DEPENDENT_ASYNC:       return TaskType::ASYNC;
     default:                          return TaskType::UNDEFINED;
@@ -1346,6 +1765,51 @@ namespace std {
 @struct hash
 
 @brief hash specialization for std::hash<tf::Task>
+
+The hash value of a tf::Task is computed based on the underlying task node pointer.
+Two tf::Task objects have the same hash value if and only if they reference the
+same underlying node in the taskflow graph.
+
+@par Equality and Inequality
+
+Two tf::Task objects are:
+  - **Equal in hash**: when they reference the same task node (same pointer)
+  - **Unequal in hash**: when they reference different task nodes
+
+tf::Task objects created from different taskflow calls or different task
+insertions will have different hash values, even if they represent logically
+similar work. 
+The hash function is based on the associated object identity 
+(i.e., underlying node pointer), not semantic equivalence.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+// Create two tasks
+tf::Task task1 = taskflow.emplace([]() { std::cout << "Task 1\n"; });
+tf::Task task2 = taskflow.emplace([]() { std::cout << "Task 2\n"; });
+
+// Create a copy reference to task1
+tf::Task task1_copy = task1;
+
+// Hash values
+assert(std::hash<tf::Task>{}(task1) == std::hash<tf::Task>{}(task1_copy));
+  // task1 and task1_copy reference the same node → same hash
+
+assert(std::hash<tf::Task>{}(task1) != std::hash<tf::Task>{}(task2));
+  // task1 and task2 are different nodes → different hashes
+
+// Use in hash-based containers
+std::unordered_set<tf::Task> task_set;
+task_set.insert(task1);
+task_set.insert(task2);
+assert(task_set.size() == 2);  // Both tasks stored
+
+task_set.insert(task1_copy);
+assert(task_set.size() == 2);  // task1_copy is same node as task1, no new insertion
+@endcode
+
+@see tf::Task::hash_value() for obtaining the hash value directly.
 */
 template <>
 struct hash<tf::Task> {
@@ -1354,10 +1818,60 @@ struct hash<tf::Task> {
   }
 };
 
+
+
 /**
 @struct hash
 
 @brief hash specialization for std::hash<tf::TaskView>
+
+The hash value of a tf::TaskView is computed based on the underlying task node
+address. Two tf::TaskView objects have the same hash value if and only if they
+reference the same underlying node in the taskflow graph.
+The hash function is based on the associated object identity 
+(i.e., underlying node pointer), not semantic equivalence.
+
+@par Equality and Inequality
+
+Two tf::TaskView objects are:
+  - **Equal in hash**: when they reference the same task node
+  - **Unequal in hash**: when they reference different task nodes
+
+Since tf::TaskView is a lightweight read-only view (typically passed by reference
+or returned by graph traversal functions), hash equality follows the same node
+identity principle as tf::Task: it depends on which task node is being viewed,
+not on any semantic property of the task.
+
+@code{.cpp}
+tf::Taskflow taskflow;
+
+tf::Task task1 = taskflow.emplace([]() {});
+tf::Task task2 = taskflow.emplace([]() {});
+
+// TaskView can be created from Task (implicit conversion)
+tf::TaskView view1 = task1;
+tf::TaskView view2 = task2;
+tf::TaskView view1_copy = task1;  // Another view of the same node
+
+// Hash values
+assert(std::hash<tf::TaskView>{}(view1) == std::hash<tf::TaskView>{}(view1_copy));
+  // Both views reference the same node → same hash
+
+assert(std::hash<tf::TaskView>{}(view1) != std::hash<tf::TaskView>{}(view2));
+  // Different nodes → different hashes
+
+// TaskView and Task hash to the same value for the same node
+assert(std::hash<tf::TaskView>{}(view1) == std::hash<tf::Task>{}(task1));
+  // view1 and task1 reference the same node → same hash
+
+// Use in hash-based containers
+std::unordered_map<tf::TaskView, int> task_map;
+task_map[view1] = 10;
+task_map[view2] = 20;
+assert(task_map[view1_copy] == 10);  // view1_copy views same node as view1
+@endcode
+
+@see tf::TaskView::hash_value() for obtaining the hash value directly.
 */
 template <>
 struct hash<tf::TaskView> {
@@ -1367,6 +1881,3 @@ struct hash<tf::TaskView> {
 };
 
 }  // end of namespace std ----------------------------------------------------
-
-
-

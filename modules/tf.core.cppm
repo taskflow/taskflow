@@ -8,7 +8,6 @@ module;
 #include <taskflow/core/flow_builder.hpp>
 #include <taskflow/core/graph.hpp>
 #include <taskflow/core/nonblocking_notifier.hpp>
-#include <taskflow/core/observer.hpp>
 #include <taskflow/core/runtime.hpp>
 #include <taskflow/core/semaphore.hpp>
 #include <taskflow/core/task_group.hpp>
@@ -17,6 +16,7 @@ module;
 #include <taskflow/core/topology.hpp>
 #include <taskflow/core/worker.hpp>
 #include <taskflow/core/wsq.hpp>
+#include <taskflow/observer/chrome.hpp>
 
 export module tf:core;
 
@@ -35,7 +35,7 @@ export namespace tf {
     using tf::NodeBase;
     using tf::Node;
     using tf::ExplicitAnchorGuard;
-    using tf::has_graph;
+    using tf::HasGraph;
     using tf::NonblockingNotifier;
     using tf::observer_stamp_t;
     using tf::Segment;
@@ -51,9 +51,6 @@ export namespace tf {
     using tf::Semaphore;
     using tf::TaskGroup;
     using tf::TaskType;
-    using tf::is_static_task;
-    using tf::is_subflow_task;
-    using tf::is_runtime_task;
     using tf::Task;
     using tf::TaskView;
     using tf::Taskflow;
@@ -67,7 +64,6 @@ export namespace tf {
     using tf::BoundedWSQ;
     
     using tf::is_task_params_v;
-    using tf::has_graph_v;
     using tf::TASK_TYPES;
     using tf::is_static_task_v;
     using tf::is_subflow_task_v;

@@ -10,6 +10,26 @@
 #include <taskflow/algorithm/module.hpp>
 
 // ----------------------------------------------------------------------------
+// Concept
+// ----------------------------------------------------------------------------
+
+TEST_CASE("Concept.AsyncTaskHandleLike" * doctest::timeout(300)) {
+
+  // AsyncTask.
+  static_assert(tf::AsyncTaskHandleLike<tf::AsyncTask>);
+  static_assert(tf::AsyncTaskHandleLike<tf::AsyncTask&>);
+  static_assert(tf::AsyncTaskHandleLike<const tf::AsyncTask>);
+  static_assert(tf::AsyncTaskHandleLike<const tf::AsyncTask&>);
+  static_assert(tf::AsyncTaskHandleLike<tf::AsyncTask&&>);
+
+  // Non-AsyncTask.
+  static_assert(!tf::AsyncTaskHandleLike<int>);
+  static_assert(!tf::AsyncTaskHandleLike<double>);
+  static_assert(!tf::AsyncTaskHandleLike<void>);
+  static_assert(!tf::AsyncTaskHandleLike<std::nullptr_t>);
+}
+
+// ----------------------------------------------------------------------------
 // null dependent-async task
 // ----------------------------------------------------------------------------
 

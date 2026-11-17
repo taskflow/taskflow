@@ -1,0 +1,53 @@
+digraph InclusiveScan {
+
+  rankdir = TB;
+  graph [fontname="Courier New", fontsize=12, ranksep=0.55, nodesep=0.05];
+  node  [fontname="Courier New", fontsize=12, style=filled, shape=box,
+         height=0.35, margin="0.10,0.05"];
+  edge  [arrowsize=0.7];
+
+  sp1 [style=invis, width=0.01, height=0.01, label=""];
+  sp2 [style=invis, width=0.01, height=0.01, label=""];
+  sp1 -> sp2 [style=invis, weight=50];
+
+  // ── input row ─────────────────────────────────────────────────────────────
+  { rank=same;
+    sp1;
+    lbl_in [label="input", shape=plaintext, fillcolor=white,
+            fontname="Helvetica Bold", fontsize=12, width=0.9];
+    i0 [label="1",  fillcolor="#fde8d0", width=0.42];
+    i1 [label="2",  fillcolor="#fde8d0", width=0.42];
+    i2 [label="3",  fillcolor="#fde8d0", width=0.42];
+    i3 [label="4",  fillcolor="#fde8d0", width=0.42];
+    i4 [label="-2", fillcolor="#fde8d0", width=0.42];
+    i5 [label="1",  fillcolor="#fde8d0", width=0.42];
+    i6 [label="8",  fillcolor="#fde8d0", width=0.42];
+    lbl_in->i0->i1->i2->i3->i4->i5->i6 [style=invis];
+  }
+
+  // ── inclusive output row ──────────────────────────────────────────────────
+  { rank=same;
+    sp2;
+    lbl_out [label="inclusive\nscan", shape=plaintext, fillcolor=white,
+             fontname="Helvetica Bold", fontsize=12, width=0.9];
+    o0 [label="1",  fillcolor="#d4edda", width=0.42];
+    o1 [label="3",  fillcolor="#d4edda", width=0.42];
+    o2 [label="6",  fillcolor="#d4edda", width=0.42];
+    o3 [label="10", fillcolor="#d4edda", width=0.42];
+    o4 [label="8",  fillcolor="#d4edda", width=0.42];
+    o5 [label="9",  fillcolor="#d4edda", width=0.42];
+    o6 [label="17", fillcolor="#d4edda", width=0.42];
+    lbl_out->o0->o1->o2->o3->o4->o5->o6 [style=invis];
+  }
+
+  // ── arrows: output[k] includes input[k] ───────────────────────────────────
+  edge [color="#2a7a2a", style=solid, weight=1];
+  i0 -> o0;
+  i1 -> o1;
+  i2 -> o2;
+  i3 -> o3;
+  i4 -> o4;
+  i5 -> o5;
+  i6 -> o6;
+}
+

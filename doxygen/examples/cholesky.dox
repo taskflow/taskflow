@@ -1,0 +1,278 @@
+namespace tf {
+
+/** @page ExamplesCholesky Blocked Cholesky Factorization
+
+We implement a parallel blocked Cholesky factorization using a static
+tf::Taskflow task graph.
+This example shows how a classic dense linear algebra algorithm with a
+rich, irregular dependency structure maps naturally onto %Taskflow's
+task graph model.
+
+@tableofcontents
+
+@section CholeskyMotivation Motivation
+
+Many scientific and engineering applications need to solve a linear system
+@c Ax=b where @c A is symmetric positive definite (SPD): structural
+mechanics, Gaussian process regression, Kalman filtering, and
+interior-point optimization all reduce to this problem at their core.
+The standard approach is to first factor @c A into @c A=L*L^T (Cholesky
+decomposition), where @c L is a lower-triangular matrix, and then solve
+two triangular systems.
+The factorization dominates the cost, so making it fast is critical.
+
+To understand why task graph parallelism is the right model here, consider
+a small concrete example.
+Take a 4x4 matrix tiled into 2x2 blocks of size 2x2 each, giving a 2x2
+grid of tiles:
+
+@code
+  Tile layout (lower triangle only, since A is symmetric):
+
+        col 0    col 1
+  row 0 [ A00 ]
+  row 1 [ A10 ] [ A11 ]
+@endcode
+
+The goal is to compute the Cholesky factor @c L in-place, one diagonal tile at a time.
+Here, each elimination step @c k corresponds to factorizing the @c k-th diagonal tile and using it to update all tiles below and to the right of it in the lower triangle.
+
+<b>Elimination step `k=0`:</b> The first step is to factorize the top-left diagonal tile in-place.
+
+@code
+  potrf(A00)   // A00 <- chol(A00), produces L00
+@endcode
+
+Once @c potrf(A00) completes, tile @c A10 can be updated independently
+using the freshly computed @c L00:
+
+@code
+  trsm(A10, L00)   // A10 <- A10 * L00^{-T}, produces L10
+@endcode
+
+With @c L10 in hand, the trailing submatrix must be prepared for the
+next elimination step.
+The diagonal tile @c A11 is updated by subtracting the outer product of
+@c L10 from itself:
+
+@code
+  syrk(A11, L10)   // A11 <- A11 - L10 * L10^T
+@endcode
+
+There are no off-diagonal tiles below step `k=0` in this 2x2 example,
+so there is no @c gemm task here.
+
+<b>Elimination step `k=1`:</b> Now that @c syrk has updated @c A11, the second diagonal tile can be factorized.
+
+@code
+  potrf(A11)   // A11 <- chol(A11), produces L11
+@endcode
+
+There are no further sub-diagonal tiles in a 2x2 grid, so factorization
+is complete.
+The lower triangle now holds @c L:
+
+@code
+  L = [ L00   0  ]
+      [ L10  L11 ]
+@endcode
+
+@par Why this creates a DAG, not a serial chain?
+
+Notice that `syrk(A11, L10)` and @c potrf(A11) are strictly ordered
+(@c syrk must finish before @c potrf can begin), but in a larger tiling with more steps, many @c trsm, @c syrk, and @c gemm tasks across different columns
+have no dependency on each other at all and can run simultaneously.
+For a matrix tiled into T blocks, the number of tasks is T @c potrf + T*(T-1) @c trsm +
+T*(T-1) @c syrk + T*(T-1)*(T-2)/6 @c gemm tasks, and the graph widens
+significantly as T grows.
+As a consequence, a static tf::Taskflow captures this full dependency structure at
+construction time, giving the scheduler complete visibility to maximize
+parallelism across all elimination steps.
+The full DAG is determined by the tile dimensions alone, not by the matrix
+values, so it can be constructed once before any computation begins and
+executed by the scheduler without further coordination.
+
+@section CholeskyAlgorithm The Blocked Algorithm
+
+Given an SPD matrix @c A of size `NxN` tiled into `TxT` blocks of size `bxb`
+(so `N=T*b`), the blocked Cholesky algorithm sweeps down the diagonal one
+elimination step at a time.
+At step @c k it performs four kinds of operations on tiles, each of
+which becomes one task in the graph:
+
+  + `potrf(k, k)`: Cholesky factorization of the diagonal tile `(k, k)`.
+  This is the only serial bottleneck of each step and must complete before
+  any other work at step @c k can begin.
+  + `trsm(i, k)`: Triangular solve that updates the sub-diagonal tile
+  `(i, k)` using the just-factored diagonal tile `(k, k)`, for each @c i>k.
+  All T-k-1 @c trsm tasks within the same step are independent of each other and
+  can run in parallel.
+  + `syrk(i, k)`: Symmetric rank-b update that subtracts the outer product
+  of tile `(i, k)` from the diagonal tile `(i, i)`, for each @c i>k.
+  Prepares the diagonal tile for its own future @c potrf.
+  + `gemm(i, j, k)`: General rank-b update that subtracts the product of
+  tiles `(i, k)` and `(j, k)` from the off-diagonal tile `(i, j)`, for each
+  @c i>j>k. Prepares the off-diagonal tile for its own future @c trsm.
+
+The algorithm repeats for `k=0, 1,..., T-1`.
+
+@section CholeskyTaskGraph Task Graph Structure
+
+The dependency graph for a 4-panel blocked Cholesky is shown below.
+Each node represents one tile-level task.
+Nodes are coloured by type: @c potrf (peach), @c trsm (blue), @c syrk (green),
+and @c gemm (yellow).
+Edges represent data dependencies: a task may not begin until all its
+predecessors have written their output tiles.
+
+@dotfile images/cholesky.dot
+
+The dependency graph for a blocked Cholesky with T=4 is shown below.
+Each node represents one tile-level task.
+Nodes are coloured by type: @c potrf (peach), @c trsm (blue), @c syrk (green),
+and @c gemm (yellow).
+Edges represent data dependencies: a task may not begin until all its
+predecessors have written their output tiles.
+The parallelism grows as factorization progresses down the diagonal and
+then narrows again as the matrix is exhausted.
+
+@section CholeskyImplementation Implementation
+
+We construct the full task graph before execution.
+Each tile is identified by its `(row, column)` indices; each task captures
+references to the relevant tiles and calls the corresponding BLAS routine.
+For clarity the code below uses placeholder functions in place of actual
+BLAS calls:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+// Tile storage: tiles[i][j] is a b*b column-major float array.
+// Only the lower triangle (i >= j) is referenced.
+using Tile = std::vector<float>;
+
+void potrf(Tile& A);                   // Cholesky of diagonal tile
+void trsm (Tile& L, Tile& B);          // B <- L^{-1} B
+void syrk (Tile& A, Tile& C);          // C <- C - A * A^T
+void gemm (Tile& A, Tile& B, Tile& C); // C <- C - A * B^T
+
+int main() {
+
+  const int T = 4;   // number of tile blocks along each dimension
+  const int b = 64;  // tile size (b x b elements)
+
+  // allocate lower-triangular tile storage
+  std::vector<std::vector<Tile>> tiles(T, std::vector<Tile>(T));
+  for(int i = 0; i < T; i++)
+    for(int j = 0; j <= i; j++)
+      tiles[i][j].resize(b * b, 0.0f);
+
+  // ... initialize tiles from the input matrix ...
+
+  tf::Taskflow taskflow;
+  tf::Executor executor;
+
+  std::vector<tf::Task> potrf_tasks(T);
+  std::vector<std::vector<tf::Task>> trsm_tasks(T, std::vector<tf::Task>(T));
+  std::vector<std::vector<tf::Task>> syrk_tasks(T, std::vector<tf::Task>(T));
+  std::vector<std::vector<std::vector<tf::Task>>> gemm_tasks(
+    T, std::vector<std::vector<tf::Task>>(T, std::vector<tf::Task>(T))
+  );
+
+  // create all tasks and wire dependencies
+  for(int k = 0; k < T; k++) {
+
+    // potrf on the diagonal tile (k, k)
+    potrf_tasks[k] = taskflow.emplace([&, k]() {
+      potrf(tiles[k][k]);
+    }).name("potrf(" + std::to_string(k) + "," + std::to_string(k) + ")");
+
+    // trsm: update each sub-diagonal tile in column k
+    for(int i = k + 1; i < T; i++) {
+      trsm_tasks[k][i] = taskflow.emplace([&, k, i]() {
+        trsm(tiles[k][k], tiles[i][k]);
+      }).name("trsm(" + std::to_string(i) + "," + std::to_string(k) + ")");
+
+      // trsm depends on potrf of the same step
+      potrf_tasks[k].precede(trsm_tasks[k][i]);
+    }
+
+    // syrk: update diagonal tile (i,i) using column tile (i,k)
+    for(int i = k + 1; i < T; i++) {
+      syrk_tasks[k][i] = taskflow.emplace([&, k, i]() {
+        syrk(tiles[i][k], tiles[i][i]);
+      }).name("syrk(" + std::to_string(i) + "," + std::to_string(k) + ")");
+
+      // syrk depends on trsm of the same tile
+      trsm_tasks[k][i].precede(syrk_tasks[k][i]);
+      // syrk feeds the next potrf on the diagonal
+      syrk_tasks[k][i].precede(potrf_tasks[i]);
+    }
+
+    // gemm: update off-diagonal tile (i,j) using column tiles (i,k) and (j,k)
+    for(int i = k + 1; i < T; i++) {
+      for(int j = k + 1; j < i; j++) {
+        gemm_tasks[k][i][j] = taskflow.emplace([&, k, i, j]() {
+          gemm(tiles[i][k], tiles[j][k], tiles[i][j]);
+        }).name("gemm(" + std::to_string(i) + "," +
+                          std::to_string(j) + "," +
+                          std::to_string(k) + ")");
+
+        // gemm depends on trsm of both contributing column tiles
+        trsm_tasks[k][i].precede(gemm_tasks[k][i][j]);
+        trsm_tasks[k][j].precede(gemm_tasks[k][i][j]);
+        // gemm feeds the trsm that will later process tile (i,j)
+        gemm_tasks[k][i][j].precede(trsm_tasks[j][i]);
+      }
+    }
+  }
+
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+@section CholeskyDesignPoints Design Points
+
+Several design choices here are worth noting, which also apply broadly
+to other blocked dense linear algebra factorizations:
+
+  + Static task graph construction: The entire task graph is wired before
+tf::Executor::run is called.
+Because the dependency structure depends only on T (the tile count),
+not on the matrix values, all tasks and edges are known at construction
+time.
+This makes static tf::Taskflow the right tool: the scheduler sees the
+full graph from the start and can make globally optimal scheduling
+decisions, such as prioritizing the critical path down the diagonal.
+
+  + Critical path awareness: The critical path runs through the sequence
+`potrf(0, 0)` -> `trsm(1, 0)` -> `syrk(0, 1)` -> `potrf(1, 1)` -> ... -> `potrf(T-1, T-1)`.
+Every other task is off this path and can be scheduled opportunistically.
+%Taskflow's work-stealing scheduler naturally keeps workers busy with
+off-path tasks while the critical-path tasks proceed as fast as possible.
+
+  + %Task granularity: Each task operates on one `bxb` tile.
+If @c b is too small, task scheduling overhead dominates.
+If @c b is too large, there is not enough parallelism in the early steps.
+A tile size of 128 to 256 is typical for modern CPUs; the right value
+depends on cache size and the number of workers.
+
+  + Lower-triangular tile storage: Only tiles `(i, j)` with @c i>=j are
+allocated and referenced, which halves memory usage and keeps the tile
+indexing consistent with the mathematical convention that @c L is lower
+triangular.
+
+@note
+The task graph shown in the figure is for T=4 and contains 20
+tasks and 30 dependency edges.
+For T tile blocks in general, the total task count is T @c potrf tasks,
+T*(T-1) @c trsm tasks, T*(T-1) @c syrk tasks, and T*(T-1)*(T-2)/6 @c gemm tasks.
+The degree of parallelism peaks near the middle steps.
+Real implementations with T=32 or more generate thousands of tasks
+and achieve near-linear scaling on multi-core CPUs.
+
+*/
+
+}

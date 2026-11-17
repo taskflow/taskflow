@@ -35,6 +35,44 @@
 namespace tf {
 
 // ----------------------------------------------------------------------------
+// Work-stealing queue steal protocol sentinels
+//
+// These free functions define the sentinel value used by steal operations
+// across all work-stealing queue types (BoundedWSQ, UnboundedWSQ). They encode
+// the result of a steal attempt into the return value itself, avoiding any
+// out-parameter or separate status type.
+//
+// For pointer types T:
+//   wsq_empty_value<T>() = nullptr  — queue was empty (or CAS was lost)
+//
+// The sentinel nullptr is returned whenever steal() cannot deliver a task,
+// whether due to the queue being genuinely empty or losing a concurrent CAS
+// race to another thief.
+//
+// For non-pointer types T, std::nullopt is returned to indicate the absence
+// of a value.
+//
+// Queue classes expose this as a static member function (empty_value) that
+// delegates here, so callers can use either form.
+// ----------------------------------------------------------------------------
+
+/**
+@brief returns the empty sentinel for work-stealing steal operations
+
+For pointer types @c T, returns @c nullptr. For non-pointer types, returns
+@c std::nullopt. A steal operation returning this value means no task could
+be stolen (either the queue was empty or the CAS was lost to another thief).
+*/
+template <typename T>
+constexpr auto wsq_empty_value() {
+  if constexpr (std::is_pointer_v<T>) {
+    return T{nullptr};
+  } else {
+    return std::optional<T>{std::nullopt};
+  }
+}
+
+// ----------------------------------------------------------------------------
 // Unbounded Work-stealing Queue (WSQ)
 // ----------------------------------------------------------------------------
 
@@ -95,7 +133,7 @@ class UnboundedWSQ {
     }
 
     Array* resize(int64_t b, int64_t t) {
-      Array* ptr = new Array {2*C};
+      Array* ptr = new Array(2*C);
       for(int64_t i=t; i!=b; ++i) {
         ptr->push(i, pop(i));
       }
@@ -104,7 +142,7 @@ class UnboundedWSQ {
 
     Array* resize(int64_t b, int64_t t, size_t N) {
       // assert(N>0);
-      Array* ptr = new Array {std::bit_ceil(C + N)};
+      Array* ptr = new Array(std::bit_ceil(C + N));
       for(int64_t i=t; i!=b; ++i) {
         ptr->push(i, pop(i));
       }
@@ -115,7 +153,16 @@ class UnboundedWSQ {
 
   alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _top;
   alignas(TF_CACHELINE_SIZE) std::atomic<int64_t> _bottom;
-  std::atomic<Array*> _array;
+  
+  // Owner-private cached upper bound on _top.  Never read by thieves.
+  // Because _top is never decremented, the real occupancy can only be
+  // smaller than what is computed using this cached value, so using it
+  // for the overflow check is always safe.
+  int64_t _cached_top {0};
+
+  // _array on its own cache line: avoids false-sharing with _bottom when
+  // thieves load _array (consume) after reading _bottom (acquire).
+  alignas(TF_CACHELINE_SIZE) std::atomic<Array*> _array;
   std::vector<Array*> _garbage;
 
   public:
@@ -274,9 +321,9 @@ class UnboundedWSQ {
   Any threads can try to steal an item from the queue.
   The return can be an empty_value() if this operation failed.
   The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
+
   @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
+  tf::UnboundedWSQ<int> wsq(10);
   wsq.push(1);
   wsq.push(2);
   wsq.push(3);
@@ -289,36 +336,6 @@ class UnboundedWSQ {
   Multiple threads can simultaneously steal items from the queue.
   */
   value_type steal();
-
-  /**
-  @brief attempts to steal a task with feedback on the emptiness of the queue
-  
-  @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
-  
-  This function tries to steal a task from the queue. If the steal attempt
-  is successful, the stolen task is returned. 
-  Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
-  otherwise, `num_empty_steals` is reset to zero.
-  The return can be an empty_value() if this operation failed.
-  The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
-  @code{.cpp}
-  tf::UnboundedWSQ<int> wsq(10);  
-  size_t num_empty_steals(0);
-  assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
-  assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
-  assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
-  assert(num_empty_steals == 3);
-  wsq.push(1);
-  wsq.push(2);
-  wsq.push(3);
-  assert(wsq.steal_with_feedback(num_empty_steals).value() = 1);
-  assert(num_empty_steals == 0);  // successful steal will reset the feedback to 0
-  @endcode
-
-  Multiple threads can simultaneously steal items from the queue.
-  */
-  value_type steal_with_feedback(size_t& num_empty_steals);
   
   /**
   @brief returns the empty sentinel value for the queue element type
@@ -332,13 +349,7 @@ class UnboundedWSQ {
   
   @return an empty `value_type` representing the absence of an element.
   */
-  static constexpr auto empty_value() {
-    if constexpr (std::is_pointer_v<T>) {
-      return T{nullptr};
-    } else {
-      return std::optional<T>{std::nullopt};
-    }
-  }
+  static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
 
   private:
 
@@ -385,12 +396,14 @@ template <typename T>
 void UnboundedWSQ<T>::push(T o) {
 
   int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
 
   // queue is full with one additional item (b-t+1)
-  if (a->capacity() < static_cast<size_t>(b - t + 1)) [[unlikely]] {
-    a = _resize_array(a, b, t);
+  if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+    _cached_top = _top.load(std::memory_order_acquire);
+    if(a->capacity() < static_cast<size_t>(b - _cached_top + 1)) [[unlikely]] {
+      a = _resize_array(a, b, _cached_top);
+    }
   }
 
   a->push(b, o);
@@ -408,12 +421,14 @@ void UnboundedWSQ<T>::bulk_push(I& first, size_t N) {
   if(N == 0) return;
 
   int64_t b = _bottom.load(std::memory_order_relaxed);
-  int64_t t = _top.load(std::memory_order_acquire);
   Array* a = _array.load(std::memory_order_relaxed);
 
   // queue is full with N additional items
-  if ( (b - t + N) > a->capacity() ) [[unlikely]] {
-    a = _resize_array(a, b, t, N);
+  if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+    _cached_top = _top.load(std::memory_order_acquire);
+    if((b - _cached_top + N) > a->capacity()) [[unlikely]] {
+      a = _resize_array(a, b, _cached_top, N);
+    }
   }
 
   for(size_t i=0; i<N; ++i) {
@@ -484,34 +499,6 @@ UnboundedWSQ<T>::steal() {
   return item;
 }
 
-// Function: steal
-template <typename T>
-typename UnboundedWSQ<T>::value_type 
-UnboundedWSQ<T>::steal_with_feedback(size_t& num_empty_steals) {
-  
-  int64_t t = _top.load(std::memory_order_acquire);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t b = _bottom.load(std::memory_order_acquire);
-
-  //T item {nullptr};
-  auto item = empty_value();
-
-  if(t < b) {
-    num_empty_steals = 0;
-    Array* a = _array.load(std::memory_order_consume);
-    item = a->pop(t);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      //return nullptr;
-      return empty_value();
-    }
-  }
-  else {
-    ++num_empty_steals;
-  }
-  return item;
-}
 
 // Function: capacity
 template <typename T>
@@ -748,55 +735,20 @@ class BoundedWSQ {
   */
   value_type steal();
 
-  /**
-  @brief attempts to steal a task with feedback on the emptiness of the queue
-  
-  @param num_empty_steals a reference to a counter tracking consecutive empty steal attempts
-  
-  This function tries to steal a task from the queue. If the steal attempt
-  is successful, the stolen task is returned. 
-  Additionally, if the queue is empty, the provided counter `num_empty_steals` is incremented;
-  otherwise, `num_empty_steals` is reset to zero.
-  The return can be an empty_value() if this operation failed.
-  The elements stolen from the queue follow a first-in-first-out (FIFO) order.
-  
-  @code{.cpp}
-  tf::BoundedWSQ<int, 10> wsq;  
-  size_t num_empty_steals(0);
-  assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
-  assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
-  assert(wsq.steal_with_feedback(num_empty_steals) == std::nullopt);
-  assert(num_empty_steals == 3);
-  wsq.push(1);
-  wsq.push(2);
-  wsq.push(3);
-  assert(wsq.steal_with_feedback(num_empty_steals).value() = 1);
-  assert(num_empty_steals == 0);  // successful steal will reset the feedback to 0
-  @endcode
-
-  Multiple threads can simultaneously steal items from the queue.
-  */
-  value_type steal_with_feedback(size_t& num_empty_steals);
 
   /**
   @brief returns the empty sentinel value for the queue element type
-  
+
   This function provides a type-appropriate empty value used to indicate
   that a pop or steal operation failed. For pointer types, the empty value
   is `nullptr` of type `T`; for non-pointer types, it is `std::nullopt` of type `std::optional<T>`.
-  
+
   The function is implemented as a `constexpr` helper to avoid additional
   storage, runtime overhead, or code duplication across queue operations.
-  
+
   @return an empty `value_type` representing the absence of an element.
   */
-  static constexpr auto empty_value() {
-    if constexpr (std::is_pointer_v<T>) {
-      return T{nullptr};
-    } else {
-      return std::optional<T>{std::nullopt};
-    }
-  }
+  static constexpr auto empty_value()     { return wsq_empty_value<T>();     }
 };
 
 // Function: empty
@@ -921,32 +873,6 @@ BoundedWSQ<T, LogSize>::steal() {
   return item;
 }
 
-// Function: steal
-template <typename T, size_t LogSize>
-typename BoundedWSQ<T, LogSize>::value_type 
-BoundedWSQ<T, LogSize>::steal_with_feedback(size_t& num_empty_steals) {
-  int64_t t = _top.load(std::memory_order_acquire);
-  std::atomic_thread_fence(std::memory_order_seq_cst);
-  int64_t b = _bottom.load(std::memory_order_acquire);
-  
-  //T item {nullptr};
-  auto item = empty_value();
-
-  if(t < b) {
-    num_empty_steals = 0;
-    item = _buffer[t & BufferMask].load(std::memory_order_relaxed);
-    if(!_top.compare_exchange_strong(t, t+1,
-                                     std::memory_order_seq_cst,
-                                     std::memory_order_relaxed)) {
-      //return nullptr;
-      return empty_value();
-    }
-  }
-  else {
-    ++num_empty_steals;
-  }
-  return item;
-}
 
 // Function: capacity
 template <typename T, size_t LogSize>
@@ -954,8 +880,344 @@ constexpr size_t BoundedWSQ<T, LogSize>::capacity() const {
   return BufferSize;
 }
 
+// ----------------------------------------------------------------------------
+// Work-stealing Queue Concept
+// ----------------------------------------------------------------------------
+
+/**
+@brief concept to check if a type supports bounded work-stealing queue operations
+
+A type @c Q satisfies @c BoundedWSQLike if it exposes the three core operations
+required by a bounded work-stealing queue: owner-side pop, thief-side steal, and
+a fallible owner-side push.
+
+@par Requirements
+
+- @c Q::value_type must be defined
+- @c q.pop() must be valid
+- @c q.steal() must be valid
+- @c q.try_push(v) must return @c bool
+
+@par Examples
+
+@code{.cpp}
+// BoundedWSQ satisfies BoundedWSQLike
+static_assert(tf::BoundedWSQLike<tf::BoundedWSQ<int*>>);
+
+// Custom queue type that satisfies the concept
+struct MyQueue {
+  using value_type = int*;
+  value_type pop()           { return nullptr; }
+  value_type steal()         { return nullptr; }
+  bool try_push(value_type)  { return true; }
+};
+static_assert(tf::BoundedWSQLike<MyQueue>);
+@endcode
+*/
+template <typename Q>
+concept BoundedWSQLike = requires(Q& q, typename Q::value_type v) {
+  { q.steal() };
+  { q.pop() };
+  { q.try_push(v) } -> std::same_as<bool>;
+};
+
+// ----------------------------------------------------------------------------
+// Bounded Work-stealing Queue with Priority
+// ----------------------------------------------------------------------------
+
+/**
+@private
+
+@brief default priority function for BoundedPriorityWSQ
+
+Calls `T::priority()` on the element and returns the result as
+a @c size_t. Users may supply a custom priority function in place of this
+default to decouple the queue from any particular element interface.
+*/
+struct DefaultPriorityFn {
+  template <typename T>
+  size_t operator()(const T& item) const {
+    if constexpr (std::is_pointer_v<T>) {
+      return static_cast<size_t>(item->priority());
+    } else {
+      return static_cast<size_t>(item.priority());
+    }
+  }
+};
+
+/**
+@class BoundedPriorityWSQ
+
+@brief class to create a lock-free bounded work-stealing queue with priority support
+
+@tparam Q           underlying bounded work-stealing queue type; must satisfy @c BoundedWSQLike
+@tparam MaxPriority number of priority levels (sub-queues); must be at least 1
+@tparam PriorityFn  callable @c (const element&) -> size_t that maps an item to its
+                    priority index; the returned value must be in @c [0, MaxPriority).
+                    Defaults to @c DefaultPriorityFn.
+
+@c BoundedPriorityWSQ wraps an array of @p MaxPriority sub-queues of type @p Q and
+routes each item to the sub-queue that corresponds to its priority.
+Priority levels are numbered from @c 0 to @c MaxPriority-1 in decreasing order
+of urgency: priority @c 0 is the highest and priority @c MaxPriority-1 is the
+lowest. Pop and steal operations always service sub-queues in ascending index
+order, so higher-priority items are consumed before lower-priority ones.
+
+@code{.cpp}
+// 3-level priority queue with a custom priority function
+auto priority_fn = [](tf::Node* n) -> size_t {
+  // map application-level priority to [0, 3)
+  return n->priority();  // must return 0, 1, or 2
+};
+
+tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3, decltype(priority_fn)> pq(priority_fn);
+
+tf::Node* n = ...;
+pq.try_push(n);
+
+// pop always returns the highest-priority available item
+auto item = pq.pop();
+@endcode
+*/
+template <BoundedWSQLike Q, size_t MaxPriority, typename PriorityFn = DefaultPriorityFn>
+class BoundedPriorityWSQ {
+
+  static_assert(MaxPriority >= 1);
+
+  public:
+
+  /**
+  @brief the return type of pop and steal operations
+
+  Inherits the @c value_type of the underlying queue @p Q.
+  For pointer element types, it is the pointer type itself (using @c nullptr as the
+  empty sentinel); for non-pointer types it is @c std::optional<T>.
+  */
+  using value_type = typename Q::value_type;
+
+  /**
+  @brief constructs the queue with an optional priority function
+
+  @param fn priority function to use; defaults to a default-constructed @p PriorityFn
+  */
+  explicit BoundedPriorityWSQ(PriorityFn fn = {}) : _priority_fn(std::move(fn)) {}
+
+  /**
+  @brief tries to insert an item into the sub-queue determined by its priority
+
+  @tparam O item type (forwarded)
+  @param item the item to insert; @c _priority_fn(item) determines the target sub-queue
+              and must return a value in @c [0, MaxPriority)
+  @return @c true if the item was inserted, @c false if the target sub-queue is full
+
+  @code{.cpp}
+  auto fn = [](tf::Node* n) -> size_t { return n->priority(); };
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3, decltype(fn)> pq(fn);
+  tf::Node* n = ...;
+  bool ok = pq.try_push(n);
+  @endcode
+
+  Only the owner thread may call this method.
+  */
+  template <typename O>
+  bool try_push(O&& item) {
+    return _wsqs[_priority_fn(item)].try_push(std::forward<O>(item));
+  }
+
+  /**
+  @brief tries to insert a batch of items, routing contiguous same-priority runs
+         to the corresponding sub-queue via bulk push
+
+  @tparam I random-access iterator type
+  @param first iterator to the first item; advanced in place by the number of items inserted
+  @param N number of items to insert starting at @p first
+  @return number of items successfully inserted
+
+  Scans @p first for contiguous runs of items that map to the same sub-queue
+  (as determined by @c _priority_fn) and delegates each run to the underlying
+  queue's @c try_bulk_push (a single atomic bottom update per run). Stops
+  immediately if a run is only partially inserted (the target sub-queue became
+  full), leaving @p first pointing at the first uninserted item.
+
+  @code{.cpp}
+  auto fn = [](tf::Node* n) -> size_t { return n->priority(); };
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3, decltype(fn)> pq(fn);
+
+  // Suppose items have priorities: 0 0 0 1 1 2 1 1 1 1 2 2
+  // Bulk push routes:
+  //   queue[0] <- 3 items (priority 0 run)
+  //   queue[1] <- 2 items (priority 1 run)
+  //   queue[2] <- 1 item  (priority 2 run)
+  //   queue[1] <- up to 4 items (priority 1 run); stops early if queue[1] is full
+  std::vector<tf::Node*> batch = ...;
+  auto it = batch.begin();
+  size_t inserted = pq.try_bulk_push(it, batch.size());
+  // it now points to batch.begin() + inserted
+  @endcode
+
+  Only the owner thread may call this method.
+  */
+  template <typename I>
+  size_t try_bulk_push(I& first, size_t N) {
+
+    if(N == 0) return 0;
+
+    size_t remaining = N;
+
+    while(remaining > 0) {
+      size_t q = _priority_fn(first[0]);
+      size_t run_len = 1;
+      while(run_len < remaining && _priority_fn(first[run_len]) == q) {
+        ++run_len;
+      }
+      size_t inserted = _wsqs[q].try_bulk_push(first, run_len);
+      remaining -= inserted;
+      if(inserted < run_len) {
+        break;
+      }
+    }
+
+    return N - remaining;
+  }
+
+  /**
+  @brief pops an item from the highest-priority non-empty sub-queue
+
+  @return the popped item, or @c empty_value() if all sub-queues are empty
+
+  Sub-queues are checked in ascending index order (index 0 is highest priority).
+  The element is removed from the owner (back) end of the selected sub-queue,
+  following last-in-first-out (LIFO) order within each priority level.
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  // ... push items of various priorities ...
+  auto item = pq.pop();  // returns highest-priority available item
+  if(item != tf::BoundedWSQ<tf::Node*>::empty_value()) {
+    // process item
+  }
+  @endcode
+
+  Only the owner thread may call this method.
+  */
+  value_type pop() {
+    value_type result = Q::empty_value();
+    for(size_t p=0; p<MaxPriority && !(result = _wsqs[p].pop()); ++p);
+    return result;
+  }
+
+  /**
+  @brief steals an item from the highest-priority non-empty sub-queue
+
+  @return the stolen item, or @c empty_value() if all sub-queues are empty
+
+  Sub-queues are checked in ascending index order (index 0 is highest priority).
+  The element is removed from the thief (front) end of the selected sub-queue,
+  following first-in-first-out (FIFO) order within each priority level.
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  // ... push items of various priorities ...
+  auto item = pq.steal();  // any thread may steal
+  if(item != tf::BoundedWSQ<tf::Node*>::empty_value()) {
+    // process item
+  }
+  @endcode
+
+  Any thread may call this method concurrently.
+  */
+  value_type steal() {
+    value_type result = Q::empty_value();
+    for(size_t p=0; p<MaxPriority && !(result = _wsqs[p].steal()); ++p);
+    return result;
+  }
+
+  /**
+  @brief queries whether all sub-queues are empty at the time of this call
+
+  @return @c true if every sub-queue is empty, @c false otherwise
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq.empty() == true);
+  tf::Node* n = ...;
+  pq.try_push(n);
+  assert(pq.empty() == false);
+  @endcode
+  */
+  bool empty() const noexcept {
+    bool empty = true;
+    for(size_t i = 0; i < MaxPriority && (empty = _wsqs[i].empty()); ++i);
+    return empty;
+  }
+
+  /**
+  @brief queries the total number of items across all sub-queues at the time of this call
+
+  @return sum of sizes of all @p MaxPriority sub-queues
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq.size() == 0);
+  tf::Node* n = ...;
+  pq.try_push(n);
+  assert(pq.size() == 1);
+  @endcode
+  */
+  size_t size() const noexcept {
+    size_t n = 0;
+    for(size_t i = 0; i < MaxPriority; ++i) {
+      n += _wsqs[i].size();
+    }
+    return n;
+  }
+
+  /**
+  @brief queries the total capacity across all sub-queues
+
+  @return the capacity of one sub-queue multiplied by @p MaxPriority
+
+  @code{.cpp}
+  // Each BoundedWSQ<Node*, 8> holds 256 items; 3 priority levels -> 768 total
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq.capacity() == 256 * 3);
+  @endcode
+  */
+  constexpr size_t capacity() const {
+    return _wsqs[0].capacity() * MaxPriority;
+  }
+
+  /**
+  @brief returns a reference to the sub-queue at the given priority level
+
+  @param priority priority index in @c [0, MaxPriority); @c 0 is the highest priority
+
+  @code{.cpp}
+  tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  // directly access the high-priority sub-queue
+  auto item = pq[0].pop();
+  assert(pq[0].size() == 0);
+  @endcode
+  */
+  Q& operator[](size_t priority) { return _wsqs[priority]; }
+
+  /**
+  @brief returns a const reference to the sub-queue at the given priority level
+
+  @param priority priority index in @c [0, MaxPriority); @c 0 is the highest priority
+
+  @code{.cpp}
+  const tf::BoundedPriorityWSQ<tf::BoundedWSQ<tf::Node*>, 3> pq;
+  assert(pq[0].empty() == true);
+  @endcode
+  */
+  const Q& operator[](size_t priority) const { return _wsqs[priority]; }
+
+  private:
+
+  [[no_unique_address]] PriorityFn _priority_fn;
+  std::array<Q, MaxPriority> _wsqs;
+};
+
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-

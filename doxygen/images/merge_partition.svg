@@ -1,0 +1,135 @@
+<svg viewBox="0 0 780 374" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+
+  <rect width="780" height="374" fill="#FAFAFA" rx="8"/>
+
+  <!-- Title -->
+  <text x="390" y="26" text-anchor="middle" font-size="15" font-weight="bold" fill="#1a1a1a">Parallel merge: 3 workers, seq1=[1,3,5,7,9,11], seq2=[2,4,6,8,10,12]</text>
+  <text x="390" y="44" text-anchor="middle" font-size="12" fill="#555">co_rank identifies independent input slices — each worker calls std::merge with no coordination</text>
+
+  <!-- ── seq1 ── -->
+  <text x="30" y="80" text-anchor="start" font-size="12" font-weight="bold" fill="#2874A6">seq1</text>
+  <!-- W0 slice: [0,2) red -->
+  <rect x="70"  y="66" width="70" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <rect x="140" y="66" width="70" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <!-- W1 slice: [2,4) orange -->
+  <rect x="210" y="66" width="70" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <rect x="280" y="66" width="70" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <!-- W2 slice: [4,6) green -->
+  <rect x="350" y="66" width="70" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="420" y="66" width="70" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+
+  <text x="105"  y="86" text-anchor="middle" font-size="13" fill="#922B21">1</text>
+  <text x="175"  y="86" text-anchor="middle" font-size="13" fill="#922B21">3</text>
+  <text x="245"  y="86" text-anchor="middle" font-size="13" fill="#784212">5</text>
+  <text x="315"  y="86" text-anchor="middle" font-size="13" fill="#784212">7</text>
+  <text x="385"  y="86" text-anchor="middle" font-size="13" fill="#1E5631">9</text>
+  <text x="455"  y="86" text-anchor="middle" font-size="13" fill="#1E5631">11</text>
+
+  <!-- bracket labels for seq1 -->
+  <text x="140"  y="60" text-anchor="middle" font-size="10" fill="#C0392B">W0: [0,2)</text>
+  <text x="280"  y="60" text-anchor="middle" font-size="10" fill="#E67E22">W1: [2,4)</text>
+  <text x="420"  y="60" text-anchor="middle" font-size="10" fill="#1E8449">W2: [4,6)</text>
+
+  <!-- ── seq2 ── -->
+  <text x="30" y="138" text-anchor="start" font-size="12" font-weight="bold" fill="#1E8449">seq2</text>
+  <!-- W0 slice: [0,2) red -->
+  <rect x="70"  y="124" width="70" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <rect x="140" y="124" width="70" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <!-- W1 slice: [2,4) orange -->
+  <rect x="210" y="124" width="70" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <rect x="280" y="124" width="70" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <!-- W2 slice: [4,6) green -->
+  <rect x="350" y="124" width="70" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="420" y="124" width="70" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+
+  <text x="105"  y="144" text-anchor="middle" font-size="13" fill="#922B21">2</text>
+  <text x="175"  y="144" text-anchor="middle" font-size="13" fill="#922B21">4</text>
+  <text x="245"  y="144" text-anchor="middle" font-size="13" fill="#784212">6</text>
+  <text x="315"  y="144" text-anchor="middle" font-size="13" fill="#784212">8</text>
+  <text x="385"  y="144" text-anchor="middle" font-size="13" fill="#1E5631">10</text>
+  <text x="455"  y="144" text-anchor="middle" font-size="13" fill="#1E5631">12</text>
+
+  <!-- bracket labels for seq2 -->
+  <text x="140"  y="118" text-anchor="middle" font-size="10" fill="#C0392B">W0: [0,2)</text>
+  <text x="280"  y="118" text-anchor="middle" font-size="10" fill="#E67E22">W1: [2,4)</text>
+  <text x="420"  y="118" text-anchor="middle" font-size="10" fill="#1E8449">W2: [4,6)</text>
+
+  <!-- ── arrows ── -->
+  <!-- W0 arrow -->
+  <line x1="140" y1="158" x2="140" y2="195" stroke="#C0392B" stroke-width="1.5" marker-end="url(#arr_red)"/>
+  <!-- W1 arrow -->
+  <line x1="315" y1="158" x2="385" y2="195" stroke="#E67E22" stroke-width="1.5" marker-end="url(#arr_orange)"/>
+  <!-- W2 arrow -->
+  <line x1="420" y1="158" x2="595" y2="195" stroke="#1E8449" stroke-width="1.5" marker-end="url(#arr_green)"/>
+
+  <!-- Worker labels -->
+  <text x="28"  y="210" text-anchor="start" font-size="11" font-weight="bold" fill="#C0392B">Worker 0</text>
+  <text x="28"  y="224" text-anchor="start" font-size="10" fill="#C0392B">merge [1,3]+[2,4]</text>
+  <text x="28"  y="238" text-anchor="start" font-size="10" fill="#C0392B">→ out[0..4)</text>
+
+  <text x="298" y="210" text-anchor="start" font-size="11" font-weight="bold" fill="#E67E22">Worker 1</text>
+  <text x="298" y="224" text-anchor="start" font-size="10" fill="#E67E22">merge [5,7]+[6,8]</text>
+  <text x="298" y="238" text-anchor="start" font-size="10" fill="#E67E22">→ out[4..8)</text>
+
+  <text x="548" y="210" text-anchor="start" font-size="11" font-weight="bold" fill="#1E8449">Worker 2</text>
+  <text x="548" y="224" text-anchor="start" font-size="10" fill="#1E8449">merge [9,11]+[10,12]</text>
+  <text x="548" y="238" text-anchor="start" font-size="10" fill="#1E8449">→ out[8..12)</text>
+
+  <!-- ── output ── -->
+  <text x="30" y="278" text-anchor="start" font-size="12" font-weight="bold" fill="#555">output</text>
+  <!-- W0: [0,4) red -->
+  <rect x="70"  y="264" width="50" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <rect x="120" y="264" width="50" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <rect x="170" y="264" width="50" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <rect x="220" y="264" width="50" height="30" fill="#FADBD8" stroke="#C0392B" stroke-width="1.5"/>
+  <!-- W1: [4,8) orange -->
+  <rect x="270" y="264" width="50" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <rect x="320" y="264" width="50" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <rect x="370" y="264" width="50" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <rect x="420" y="264" width="50" height="30" fill="#FDEBD0" stroke="#E67E22" stroke-width="1.5"/>
+  <!-- W2: [8,12) green -->
+  <rect x="470" y="264" width="50" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="520" y="264" width="50" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="570" y="264" width="50" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+  <rect x="620" y="264" width="50" height="30" fill="#D5F5E3" stroke="#1E8449" stroke-width="1.5"/>
+
+  <text x="95"  y="284" text-anchor="middle" font-size="12" fill="#922B21">1</text>
+  <text x="145" y="284" text-anchor="middle" font-size="12" fill="#922B21">2</text>
+  <text x="195" y="284" text-anchor="middle" font-size="12" fill="#922B21">3</text>
+  <text x="245" y="284" text-anchor="middle" font-size="12" fill="#922B21">4</text>
+  <text x="295" y="284" text-anchor="middle" font-size="12" fill="#784212">5</text>
+  <text x="345" y="284" text-anchor="middle" font-size="12" fill="#784212">6</text>
+  <text x="395" y="284" text-anchor="middle" font-size="12" fill="#784212">7</text>
+  <text x="445" y="284" text-anchor="middle" font-size="12" fill="#784212">8</text>
+  <text x="495" y="284" text-anchor="middle" font-size="12" fill="#1E5631">9</text>
+  <text x="545" y="284" text-anchor="middle" font-size="12" fill="#1E5631">10</text>
+  <text x="595" y="284" text-anchor="middle" font-size="12" fill="#1E5631">11</text>
+  <text x="645" y="284" text-anchor="middle" font-size="12" fill="#1E5631">12</text>
+
+  <!-- flat index labels -->
+  <text x="95"  y="308" text-anchor="middle" font-size="9" fill="#888">[0]</text>
+  <text x="145" y="308" text-anchor="middle" font-size="9" fill="#888">[1]</text>
+  <text x="195" y="308" text-anchor="middle" font-size="9" fill="#888">[2]</text>
+  <text x="245" y="308" text-anchor="middle" font-size="9" fill="#888">[3]</text>
+  <text x="295" y="308" text-anchor="middle" font-size="9" fill="#888">[4]</text>
+  <text x="345" y="308" text-anchor="middle" font-size="9" fill="#888">[5]</text>
+  <text x="395" y="308" text-anchor="middle" font-size="9" fill="#888">[6]</text>
+  <text x="445" y="308" text-anchor="middle" font-size="9" fill="#888">[7]</text>
+  <text x="495" y="308" text-anchor="middle" font-size="9" fill="#888">[8]</text>
+  <text x="545" y="308" text-anchor="middle" font-size="9" fill="#888">[9]</text>
+  <text x="595" y="308" text-anchor="middle" font-size="9" fill="#888">[10]</text>
+  <text x="645" y="308" text-anchor="middle" font-size="9" fill="#888">[11]</text>
+
+  <!-- bottom note -->
+  <rect x="14" y="320" width="752" height="46" rx="5" fill="#EBF5FB" stroke="#2874A6" stroke-width="1"/>
+  <text x="390" y="336" text-anchor="middle" font-size="12" fill="#1a5276">Each worker writes to a non-overlapping output region — no mutex, no atomic, no synchronization needed.</text>
+  <text x="390" y="350" text-anchor="middle" font-size="11" fill="#555">co_rank(4)=(2,2) and co_rank(8)=(4,4) identify the exact input sub-ranges for each worker boundary.</text>
+
+  <!-- arrow markers -->
+  <defs>
+    <marker id="arr_red"    markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#C0392B"/></marker>
+    <marker id="arr_orange" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#E67E22"/></marker>
+    <marker id="arr_green"  markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#1E8449"/></marker>
+  </defs>
+
+</svg>

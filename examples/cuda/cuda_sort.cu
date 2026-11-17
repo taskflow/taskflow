@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
   auto beg = std::chrono::steady_clock::now();
   tf::cudaStream s;
   auto bufsz = tf::cuda_sort_buffer_size<decltype(p), int>(N);
-  tf::cudaDeviceVector<std::byte> buf(bufsz);
+  std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(bufsz);
   tf::cuda_sort(p, d_keys, d_keys+N, tf::cuda_less<int>{}, buf.data());
   s.synchronize();
   auto end = std::chrono::steady_clock::now();

@@ -1,0 +1,30 @@
+digraph PERT {
+  rankdir=LR;
+  graph [fontname="Helvetica", fontsize=10, splines=true, nodesep=0.5, ranksep=0.7];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.30, margin="0.10,0.05"];
+  edge  [arrowsize=0.6, color="#555555", fontname="Helvetica", fontsize=8];
+
+  // tasks
+  A  [label="A: Requirements\n(3 d)",  fillcolor="#cce5ff"];
+  B  [label="B: Architecture\n(2 d)",  fillcolor="#d4edda"];
+  C  [label="C: UI Mockups\n(2 d)",    fillcolor="#d4edda"];
+  D  [label="D: Backend API\n(3 d)",   fillcolor="#fff3cd"];
+  E  [label="E: Frontend\n(4 d)",      fillcolor="#fff3cd"];
+  F  [label="F: Database\n(2 d)",      fillcolor="#fff3cd"];
+  G  [label="G: Integration\n(2 d)",   fillcolor="#fde8d0"];
+  H  [label="H: QA Testing\n(3 d)",    fillcolor="#fde8d0"];
+  I  [label="I: Deployment\n(1 d)",    fillcolor="#f8d7da"];
+
+  // dependencies
+  A -> B;
+  A -> C;
+  B -> D;
+  B -> F;
+  C -> E;
+  D -> G;
+  E -> G;
+  F -> G;
+  G -> H;
+  H -> I;
+}

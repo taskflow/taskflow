@@ -579,7 +579,7 @@ void scan() {
     }
 
     // allocate temporary buffer
-    tf::cudaDeviceVector<std::byte> temp(
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> temp(
       tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, T>(N)
     );
       
@@ -683,7 +683,7 @@ void transform_scan() {
     }
     
     // allocate temporary buffer
-    tf::cudaDeviceVector<std::byte> temp(
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> temp(
       tf::cuda_scan_buffer_size<tf::cudaDefaultExecutionPolicy, T>(N)
     );
       
@@ -765,7 +765,7 @@ void merge_keys() {
     std::sort(b, b+N);
     
     auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
-    tf::cudaDeviceVector<std::byte> buf(bufsz);
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(bufsz);
 
     tf::cuda_merge(p, a, a+N, b, b+N, c, tf::cuda_less<T>{}, buf.data());
     s.synchronize();
@@ -845,7 +845,7 @@ void merge_keys_values() {
     }
 
     auto bufsz = tf::cuda_merge_buffer_size<decltype(p)>(N, N);
-    tf::cudaDeviceVector<std::byte> buf(bufsz);
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(bufsz);
 
     tf::cuda_merge_by_key(
       p, 
@@ -938,7 +938,7 @@ void sort_keys() {
     }
 
     auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T>(N);
-    tf::cudaDeviceVector<std::byte> buf(bufsz);
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(bufsz);
     tf::cuda_sort(p, a, a+N, tf::cuda_less<T>{}, buf.data());
     s.synchronize();
     REQUIRE(std::is_sorted(a, a+N));
@@ -1020,7 +1020,7 @@ void sort_keys_values() {
     });
 
     auto bufsz = tf::cuda_sort_buffer_size<decltype(p), T, int>(N);
-    tf::cudaDeviceVector<std::byte> buf(bufsz);
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(bufsz);
     tf::cuda_sort_by_key(p, a, a+N, b, tf::cuda_less<T>{}, buf.data());
     s.synchronize();
 
@@ -1183,7 +1183,7 @@ void min_element() {
 
     // ----------------- standalone asynchronous algorithms
 
-    tf::cudaDeviceVector<std::byte> buf(
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(
       tf::cuda_min_element_buffer_size<decltype(p), T>(N)
     );
 
@@ -1268,7 +1268,7 @@ void max_element() {
 
     // ----------------- standalone asynchronous algorithms
 
-    tf::cudaDeviceVector<std::byte> buf(
+    std::vector<std::byte, tf::cudaDeviceAllocator<std::byte>> buf(
       tf::cuda_max_element_buffer_size<decltype(p), T>(N)
     );
 

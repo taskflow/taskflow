@@ -1,0 +1,373 @@
+namespace tf {
+
+/** @page ExamplesSpeculativeExecution Speculative Execution
+
+We implement a @em speculative @em execution pattern using condition
+tasks to route a batch of queries through a fast approximate path or a
+slow exact path based on a runtime probe.
+This example demonstrates how condition tasks express performance-driven
+branching — not just correctness-driven control flow — and how to
+correctly wire the convergence of two exclusive branches into a single
+downstream task without deadlock.
+
+@tableofcontents
+
+@section SpecMotivation Motivation
+
+Many real-world computations have two valid execution strategies for the
+same result: a @em fast @em path that succeeds most of the time with low
+cost, and a @em slow @em fallback that is always correct but expensive.
+Classic examples include:
+
+- A @b Bloom @b filter probed before a full hash-table lookup: the
+  filter answers <i>definitely not present</i> or <i>probably present</i> in O(1)
+  without touching the backing store.
+  A negative answer routes directly to a cheap "not found" handler.
+  A positive answer (which may be a false positive) routes to the full
+  lookup to confirm.
+- A @b branch @b predictor in CPU microarchitecture: the processor
+  speculatively executes the predicted path while the branch condition
+  is still being evaluated, rolling back only on mis-prediction.
+- A @b cache @b probe before a database query: if the key is in an
+  in-process LRU cache the result is returned immediately; on a miss
+  the full query is issued.
+
+In all three cases the routing decision is made by a cheap probe whose
+cost is negligible compared to the fallback.
+The structure is always: probe → fast path @em or slow path → merge
+result.
+This is exactly the branching structure condition tasks are designed to
+express.
+
+@section SpecProblem The Problem: Bloom Filter Lookup
+
+We process a batch of @c N string keys against a set stored in a hash
+table.
+Before querying the hash table, each key is probed against a Bloom
+filter — a space-efficient probabilistic data structure that can
+definitively rule out absent keys in O(k) hash operations, where @c k
+is the number of hash functions.
+
+The two execution paths per key are:
+
+- @b Fast @b path (Bloom filter says <i>not present</i>): the key is
+  definitely absent.
+  Return <i>not found</i> immediately without touching the hash table.
+- @b Slow @b path (Bloom filter says <i>probably present</i>): the key may
+  be in the table.
+  Perform the full hash-table lookup to confirm or deny.
+
+The Bloom filter has no false negatives: if it says <i>not present</i>, the
+key is guaranteed absent.
+It may have false positives: a key the filter calls <i>probably present</i>
+may still be absent, in which case the hash-table lookup returns
+<i>not found</i> after doing the full work.
+The fast-path short circuit is therefore exact in the negative case and
+conservative (but correct) in the positive case.
+
+@section SpecSingleItem Per-Item Graph Structure
+
+For a single key the task graph is a diamond: a condition task
+(@c speculate) probes the Bloom filter and routes to either
+@c fast_handler or @c slow_fallback, both of which must then converge
+on a single @c merge point before the result is recorded.
+
+A naive first attempt makes @c fast_handler and @c slow_fallback regular
+tasks and feeds both into @c merge via strong edges:
+
+@dotfile images/spec_wrong.dot
+
+This graph deadlocks.
+%Task @c merge has two strong dependencies — one from @c fast_handler and
+one from @c slow_fallback — but only the branch selected by @c speculate
+will actually execute.
+The other branch is never scheduled, so @c merge's strong dependency
+counter drops from 2 to 1 and never reaches 0.
+@c merge waits forever.
+This is @b Pitfall @b 2 from @ref AvoidCommonPitfalls applied to the
+switch pattern: just as both the switch task and each case task must be
+condition tasks in a switch control flow (see @ref ImplementSwitchControlFlow),
+here both the routing task @em and the two branch tasks must be
+condition tasks so that their outgoing edges to @c merge are @em weak,
+bypassing the strong dependency counter entirely.
+
+The correct per-item graph is:
+
+@dotfile images/spec_correct.dot
+
+Every node that has an outgoing edge to @c merge is a condition task.
+@c merge itself is a condition task that always returns @c 0 to route to
+@c done, making the @c merge→done edge weak.
+The dependency counts for the single-item graph are:
+
+<div align="center">
+| %Task | Strong | Weak | Total |
+|:-----|:------:|:----:|:-----:|
+| prepare | 0 | 0 | 0 |
+| speculate | 1 | 0 | 1 |
+| fast_handler | 0 | 1 | 1 |
+| slow_fallback | 0 | 1 | 1 |
+| merge | 0 | 2 | 2 |
+| done | 0 | 1 | 1 |
+</div>
+
+@c merge has two weak incoming edges but only one fires per execution,
+so it is enqueued exactly once.
+@c done has one weak incoming edge from @c merge and is also enqueued
+exactly once.
+
+@section SpecBatchGraph Batch Graph: N Keys in Parallel
+
+For a batch of @c N keys, each key gets its own independent
+(@c speculate, @c fast_handler, @c slow_fallback, @c merge, @c done)
+chain.
+The @c N chains have no mutual dependencies and execute fully in
+parallel across available workers.
+A final @c collect task gathers results; it waits for all @c N @c done
+tasks via @em strong dependencies, so it is enqueued exactly once after
+every chain has completed.
+
+@dotfile images/spec_batch.dot
+
+Because @c done is reached via a chain of weak edges
+(@c merge→done is weak), @c done itself has zero strong dependencies.
+It is a regular task, so its outgoing edge to @c collect is strong.
+This gives @c collect exactly @c N strong dependencies, one per chain,
+and it runs once all keys have been processed.
+
+@section SpecImplementation Implementation
+
+We implement a minimal Bloom filter and a hash-table backing store.
+For each key in the batch we build the five-task chain and wire it
+into the taskflow.
+Results are recorded into a per-key array so that @c collect can
+aggregate without any synchronization.
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+#include <bitset>
+#include <unordered_set>
+#include <functional>
+#include <string>
+#include <vector>
+
+// ── Bloom filter ────────────────────────────────────────────────────
+// A minimal Bloom filter using two independent hash functions and a
+// fixed-size bit array. Real implementations use k > 2 hash functions
+// and tune the array size to the expected element count and target FPR.
+
+struct BloomFilter {
+  static constexpr size_t M = 1024;   // bit-array size
+  std::bitset<M> bits;
+
+  static size_t h1(const std::string& s) {
+    return std::hash<std::string>{}(s) % M;
+  }
+  static size_t h2(const std::string& s) {
+    return (std::hash<std::string>{}(s) * 2654435761ULL) % M;
+  }
+
+  void insert(const std::string& s) {
+    bits.set(h1(s));
+    bits.set(h2(s));
+  }
+
+  // Returns false if s is definitely absent; true if probably present.
+  bool probe(const std::string& s) const {
+    return bits.test(h1(s)) && bits.test(h2(s));
+  }
+};
+
+// ── Result tag ──────────────────────────────────────────────────────
+enum class Result { NOT_FOUND, FOUND };
+
+int main() {
+
+  // ── build the backing store and Bloom filter ─────────────────────
+  std::unordered_set<std::string> table = {
+    "alpha", "bravo", "charlie", "delta", "echo"
+  };
+
+  BloomFilter bloom;
+  for(auto& s : table) bloom.insert(s);
+
+  // ── query batch ──────────────────────────────────────────────────
+  // Mix of present keys, absent keys, and keys that may be false
+  // positives in the Bloom filter.
+  std::vector<std::string> keys = {
+    "alpha",    // present
+    "foxtrot",  // absent, Bloom filter correctly says "not present"
+    "bravo",    // present
+    "golf",     // absent, may be a Bloom filter false positive
+    "charlie",  // present
+    "hotel",    // absent
+  };
+
+  const int N = static_cast<int>(keys.size());
+  std::vector<Result> results(N, Result::NOT_FOUND);
+
+  tf::Executor executor;
+  tf::Taskflow taskflow("speculative-lookup");
+
+  // ── build one chain per key ──────────────────────────────────────
+  std::vector<tf::Task> done_tasks(N);
+
+  for(int i = 0; i < N; i++) {
+
+    // prepare: a named anchor task, zero dependencies.
+    tf::Task prepare = taskflow.emplace([](){})
+                               .name("prepare_" + std::to_string(i));
+
+    // speculate: probe the Bloom filter.
+    //   returns 0 -> fast_handler (definitely absent)
+    //   returns 1 -> slow_fallback (probably present, do full lookup)
+    tf::Task speculate = taskflow.emplace([&, i]() -> int {
+      return bloom.probe(keys[i]) ? 1 : 0;
+    }).name("speculate_" + std::to_string(i));
+
+    // fast_handler: Bloom filter says "not present" — key is absent.
+    // Condition task returning 0 -> merge (weak edge, avoids deadlock).
+    tf::Task fast_handler = taskflow.emplace([&, i]() -> int {
+      results[i] = Result::NOT_FOUND;
+      printf("[fast] key='%s' -> not found (Bloom filter negative)\n",
+             keys[i].c_str());
+      return 0;
+    }).name("fast_" + std::to_string(i));
+
+    // slow_fallback: Bloom filter says "probably present" — do full lookup.
+    // Condition task returning 0 -> merge (weak edge, avoids deadlock).
+    tf::Task slow_fallback = taskflow.emplace([&, i]() -> int {
+      bool found = table.count(keys[i]) > 0;
+      results[i] = found ? Result::FOUND : Result::NOT_FOUND;
+      printf("[slow] key='%s' -> %s (full lookup)\n",
+             keys[i].c_str(), found ? "found" : "not found (false positive)");
+      return 0;
+    }).name("slow_" + std::to_string(i));
+
+    // merge: convergence point for fast and slow paths.
+    // Condition task returning 0 -> done (weak edge).
+    // Has two weak incoming edges; exactly one fires per execution.
+    tf::Task merge = taskflow.emplace([]() -> int {
+      return 0;
+    }).name("merge_" + std::to_string(i));
+
+    // done: regular task, records completion.
+    // Has one weak incoming edge from merge; strong outgoing edge to collect.
+    tf::Task done = taskflow.emplace([&, i](){
+      printf("[done] key='%s'\n", keys[i].c_str());
+    }).name("done_" + std::to_string(i));
+
+    done_tasks[i] = done;
+
+    // ── wire the chain ─────────────────────────────────────────────
+    speculate.succeed(prepare);               // strong: prepare -> speculate
+    speculate.precede(fast_handler, slow_fallback); // weak: 0=fast, 1=slow
+    fast_handler.precede(merge);              // weak: fast -> merge (return 0)
+    slow_fallback.precede(merge);             // weak: slow -> merge (return 0)
+    merge.precede(done);                      // weak: merge -> done (return 0)
+  }
+
+  // ── collect: waits for all N done tasks via strong dependencies ──
+  tf::Task collect = taskflow.emplace([&](){
+    int found = 0;
+    for(auto& r : results) if(r == Result::FOUND) found++;
+    printf("\nSummary: %d/%d keys found\n", found, N);
+  }).name("collect");
+
+  // done_tasks[i] -> collect: strong edges, collect enqueued exactly once
+  for(auto& d : done_tasks) d.precede(collect);
+
+  executor.run(taskflow).wait();
+
+  return 0;
+}
+@endcode
+
+A sample run with the keys above produces output such as:
+
+@code{.bash}
+[fast] key='foxtrot' -> not found (Bloom filter negative)
+[slow] key='alpha'   -> found (full lookup)
+[fast] key='hotel'   -> not found (Bloom filter negative)
+[slow] key='bravo'   -> found (full lookup)
+[slow] key='golf'    -> not found (false positive)
+[slow] key='charlie' -> found (full lookup)
+[done] key='foxtrot'
+[done] key='alpha'
+[done] key='hotel'
+[done] key='bravo'
+[done] key='golf'
+[done] key='charlie'
+
+Summary: 3/6 keys found
+@endcode
+
+The fast and slow paths for different keys interleave freely because
+the @c N chains are fully independent.
+The @c collect task appears last, after all @c done tasks have completed.
+
+@section SpecDesignPoints Design Points
+
+  + Both the routing task and each branch task must be condition tasks:
+The deadlock in @c spec_wrong arises because @c fast_handler and
+@c slow_fallback are regular tasks, making their edges to @c merge
+strong.
+@c merge then waits for two strong dependencies that can never both be
+satisfied.
+The fix is for every task that has an outgoing edge to a shared
+convergence point to be a condition task, so those edges are weak and
+bypass the strong dependency counter.
+This is the same rule as for switch control flow (see
+@ref ImplementSwitchControlFlow): whenever a condition task fans out to
+@c k branches that all converge on the same downstream task, all @c k
+branch tasks must also be condition tasks.
+
+  + @c merge is a pass-through condition task:
+@c merge performs no computation — it exists solely as a controlled
+convergence point.
+It has two incoming weak edges (exactly one fires) and one outgoing
+weak edge to @c done.
+Its return value is always @c 0, which is the index of its only
+successor.
+This pattern — a no-op condition task used purely to merge exclusive
+branches — is the condition-task analogue of the auxiliary join task
+used for the same purpose with regular tasks in
+@ref ExamplesMakeGraph.
+
+  + @c done bridges the condition-task chain to the strong-dependency world:
+@c collect needs strong incoming edges so that it is enqueued exactly
+once after all @c N chains have completed.
+@c done is a regular task reached via a weak edge from @c merge, so its
+outgoing edge to @c collect is strong.
+It serves as the re-entry point from the condition-task world (all weak
+edges, activated by routing) back to the regular-task world (strong
+edges, activated by reference counting).
+Without @c done, @c collect would need @c N weak incoming edges from
+@c merge and would be enqueued up to @c N times simultaneously — a
+task race analogous to @b Pitfall @b 2 from @ref AvoidCommonPitfalls.
+
+  + The fast-path short circuit is a scheduling gain, not just a code
+  organisation gain:
+When @c speculate returns @c 0, the scheduler enqueues @c fast_handler
+immediately and never touches @c slow_fallback.
+@c slow_fallback is never dequeued, never invoked, and its slot in the
+worker queue is never occupied.
+On a workload where 90% of keys are absent and the Bloom filter has a
+low false-positive rate, 90% of the per-key chains skip the hash-table
+lookup entirely, and those workers are freed to pick up the next
+available chain sooner.
+This throughput gain is automatic: it requires no explicit thread
+management, no condition variables, and no external job queue.
+
+@note
+The Bloom filter in this example uses two hash functions for clarity.
+Production Bloom filters typically use @c k = ln(2) * m/n hash
+functions, where @c m is the bit-array size and @c n is the number of
+inserted elements, to minimise the false-positive rate for a given
+memory budget.
+The graph structure and condition task wiring are identical regardless
+of @c k; only the @c probe function changes.
+
+*/
+
+}

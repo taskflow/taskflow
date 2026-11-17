@@ -5,13 +5,13 @@
 namespace tf {
 
 // Function: make_reduce_task
-template <typename B, typename E, typename T, typename O, typename P = DefaultPartitioner>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename O, PartitionerLike P = DefaultPartitioner>
 auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
@@ -21,6 +21,10 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -133,14 +137,14 @@ auto make_reduce_task(B b, E e, T& init, O bop, P part = P()) {
 
 // Function: make_transform_reduce_task
 template <
-  typename B, typename E, typename T, typename BOP, typename UOP, 
-  typename P = DefaultPartitioner
+  InputIteratorLike B, InputIteratorLike E, typename T, typename BOP, typename UOP, 
+  PartitionerLike P = DefaultPartitioner
 >
 auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P()) {
 
   using namespace std::string_literals;
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
@@ -150,6 +154,10 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -259,10 +267,12 @@ auto make_transform_reduce_task(B b, E e, T& init, BOP bop, UOP uop, P part = P(
 }
 
 // Function: make_transform_reduce_task with two binary operation
-template <
-  typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
-  typename P = DefaultPartitioner,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>* = nullptr
+template <InputIteratorLike B1, InputIteratorLike E1, InputIteratorLike B2, typename T,
+          typename BOP_R, typename BOP_T, PartitionerLike P = DefaultPartitioner>
+requires BinaryOperatorLike<
+  BOP_T,
+  std::decay_t<std::unwrap_ref_decay_t<B1>>,
+  std::decay_t<std::unwrap_ref_decay_t<B2>>
 >
 auto make_transform_reduce_task(
   B1 b1, E1 e1, B2 b2, T& init, BOP_R bop_r, BOP_T bop_t, P part = P()
@@ -270,9 +280,9 @@ auto make_transform_reduce_task(
   
   using namespace std::string_literals;
 
-  using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
-  using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
-  using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
+  using B1_t = std::decay_t<std::unwrap_ref_decay_t<B1>>;
+  using E1_t = std::decay_t<std::unwrap_ref_decay_t<E1>>;
+  using B2_t = std::decay_t<std::unwrap_ref_decay_t<B2>>;
 
   return [=, &r=init] (Runtime& rt) mutable {
 
@@ -283,6 +293,10 @@ auto make_transform_reduce_task(
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg1, end1);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -398,30 +412,50 @@ auto make_transform_reduce_task(
 
 
 // Function: make_reduce_by_index_task
-template <typename R, typename T, typename L, typename G, typename P = DefaultPartitioner>
+template <IndexRangesLike R, typename T, typename L, typename G, PartitionerLike P = DefaultPartitioner>
 auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
-  
-  using range_type = std::decay_t<unwrap_ref_decay_t<R>>;
+
+  using range_type = std::decay_t<std::unwrap_ref_decay_t<R>>;
 
   return [=, &init] (Runtime& rt) mutable {
 
     // fetch the iterator values
     range_type r = range;
-    
-    // nothing to be done if the range is invalid
-    if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
-      return;
+
+    if constexpr (range_type::rank == 1) {
+      // nothing to be done if the range is invalid
+      if(is_index_range_invalid(r.begin(), r.end(), r.step_size())) {
+        return;
+      }
     }
 
     size_t W = rt.executor().num_workers();
     size_t N = r.size();
 
-    // only myself - no need to spawn another graph
-    if(W <= 1 || N <= part.chunk_size()) {
-      part([=, &init] () mutable { init = lop(r, std::move(init)); })();
+    if(N == 0) {
       return;
     }
-    
+
+    // only myself - no need to spawn another graph
+    //
+    // Must still apply both lop and gop here, not lop alone: lop and gop are two genuinely
+    // different operations (that's the entire reason make_reduce_by_index_task exposes both
+    // instead of a single bop the way make_reduce_task/make_transform_reduce_task do), so
+    // collapsing this fast path to `init = lop(r, std::move(init))` silently skips whatever
+    // transformation gop was responsible for (e.g. a caller that keeps lop's accumulation in a
+    // different unit/scale than the final answer and applies the conversion only in gop -- valid
+    // usage, since gop is documented as the merge step). Passing `init` as if it were the *local*
+    // seed for lop, then never calling gop at all, makes this fast path's result depend on
+    // scheduling (W, N vs chunk_size()) rather than being a pure function of the input, which
+    // defeats the purpose of a reduction primitive. Fold with lop from a fresh std::nullopt (this
+    // is one "worker" owning the whole range, exactly like any other worker's per-chunk fold),
+    // then merge into init via gop exactly once, matching the multi-worker branches below
+    // (`init = gop(std::move(init), std::move(*tmp))`) argument-for-argument.
+    if(W <= 1 || N <= part.chunk_size()) {
+      part([=, &init] () mutable { init = gop(std::move(init), lop(r, std::nullopt)); })();
+      return;
+    }
+
     if(N < W) {
       W = N;
     }
@@ -430,23 +464,23 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
 
     // static partitioner
     if constexpr(part.type() == PartitionerType::STATIC) {
-      
+
       for(size_t w=0, curr_b=0; w<W && curr_b < N;) {
-        
+
         // we force chunk size to be at least two because the temporary
         // variable sum need to avoid copy at the first step
         auto chunk_size = part.adjusted_chunk_size(N, W, w);
-        
+
         auto task = part([=, &init] () mutable {
 
           // temporary result so far
           std::optional<T> tmp;
 
           // loop reduce
-          part.loop(N, W, curr_b, chunk_size, [=, &tmp](size_t part_b, size_t part_e) mutable {
-            tmp = lop(r.discrete_domain(part_b, part_e), std::move(tmp));
-          }); 
-          
+          part.loop(r, N, W, curr_b, chunk_size, [=, &tmp](const range_type& box) mutable {
+            tmp = lop(box, std::move(tmp));
+          });
+
           // final reduce - tmp is guaranteed to have value
           // assert(tmp.has_value());
           std::lock_guard<std::mutex> lock(*mutex);
@@ -459,19 +493,19 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
     // dynamic partitioner
     else {
       auto next = std::make_shared<std::atomic<size_t>>(0);
-      
+
       for(size_t w=0; w<W;) {
 
         auto task = part([=, &init] () mutable {
-          
+
           // temporary result so far
           std::optional<T> tmp;
-          
+
           // loop reduce
-          part.loop(N, W, *next, [=, &tmp](size_t part_b, size_t part_e) mutable {
-            tmp = lop(r.discrete_domain(part_b, part_e), std::move(tmp));
-          }); 
-          
+          part.loop(r, N, W, *next, [=, &tmp](const range_type& box) mutable {
+            tmp = lop(box, std::move(tmp));
+          });
+
           // final reduce - need to check if the running total has value since
           // this is a dynamic scheduler; the worker may not actually acquire any work
           if(tmp) {
@@ -490,7 +524,7 @@ auto make_reduce_by_index_task(R range, T& init, L lop, G gop, P part = P()) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: reduce
-template <typename B, typename E, typename T, typename O, typename P>
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename O, PartitionerLike P>
 Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
   return emplace(make_reduce_task(beg, end, init, bop, part));
 }
@@ -500,9 +534,7 @@ Task FlowBuilder::reduce(B beg, E end, T& init, O bop, P part) {
 // ------------------------------------------------------------------------------------------------
 
 // Function: transform_reduce
-template <typename B, typename E, typename T, typename BOP, typename UOP, typename P,
-  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*
->
+template <InputIteratorLike B, InputIteratorLike E, typename T, typename BOP, typename UOP, PartitionerLike P>
 Task FlowBuilder::transform_reduce(
   B beg, E end, T& init, BOP bop, UOP uop, P part
 ) {
@@ -510,10 +542,12 @@ Task FlowBuilder::transform_reduce(
 }
 
 // Function: transform_reduce
-template <
-  typename B1, typename E1, typename B2, typename T, typename BOP_R, typename BOP_T, 
-  typename P,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<BOP_T>>, void>*
+template <InputIteratorLike B1, InputIteratorLike E1, InputIteratorLike B2, typename T,
+          typename BOP_R, typename BOP_T, PartitionerLike P>
+requires BinaryOperatorLike<
+  BOP_T,
+  std::decay_t<std::unwrap_ref_decay_t<B1>>,
+  std::decay_t<std::unwrap_ref_decay_t<B2>>
 >
 Task FlowBuilder::transform_reduce(
   B1 beg1, E1 end1, B2 beg2, T& init, BOP_R bop_r, BOP_T bop_t, P part
@@ -526,13 +560,10 @@ Task FlowBuilder::transform_reduce(
 // ------------------------------------------------------------------------------------------------
 
 // Function: make_index_reduce_task
-template <typename R, typename T, typename L, typename G, typename P>
+template <IndexRangesLike R, typename T, typename L, typename G, PartitionerLike P>
 Task FlowBuilder::reduce_by_index(R range, T& init, L lop, G gop, P part) {
   return emplace(make_reduce_by_index_task(range, init, lop, gop, part));
 }
 
 }  // end of namespace tf -------------------------------------------------------------------------
-
-
-
 

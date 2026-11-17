@@ -1,157 +1,85 @@
-# ==============================================================================
-# LLVM Release License
-# ==============================================================================
-# University of Illinois/NCSA Open Source License
+# =============================================================================
+# CheckAtomic.cmake
 #
-# Copyright (c) 2003-2018 University of Illinois at Urbana-Champaign. All rights
-# reserved.
+# Detects whether the platform needs -latomic for atomic operations and sets
+# ATOMIC_LIBRARY accordingly. This is required on some platforms (e.g., ARM,
+# 32-bit x86, older GCC) where std::atomic operations are not inlined by the
+# compiler and require explicit linkage against libatomic.
 #
-# Developed by:
-#
-# LLVM Team
-#
-# University of Illinois at Urbana-Champaign
-#
-# http://llvm.org
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# with the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# * Redistributions of source code must retain the above copyright notice, this
-#   list of conditions and the following disclaimers.
-#
-# * Redistributions in binary form must reproduce the above copyright notice,
-#   this list of conditions and the following disclaimers in the documentation
-#   and/or other materials provided with the distribution.
-#
-# * Neither the names of the LLVM Team, University of Illinois at
-#   Urbana-Champaign, nor the names of its contributors may be used to endorse
-#   or promote products derived from this Software without specific prior
-#   written permission.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
-# CONTRIBUTORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS WITH
-# THE SOFTWARE.
+# Sets:
+#   ATOMIC_LIBRARY  — "atomic" if -latomic is required, empty otherwise
+# =============================================================================
 
 include(CheckCXXSourceCompiles)
-include(CheckLibraryExists)
+include(CMakePushCheckState)
 
-# Sometimes linking against libatomic is required for atomic ops, if the
-# platform doesn't support lock-free atomics.
-
-function(check_working_cxx_atomics varname)
-  set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
-  set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -std=c++11")
-  check_cxx_source_compiles(
-    "
+# Test program: exercises both 64-bit and 128-bit std::atomic operations.
+# The 128-bit test uses a struct with a pointer and a size_t tag — the same
+# pattern used by AtomicIntrusiveStack's TaggedPointer. On platforms without
+# native 128-bit CAS, std::atomic will use a mutex internally (still correct),
+# but -latomic may still be required for the runtime support code.
+set(_TF_ATOMIC_TEST_SRC "
 #include <atomic>
-std::atomic<long long> x;
-int main() {
-  return std::atomic_is_lock_free(&x);
-}
-"
-    ${varname})
-  set(CMAKE_REQUIRED_FLAGS ${OLD_CMAKE_REQUIRED_FLAGS})
-endfunction(check_working_cxx_atomics)
-
-function(check_working_cxx_atomics64 varname)
-  set(OLD_CMAKE_REQUIRED_FLAGS ${CMAKE_REQUIRED_FLAGS})
-  set(CMAKE_REQUIRED_FLAGS "-std=c++11 ${CMAKE_REQUIRED_FLAGS}")
-  check_cxx_source_compiles(
-    "
-#include <atomic>
+#include <cstddef>
 #include <cstdint>
-std::atomic<uint64_t> x (0);
-int main() {
-  uint64_t i = x.load(std::memory_order_relaxed);
-  return std::atomic_is_lock_free(&x);
-}
-"
-    ${varname})
-  set(CMAKE_REQUIRED_FLAGS ${OLD_CMAKE_REQUIRED_FLAGS})
-endfunction(check_working_cxx_atomics64)
 
-function(check_working_cxx_atomics_2args varname)
-  set(OLD_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-  list(APPEND CMAKE_REQUIRED_LIBRARIES "atomic")
-  check_cxx_source_compiles(
-    "
+// 64-bit atomic
+static std::atomic<std::uint64_t> a64 {0};
+
+// 128-bit struct atomic (TaggedPointer pattern used by AtomicIntrusiveStack)
+struct TaggedPointer {
+  void*       ptr {nullptr};
+  std::size_t tag {0};
+};
+static std::atomic<TaggedPointer> a128 {};
+
 int main() {
-  __atomic_load(nullptr, 0);
+  // 64-bit operations
+  a64.fetch_add(1, std::memory_order_relaxed);
+  a64.fetch_sub(1, std::memory_order_relaxed);
+  std::uint64_t e64 = 0;
+  a64.compare_exchange_strong(e64, 1,
+    std::memory_order_acq_rel, std::memory_order_acquire);
+
+  // 128-bit operations
+  TaggedPointer expected{};
+  TaggedPointer desired{nullptr, 1};
+  a128.compare_exchange_strong(expected, desired,
+    std::memory_order_acq_rel, std::memory_order_acquire);
+
   return 0;
 }
-"
-    ${varname})
-  set(CMAKE_REQUIRED_LIBRARIES ${OLD_CMAKE_REQUIRED_LIBRARIES})
-endfunction(check_working_cxx_atomics_2args)
+")
 
-function(check_working_cxx_atomics64_2args varname)
-  set(OLD_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-  list(APPEND CMAKE_REQUIRED_LIBRARIES "atomic")
-  check_cxx_source_compiles(
-    "
-int main() {
-  __atomic_load_8(nullptr, 0);
-  return 0;
-}
-"
-    ${varname})
-  set(CMAKE_REQUIRED_LIBRARIES ${OLD_CMAKE_REQUIRED_LIBRARIES})
-endfunction(check_working_cxx_atomics64_2args)
+cmake_push_check_state()
 
-# First check if atomics work without the library.
-check_working_cxx_atomics(HAVE_CXX_ATOMICS_WITHOUT_LIB)
+# attempt 1: compile without -latomic
+check_cxx_source_compiles("${_TF_ATOMIC_TEST_SRC}" TF_ATOMIC_BUILTIN)
 
-set(ATOMIC_LIBRARY "")
+if(TF_ATOMIC_BUILTIN)
+  set(ATOMIC_LIBRARY "" CACHE STRING "Atomic library (empty = native)" FORCE)
+  message(STATUS "Atomic operations: native (no -latomic needed)")
+else()
+  # attempt 2: compile with -latomic
+  set(CMAKE_REQUIRED_LIBRARIES atomic)
+  check_cxx_source_compiles("${_TF_ATOMIC_TEST_SRC}" TF_ATOMIC_WITH_LATOMIC)
+  unset(CMAKE_REQUIRED_LIBRARIES)
 
-# If not, check if the library exists, and atomics work with it.
-if(NOT HAVE_CXX_ATOMICS_WITHOUT_LIB)
-  check_library_exists(atomic __atomic_fetch_add_4 "" HAVE_LIBATOMIC)
-  if(NOT HAVE_LIBATOMIC)
-    check_working_cxx_atomics_2args(HAVE_LIBATOMIC_2ARGS)
-  endif()
-  if(HAVE_LIBATOMIC OR HAVE_LIBATOMIC_2ARGS)
-    list(APPEND CMAKE_REQUIRED_LIBRARIES "atomic")
-    set(ATOMIC_LIBRARY "atomic")
-    check_working_cxx_atomics(HAVE_CXX_ATOMICS_WITH_LIB)
-    if(NOT HAVE_CXX_ATOMICS_WITH_LIB)
-      message(FATAL_ERROR "Host compiler must support std::atomic!")
-    endif()
+  if(TF_ATOMIC_WITH_LATOMIC)
+    set(ATOMIC_LIBRARY "atomic" CACHE STRING "Atomic library" FORCE)
+    message(STATUS "Atomic operations: require -latomic")
   else()
-    # Check for 64 bit atomic operations.
-    if(MSVC)
-      set(HAVE_CXX_ATOMICS64_WITHOUT_LIB True)
-    else()
-      check_working_cxx_atomics64(HAVE_CXX_ATOMICS64_WITHOUT_LIB)
-    endif()
-
-    # If not, check if the library exists, and atomics work with it.
-    if(NOT HAVE_CXX_ATOMICS64_WITHOUT_LIB)
-      check_library_exists(atomic __atomic_load_8 "" HAVE_CXX_LIBATOMICS64)
-      if(NOT HAVE_CXX_LIBATOMICS64)
-        check_working_cxx_atomics64_2args(HAVE_CXX_LIBATOMICS64_2ARGS)
-      endif()
-      if(HAVE_CXX_LIBATOMICS64 OR HAVE_CXX_LIBATOMICS64_2ARGS)
-        list(APPEND CMAKE_REQUIRED_LIBRARIES "atomic")
-        set(ATOMIC_LIBRARY "atomic")
-        check_working_cxx_atomics64(HAVE_CXX_ATOMICS64_WITH_LIB)
-        if(NOT HAVE_CXX_ATOMICS64_WITH_LIB)
-          message(FATAL_ERROR "Host compiler must support std::atomic!")
-        endif()
-      else()
-        message(
-          FATAL_ERROR
-            "Host compiler appears to require libatomic, but cannot find it.")
-      endif()
-    endif()
-
+    message(FATAL_ERROR
+      "Taskflow requires std::atomic support. Neither native atomics nor "
+      "-latomic compilation succeeded on this platform."
+    )
   endif()
+endif()
+
+cmake_pop_check_state()
+
+if(ATOMIC_LIBRARY)
+  message(STATUS "ATOMIC_LIBRARY: -l${ATOMIC_LIBRARY}")
+else()
+  message(STATUS "ATOMIC_LIBRARY: (none)")
 endif()

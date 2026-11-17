@@ -20,7 +20,6 @@ export namespace tf {
     using tf::DataPipeline;
     using tf::PartitionerType;
     using tf::DefaultClosureWrapper;
-    using tf::IsPartitioner;
     using tf::PartitionerBase;
     using tf::GuidedPartitioner;
     using tf::DynamicPartitioner;

@@ -2,8 +2,8 @@ namespace tf {
 
 /** @page ParallelScan Parallel Scan
 
-%Taskflow provide template methods that construct tasks
-to perform parallel scan over a range of items.
+%Taskflow provides template functions for constructing tasks to perform
+parallel scan over a range of items.
 
 @tableofcontents
 
@@ -16,28 +16,62 @@ for creating a parallel-scan task.
 #include <taskflow/algorithm/scan.hpp>
 @endcode
 
-@section WhatIsAScanOperation What is a Scan Operation?
+@section ParallelScanWhatIsAScan What is a Scan Operation?
 
-A parallel scan task
-performs the cumulative sum, also known as <i>prefix sum</i> or @em scan, 
-of the input range and writes the result to the output range.
-Each element of the output range contains the
-running total of all earlier elements using the given binary operator
-for summation.
+A @em scan (also known as @em prefix @em sum) computes, for each position
+@c k in the output range, the cumulative result of applying a binary
+operator to all relevant elements in the input range.
+There are two variants:
 
-@image html images/scan.png
-
-@section CreateAParallelInclusiveScanTask Create a Parallel Inclusive Scan Task
-  
-tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)
-generates an @em inclusive scan, meaning that the N-th element
-of the output range is the sum of the first N input elements,
-so the N-th input element is included.
-For example, the code below performs an inclusive scan over five elements:
+- An @em inclusive scan includes the element at position @c k itself.
+  The N-th output element is the combination of the first N input elements.
+  It is equivalent to the following sequential loop:
 
 @code{.cpp}
-std::vector<int> input = {1, 2, 3, 4, 5};
-std::vector<int> output(input.size())
+for(size_t k = 0; k < n; k++) {
+  output[k] = (k == 0) ? input[0] : bop(output[k-1], input[k]);
+}
+@endcode
+
+- An @em exclusive scan excludes the element at position @c k.
+  The N-th output element is the combination of @c init with the first N-1
+  input elements, so the N-th input element is @em excluded.
+  It is equivalent to the following sequential loop:
+
+@code{.cpp}
+for(size_t k = 0; k < n; k++) {
+  output[k] = (k == 0) ? init : bop(output[k-1], input[k-1]);
+}
+@endcode
+
+The following diagram illustrates an inclusive scan on the input
+@c [1, 2, 3, 4, -2, 1, 8] using addition:
+
+@dotfile images/parallel_scan_inclusive.dot
+
+Each output cell accumulates all input elements up to and including its own
+position (solid green arrow).
+
+The following diagram illustrates an exclusive scan on the same input with
+@c init=0:
+
+@dotfile images/parallel_scan_exclusive.dot
+
+Each output cell accumulates all input elements @em before its position
+(dashed blue arrow), so the first output cell receives @c init directly and
+the result is shifted one position to the right compared to inclusive scan.
+
+@section ParallelScanInclusive Create a Parallel Inclusive Scan Task
+
+tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop)
+performs an inclusive scan over the range <tt>[first, last)</tt> using the
+binary operator @c bop and writes results to the range beginning at
+@c d_first.
+
+@code{.cpp}
+std::vector<int> input  = {1, 2, 3, 4, 5};
+std::vector<int> output(input.size());
+
 taskflow.inclusive_scan(
   input.begin(), input.end(), output.begin(), std::plus<int>{}
 );
@@ -45,32 +79,28 @@ executor.run(taskflow).wait();
 // output is {1, 3, 6, 10, 15}
 @endcode
 
-The output range may be the same as the input range, in which
-the scan operation is @em in-place with results written to
-the input range.
-For example, the code below performs an in-place inclusive
-scan over five elements:
+The output range may be the same as the input range, in which case the
+scan is performed @em in-place:
 
 @code{.cpp}
 std::vector<int> input = {1, 2, 3, 4, 5};
+
 taskflow.inclusive_scan(
   input.begin(), input.end(), input.begin(), std::plus<int>{}
 );
 executor.run(taskflow).wait();
-// input is {1, 3, 6, 10, 15}
+// input is now {1, 3, 6, 10, 15}
 @endcode
 
-  
-Similar to tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop),
+The overload
 tf::Taskflow::inclusive_scan(B first, E last, D d_first, BOP bop, T init)
-performs an inclusive scan but with an additional initial value @c init.
-For example, the code below performs an inclusive scan
-over five elements plus an initial value:
+performs an inclusive scan with an additional initial value @c init that
+is combined with the first element before any other accumulation:
 
 @code{.cpp}
-std::vector<int> input = {1, 2, 3, 4, 5};
+std::vector<int> input  = {1, 2, 3, 4, 5};
 std::vector<int> output(input.size());
-// performs inclusive scan with an initial value
+
 taskflow.inclusive_scan(
   input.begin(), input.end(), output.begin(), std::plus<int>{}, -1
 );
@@ -78,54 +108,93 @@ executor.run(taskflow).wait();
 // output is {0, 2, 5, 9, 14}
 @endcode
 
-@section CreateAParallelTransformInclusiveScanTask Create a Parallel Transform-Inclusive Scan Task
+@subsection ParallelScanInclusiveCaptureByReference Capture Iterators by Reference
 
-You can transform elements in the input range before running inclusive scan
-using tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)
-and tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init).
-For example, the code below performs an inclusive scan over five
-transformed elements:
+You can pass iterators by reference using @std_ref to marshal parameter
+updates between dependent tasks.
+This is useful when the range is not known at task-graph construction time
+but is initialized by an upstream task.
 
 @code{.cpp}
-std::vector<int> input = {1, 2, 3, 4, 5};
+std::vector<int> input, output;
+std::vector<int>::iterator first, last, d_first;
+
+tf::Task init = taskflow.emplace([&]() {
+  input   = {1, 2, 3, 4, 5};
+  output.resize(input.size());
+  first   = input.begin();
+  last    = input.end();
+  d_first = output.begin();
+});
+
+tf::Task scan = taskflow.inclusive_scan(
+  std::ref(first), std::ref(last), std::ref(d_first), std::plus<int>{}
+);
+
+// wrong! iterators are captured by copy at construction time
+// tf::Task scan = taskflow.inclusive_scan(first, last, d_first, std::plus<int>{});
+
+init.precede(scan);
+executor.run(taskflow).wait();
+// output is {1, 3, 6, 10, 15}
+@endcode
+
+@section ParallelScanTransformInclusive Create a Parallel Transform-Inclusive Scan Task
+
+tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop)
+applies the unary operator @c uop to transform each input element before
+performing the inclusive scan with @c bop.
+It represents parallel execution of the following loop:
+
+@code{.cpp}
+for(size_t k = 0; k < n; k++) {
+  output[k] = (k == 0) ? uop(input[0]) : bop(output[k-1], uop(input[k]));
+}
+@endcode
+
+@code{.cpp}
+std::vector<int> input  = {1, 2, 3, 4, 5};
 std::vector<int> output(input.size());
+
 taskflow.transform_inclusive_scan(
-  input.begin(), input.end(), output.begin(), std::plus<int>{}, 
-  [] (int item) { return -item; }
+  input.begin(), input.end(), output.begin(),
+  std::plus<int>{},
+  [](int item) { return -item; }
 );
 executor.run(taskflow).wait();
 // output is {-1, -3, -6, -10, -15}
 @endcode
 
-You can also associate the transform-inclusive scan with an initial value
-using tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init).
-Only elements in the input range will be transformed using @c uop,
-i.e., the initial value @c init does not participate in @c uop.
+The overload
+tf::Taskflow::transform_inclusive_scan(B first, E last, D d_first, BOP bop, UOP uop, T init)
+adds an initial value @c init.
+Note that @c init does @em not participate in the unary transformation
+@c uop — only input elements are transformed:
 
 @code{.cpp}
-std::vector<int> input = {1, 2, 3, 4, 5};
+std::vector<int> input  = {1, 2, 3, 4, 5};
 std::vector<int> output(input.size());
+
 taskflow.transform_inclusive_scan(
-  input.begin(), input.end(), output.begin(), std::plus<int>{}, 
-  [] (int item) { return -item; },
+  input.begin(), input.end(), output.begin(),
+  std::plus<int>{},
+  [](int item) { return -item; },
   -1
 );
 executor.run(taskflow).wait();
 // output is {-2, -4, -7, -11, -16}
 @endcode
 
-@section CreateAParallelExclusiveScanTask Create a Parallel Exclusive Scan Task
+@section ParallelScanExclusive Create a Parallel Exclusive Scan Task
 
 tf::Taskflow::exclusive_scan(B first, E last, D d_first, T init, BOP bop)
-generates an @em exclusive scan with the given initial value.
-The N-th element of the output range is the sum of the first N-1 input elements,
-so the N-th input element is included.
-For example, the code below performs an exclusive scan over five elements
-with an initial value -1:
+performs an exclusive scan over the range <tt>[first, last)</tt> with the
+given initial value @c init using the binary operator @c bop.
 
 @code{.cpp}
-std::vector<int> input = {1, 2, 3, 4, 5};
-std::vector<int> output(input.size())
+std::vector<int> input  = {1, 2, 3, 4, 5};
+std::vector<int> output(input.size());
+
 taskflow.exclusive_scan(
   input.begin(), input.end(), output.begin(), -1, std::plus<int>{}
 );
@@ -133,34 +202,72 @@ executor.run(taskflow).wait();
 // output is {-1, 0, 2, 5, 9}
 @endcode
 
-The output range may be the same as the input range, in which
-the scan operation is @em in-place with results written to
-the input range.
-For example, the code below performs an in-place exclusive
-scan over five elements with an initial -1:
+The output range may be the same as the input range, in which case the
+scan is performed @em in-place:
 
 @code{.cpp}
 std::vector<int> input = {1, 2, 3, 4, 5};
-std::vector<int> output(input.size());
+
 taskflow.exclusive_scan(
-  input.begin(), input.end(), output.begin(), -1, std::plus<int>{}
+  input.begin(), input.end(), input.begin(), -1, std::plus<int>{}
 );
+executor.run(taskflow).wait();
+// input is now {-1, 0, 2, 5, 9}
+@endcode
+
+@subsection ParallelScanExclusiveCaptureByReference Capture Iterators by Reference
+
+As with inclusive scan, all iterators can be passed by reference using
+@std_ref so that an upstream task can set up the ranges before the
+parallel exclusive scan runs.
+
+@code{.cpp}
+std::vector<int> input, output;
+std::vector<int>::iterator first, last, d_first;
+
+tf::Task init = taskflow.emplace([&]() {
+  input   = {1, 2, 3, 4, 5};
+  output.resize(input.size());
+  first   = input.begin();
+  last    = input.end();
+  d_first = output.begin();
+});
+
+tf::Task scan = taskflow.exclusive_scan(
+  std::ref(first), std::ref(last), std::ref(d_first), -1, std::plus<int>{}
+);
+
+// wrong! iterators are captured by copy at construction time
+// tf::Task scan = taskflow.exclusive_scan(first, last, d_first, -1, std::plus<int>{});
+
+init.precede(scan);
 executor.run(taskflow).wait();
 // output is {-1, 0, 2, 5, 9}
 @endcode
 
-@section CreateAParallelTransformExclusiveScanTask Create a Parallel Transform-Exclusive Scan Task
+@section ParallelScanTransformExclusive Create a Parallel Transform-Exclusive Scan Task
 
-You can transform elements in the input range before running exclusive scan using
-tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop).
-For example, the code below performs an exclusive scan over five
-transformed elements:
-  
+tf::Taskflow::transform_exclusive_scan(B first, E last, D d_first, T init, BOP bop, UOP uop)
+applies the unary operator @c uop to transform each input element before
+performing the exclusive scan with @c bop and the initial value @c init.
+It represents parallel execution of the following loop:
+
 @code{.cpp}
-std::vector<int> input = {1, 2, 3, 4, 5};
+for(size_t k = 0; k < n; k++) {
+  output[k] = (k == 0) ? init : bop(output[k-1], uop(input[k-1]));
+}
+@endcode
+
+Note that @c init does @em not participate in the unary transformation
+@c uop — only input elements are transformed:
+
+@code{.cpp}
+std::vector<int> input  = {1, 2, 3, 4, 5};
 std::vector<int> output(input.size());
+
 taskflow.transform_exclusive_scan(
-  input.begin(), input.end(), input.begin(), -1, std::plus<int>{},
+  input.begin(), input.end(), output.begin(), -1,
+  std::plus<int>{},
   [](int item) { return -item; }
 );
 executor.run(taskflow).wait();
@@ -170,9 +277,4 @@ executor.run(taskflow).wait();
 */
 
 }
-
-
-
-
-
 

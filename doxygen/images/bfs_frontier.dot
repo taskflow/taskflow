@@ -1,0 +1,52 @@
+digraph BFS {
+  graph [fontname="Helvetica", fontsize=12, splines=false,
+         bgcolor=white, rankdir=LR, nodesep=0.5, ranksep=0.8];
+  node  [fontname="Helvetica", fontsize=12, style=filled, shape=circle, fixedsize=true];
+  edge  [color="black"];
+
+  // ── nodes by BFS level ────────────────────────────────────────────────────
+  // level 0 (source)
+  s  [label="S",  fillcolor="#fde8d0"];
+
+  // level 1
+  a  [label="A",  fillcolor="#cce5ff"];
+  b  [label="B",  fillcolor="#cce5ff"];
+  c  [label="C",  fillcolor="#cce5ff"];
+
+  // level 2
+  d  [label="D",  fillcolor="#d4edda"];
+  e  [label="E",  fillcolor="#d4edda"];
+  f  [label="F",  fillcolor="#d4edda"];
+  g  [label="G",  fillcolor="#d4edda"];
+
+  // level 3
+  h  [label="H",  fillcolor="#fff3cd"];
+  i  [label="I",  fillcolor="#fff3cd"];
+
+  // ── force level ranks ─────────────────────────────────────────────────────
+  { rank=same; s }
+  { rank=same; a; b; c }
+  { rank=same; d; e; f; g }
+  { rank=same; h; i }
+
+  // ── edges ─────────────────────────────────────────────────────────────────
+  s -> a; s -> b; s -> c;
+  a -> d; a -> e;
+  b -> e; b -> f;
+  c -> f; c -> g;
+  d -> h;
+  e -> h; e -> i;
+  f -> i;
+
+  // ── level labels ──────────────────────────────────────────────────────────
+  lv0 [label="Level 0\n(source)",   shape=plaintext, fillcolor=white, fontsize=12];
+  lv1 [label="Level 1\n(frontier)", shape=plaintext, fillcolor=white, fontsize=12];
+  lv2 [label="Level 2\n(frontier)", shape=plaintext, fillcolor=white, fontsize=12];
+  lv3 [label="Level 3\n(frontier)", shape=plaintext, fillcolor=white, fontsize=12];
+
+  { rank=same; lv0; s }
+  { rank=same; lv1; a }
+  { rank=same; lv2; d }
+  { rank=same; lv3; h }
+}
+

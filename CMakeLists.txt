@@ -14,6 +14,7 @@
 # To turn on/off taskflow macros:
 # -DTF_DISABLE_EXCEPTION_HANDLING
 # -DTF_ENABLE_ATOMIC_NOTIFIER         // default choice under C++20
+# -DTF_ENABLE_TASK_PRIORITY=ON
 #
 # To build different targets:
 # -DTF_BUILD_BENCHMARKS=OFF/ON        // default OFF
@@ -42,6 +43,9 @@ option(TF_BUILD_CUDA "Enables builds of cuda code" OFF)
 option(TF_BUILD_TESTS "Enables builds of tests" ON)
 option(TF_BUILD_EXAMPLES "Enables builds of examples" ON)
 option(TF_BUILD_MODULES "Enables C++ modules" OFF)
+
+# feature options
+option(TF_ENABLE_TASK_PRIORITY "Enables task priority scheduling" OFF)
 
 # project-specific variables
 set(TF_UTEST_DIR ${PROJECT_SOURCE_DIR}/unittests)
@@ -221,12 +225,20 @@ endif(TF_BUILD_CUDA)
 add_library(default_settings INTERFACE)
 add_library(tf::default_settings ALIAS default_settings)
 target_link_libraries(
-  default_settings 
-  INTERFACE 
-  tf::error_settings 
-  #atomic
-  #tf::optimize_settings 
-  #tf::features_settings
+  default_settings
+  INTERFACE
+  tf::error_settings
+  $<$<BOOL:${ATOMIC_LIBRARY}>:${ATOMIC_LIBRARY}>
+)
+
+# Use real std headers instead of doctest's own forward-declared stand-ins
+# (e.g. for std::tuple). Newer MSVC toolsets emit C5285 ("specializing this
+# standard library template is forbidden") on doctest's forward declarations,
+# which becomes a hard error under /WX. This sidesteps the issue entirely.
+target_compile_definitions(
+  default_settings
+  INTERFACE
+  DOCTEST_CONFIG_USE_STD_HEADERS
 )
 
 # -----------------------------------------------------------------------------
@@ -264,6 +276,7 @@ message(STATUS "TF_BUILD_CUDA: " ${TF_BUILD_CUDA})
 message(STATUS "TF_BUILD_TESTS: " ${TF_BUILD_TESTS})
 message(STATUS "TF_BUILD_EXAMPLES: " ${TF_BUILD_EXAMPLES})
 message(STATUS "TF_BUILD_MODULES: " ${TF_BUILD_MODULES})
+message(STATUS "TF_ENABLE_TASK_PRIORITY: " ${TF_ENABLE_TASK_PRIORITY})
 message(STATUS "TF_UTEST_DIR: " ${TF_UTEST_DIR})
 message(STATUS "TF_EXAMPLE_DIR: " ${TF_EXAMPLE_DIR})
 message(STATUS "TF_BENCHMARK_DIR: " ${TF_BENCHMARK_DIR})
@@ -285,7 +298,6 @@ find_package(Threads REQUIRED)
 
 add_library(${PROJECT_NAME} INTERFACE)
 add_library(${PROJECT_NAME}::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
-#target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 target_link_libraries(${PROJECT_NAME} INTERFACE ${ATOMIC_LIBRARY} Threads::Threads)
 target_include_directories(${PROJECT_NAME} INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -294,6 +306,12 @@ target_include_directories(${PROJECT_NAME} INTERFACE
 # When building with MSVC compiler disable warnings on variables padding changed
 # for taskflow/core/tsq.hpp and taskflow/utility/mpmc.hpp
 target_compile_options(${PROJECT_NAME} INTERFACE $<$<BOOL:${MSVC}>:/wd4324>)
+
+# opt-in task priority scheduling; propagated to all consumers of the library so
+# that when disabled (default) there is zero priority-related overhead
+if(TF_ENABLE_TASK_PRIORITY)
+  target_compile_definitions(${PROJECT_NAME} INTERFACE TF_ENABLE_TASK_PRIORITY)
+endif()
 
 # -----------------------------------------------------------------------------
 # Example program 
@@ -354,7 +372,7 @@ install(TARGETS ${PROJECT_NAME} EXPORT ${PROJECT_NAME}Targets)
 install(
   EXPORT ${PROJECT_NAME}Targets 
   NAMESPACE ${PROJECT_NAME}:: 
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}
 )
 
 # set up config
@@ -363,18 +381,28 @@ include(CMakePackageConfigHelpers)
 configure_package_config_file(
   ${PROJECT_NAME}Config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}
   PATH_VARS CMAKE_INSTALL_FULL_INCLUDEDIR
 )
 
 write_basic_package_version_file(
   ${PROJECT_NAME}ConfigVersion.cmake 
   COMPATIBILITY SameMinorVersion
+  ARCH_INDEPENDENT
 )
 
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}
 )
 
+# -----------------------------------------------------------------------------
+# pkg-config
+# -----------------------------------------------------------------------------
+
+configure_file(taskflow.pc.in taskflow.pc @ONLY)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/taskflow.pc
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/pkgconfig
+)

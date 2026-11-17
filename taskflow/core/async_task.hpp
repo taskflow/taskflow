@@ -48,150 +48,150 @@ class AsyncTask {
   
   public:
     
-    /**
-    @brief constructs an empty task handle
-    */
-    AsyncTask() = default;
-    
-    /**
-    @brief destroys the managed dependent-async task if this is the last owner
-    */
-    ~AsyncTask();
-    
-    /**
-    @brief constructs a dependent-async task that shares ownership of @c rhs
-    */
-    AsyncTask(const AsyncTask& rhs);
+  /**
+  @brief constructs an empty task handle
+  */
+  AsyncTask() = default;
+  
+  /**
+  @brief destroys the managed dependent-async task if this is the last owner
+  */
+  ~AsyncTask();
+  
+  /**
+  @brief constructs a dependent-async task that shares ownership of @c rhs
+  */
+  AsyncTask(const AsyncTask& rhs);
 
-    /**
-    @brief move-constructs an dependent-async task from @c rhs
-    */
-    AsyncTask(AsyncTask&& rhs);
-    
-    /**
-    @brief copy-assigns the dependent-async task from @c rhs
+  /**
+  @brief move-constructs an dependent-async task from @c rhs
+  */
+  AsyncTask(AsyncTask&& rhs);
+  
+  /**
+  @brief copy-assigns the dependent-async task from @c rhs
 
-    Releases the managed object of @c this and retains a new shared ownership
-    of @c rhs.
-    */
-    AsyncTask& operator = (const AsyncTask& rhs);
+  Releases the managed object of @c this and retains a new shared ownership
+  of @c rhs.
+  */
+  AsyncTask& operator = (const AsyncTask& rhs);
 
-    /**
-    @brief move-assigns the dependent-async task from @c rhs
-    
-    Releases the managed object of @c this and takes over the ownership of @c rhs.
-    */
-    AsyncTask& operator = (AsyncTask&& rhs);
-    
-    /**
-    @brief checks if this dependent-async task is associated with any task
+  /**
+  @brief move-assigns the dependent-async task from @c rhs
+  
+  Releases the managed object of @c this and takes over the ownership of @c rhs.
+  */
+  AsyncTask& operator = (AsyncTask&& rhs);
+  
+  /**
+  @brief checks if this dependent-async task is associated with any task
 
-    An empty dependent-async task is not associated with any task created 
-    from the executor.
+  An empty dependent-async task is not associated with any task created 
+  from the executor.
 
-    @code{.cpp}
-    tf::AsyncTask task;
-    assert(task.empty());
-    @endcode
-    */
-    bool empty() const;
+  @code{.cpp}
+  tf::AsyncTask task;
+  assert(task.empty());
+  @endcode
+  */
+  bool empty() const;
 
-    /**
-    @brief release the managed object of @c this
-    
-    Releases the ownership of the managed task, if any. 
-    After the call `*this` manages no task.
+  /**
+  @brief release the managed object of @c this
+  
+  Releases the ownership of the managed task, if any. 
+  After the call `*this` manages no task.
 
-    @code{.cpp}
-    tf::AsyncTask task = executor.silent_dependent_async([](){});
-    assert(task.empty() == false);
-    task.reset();
-    assert(task.empty() == true);
-    @endcode
-    */
-    void reset();
-    
-    /**
-    @brief obtains the hashed value of this dependent-async task
-    
-    @code{.cpp}
-    tf::AsyncTask task = executor.silent_dependent_async([](){});
-    std::cout << task.hash_value() << '\n';
-    @endcode
-    */
-    size_t hash_value() const;
+  @code{.cpp}
+  tf::AsyncTask task = executor.silent_dependent_async([](){});
+  assert(task.empty() == false);
+  task.reset();
+  assert(task.empty() == true);
+  @endcode
+  */
+  void reset();
+  
+  /**
+  @brief obtains the hashed value of this dependent-async task
+  
+  @code{.cpp}
+  tf::AsyncTask task = executor.silent_dependent_async([](){});
+  std::cout << task.hash_value() << '\n';
+  @endcode
+  */
+  size_t hash_value() const;
 
-    /**
-    @brief returns the number of shared owners that are currently managing 
-           this dependent-async task
-    
-    In a multithreaded environment, `use_count` atomically retrieves 
-    (with `memory_order_relaxed` load) the number of tf::AsyncTask instances that manage 
-    the current task.
+  /**
+  @brief returns the number of shared owners that are currently managing 
+         this dependent-async task
+  
+  In a multithreaded environment, `use_count` atomically retrieves 
+  (with `memory_order_relaxed` load) the number of tf::AsyncTask instances that manage 
+  the current task.
 
-    @code{.cpp}
-    tf::AsyncTask task;
-    assert(task.use_count() == 0);
-    @endcode
-    */
-    size_t use_count() const;
+  @code{.cpp}
+  tf::AsyncTask task;
+  assert(task.use_count() == 0);
+  @endcode
+  */
+  size_t use_count() const;
 
-    /**                                                                                                       
-    @brief checks if this dependent-async task finishes
+  /**                                                                                                       
+  @brief checks if this dependent-async task finishes
 
-    In a multithreaded environment, `is_done` atomically retrieves 
-    (with `memory_order_acquire` load) the underlying state bit that indicates
-    the completion of this dependent-async task.
-    If the dependent-async task is empty, returns `true`.
+  In a multithreaded environment, `is_done` atomically retrieves 
+  (with `memory_order_acquire` load) the underlying state bit that indicates
+  the completion of this dependent-async task.
+  If the dependent-async task is empty, returns `true`.
 
-    @code{.cpp}
-    tf::AsyncTask task = executor.silent_dependent_async([](){});
-    while(task.is_done() == false);
-    std::cout << "dependent-async task finishes\n";
+  @code{.cpp}
+  tf::AsyncTask task = executor.silent_dependent_async([](){});
+  while(task.is_done() == false);
+  std::cout << "dependent-async task finishes\n";
 
-    task.reset();
-    assert(task.is_done() == true);
-    @endcode
+  task.reset();
+  assert(task.is_done() == true);
+  @endcode
 
-    */
-    bool is_done() const; 
-    
-    /**
-    @brief retrieves the exception pointer of this task
-   
-    This method retrieves the exception pointer of the task, if any, that was silently caught by the executor. 
-    For example, the code below retrieves the exception pointer of a dependent-async task that does not have 
-    a shared state to propagate its exception. 
+  */
+  bool is_done() const; 
+  
+  /**
+  @brief retrieves the exception pointer of this task
+  
+  This method retrieves the exception pointer of the task, if any, that was silently caught by the executor. 
+  For example, the code below retrieves the exception pointer of a dependent-async task that does not have 
+  a shared state to propagate its exception. 
 
-    @code{.cpp}
-    tf::AsyncTask task = executor.silent_dependent_async([&](){
-      throw std::runtime_error("oops"); 
-    });
-    executor.wait_for_all();
-    
-    // propagate the exception to the outer caller
-    assert(task.exception_ptr() != nullptr);
-    std::rethrow_exception(task.exception_ptr());
-    @endcode
+  @code{.cpp}
+  tf::AsyncTask task = executor.silent_dependent_async([&](){
+    throw std::runtime_error("oops"); 
+  });
+  executor.wait_for_all();
+  
+  // propagate the exception to the outer caller
+  assert(task.exception_ptr() != nullptr);
+  std::rethrow_exception(task.exception_ptr());
+  @endcode
 
-    */
-    std::exception_ptr exception_ptr() const;
-    
-    /**
-    @brief queries if the task has an exception pointer
+  */
+  std::exception_ptr exception_ptr() const;
+  
+  /**
+  @brief queries if the task has an exception pointer
 
-    The method checks whether the task holds a pointer to a silently caught exception.
-    */
-    bool has_exception_ptr() const;
+  The method checks whether the task holds a pointer to a silently caught exception.
+  */
+  bool has_exception_ptr() const;
 
   private:
 
-    explicit AsyncTask(Node*);
+  explicit AsyncTask(Node*);
 
-    Node* _node {nullptr};
+  Node* _node {nullptr};
 
-    void _incref();
-    void _decref();
+  void _incref();
+  void _decref();
 };
 
 // Constructor
@@ -202,18 +202,22 @@ inline AsyncTask::AsyncTask(Node* ptr) : _node{ptr} {
 // Function: _incref
 inline void AsyncTask::_incref() {
   if(_node) {
-    std::get_if<Node::DependentAsync>(&(_node->_handle))->use_count.fetch_add(
-      1, std::memory_order_relaxed
-    );
+    // increment the refcount packed in the lower 24 bits of _estate —
+    // no std::get_if needed since we know this node is DependentAsync
+    _node->_estate.fetch_add(ESTATE::REFCOUNT_ONE, std::memory_order_relaxed);
   }
 }
 
 // Function: _decref
 inline void AsyncTask::_decref() {
-  if(_node && std::get_if<Node::DependentAsync>(&(_node->_handle))->use_count.fetch_sub(
-      1, std::memory_order_acq_rel
-    ) == 1) {
-    recycle(_node);
+  if(_node) {
+    // decrement the refcount packed in the lower 24 bits of _estate.
+    // mask out the state bits before comparing so we only check the refcount.
+    // if it reaches zero, no owners remain and we recycle the node.
+    if((_node->_estate.fetch_sub(ESTATE::REFCOUNT_ONE, std::memory_order_acq_rel)
+        & ESTATE::REFCOUNT_MASK) == ESTATE::REFCOUNT_ONE) {
+      recycle(_node);
+    }
   }
 }
 
@@ -278,10 +282,10 @@ inline size_t AsyncTask::hash_value() const {
 
 // Function: use_count
 inline size_t AsyncTask::use_count() const {
-  return _node == nullptr ? size_t{0} : 
-  std::get_if<Node::DependentAsync>(&(_node->_handle))->use_count.load(
-    std::memory_order_relaxed
-  );
+  return _node == nullptr ? size_t{0} :
+    static_cast<size_t>(
+      _node->_estate.load(std::memory_order_relaxed) & ESTATE::REFCOUNT_MASK
+    );
 }
 
 // Function: is_done
@@ -289,7 +293,25 @@ inline bool AsyncTask::is_done() const {
   return _node == nullptr ? true: (_node->_estate.load(std::memory_order_acquire) & ESTATE::FINISHED);
 }
 
+// ----------------------------------------------------------------------------
+// AsyncTaskHandleLike 
+// ----------------------------------------------------------------------------
+
+
+/**
+@brief concept to check if a type is a tf::AsyncTask
+
+Satisfied by `tf::AsyncTask` and any cv- or reference-qualified form of
+`tf::AsyncTask`. 
+
+@code
+static_assert(AsyncTaskHandleLike<AsyncTask>);
+static_assert(AsyncTaskHandleLike<const AsyncTask&>);
+static_assert(!AsyncTaskHandleLike<int>);
+@endcode
+ */
+template <typename T>
+concept AsyncTaskHandleLike = std::is_same_v<std::decay_t<T>, AsyncTask>;
+
+
 }  // end of namespace tf ----------------------------------------------------
-
-
-

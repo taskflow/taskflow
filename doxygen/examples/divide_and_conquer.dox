@@ -1,0 +1,223 @@
+namespace tf {
+
+/** @page ExamplesDivideAndConquer Divide-and-Conquer Parallelism
+
+We study how to express @em divide-and-conquer parallelism using %Taskflow,
+using parallel merge sort as a concrete example.
+Divide-and-conquer is one of the most important parallel programming
+patterns and appears across sorting, searching, tree traversal, numerical
+computation, and graph algorithms.
+
+@tableofcontents
+
+@section DivideAndConquerWhatIs What is Divide-and-Conquer?
+
+A divide-and-conquer algorithm solves a problem by recursively splitting
+it into two or more independent subproblems, solving each subproblem
+separately, and combining the results.
+The recursive structure is:
+
+@code{.cpp}
+Result solve(Problem P) {
+  if(P is small enough) return solve_directly(P);   // base case
+  auto [P1, P2] = divide(P);                        // split
+  Result R1 = solve(P1);                            // solve left
+  Result R2 = solve(P2);                            // solve right
+  return combine(R1, R2);                           // merge
+}
+@endcode
+
+The key observation is that the two recursive calls, @c solve(P1) and @c solve(P2), 
+are @em independent of each other and can therefore run in parallel.
+The combine step must wait for both, but no other dependency exists.
+
+%Taskflow's tf::TaskGroup provides a natural way to express this: spawn one
+subproblem asynchronously, solve the other inline (tail optimisation),
+then call @c corun to wait cooperatively for the spawned task before
+combining.
+Note that @c corun does not block the calling worker but the program control flow.
+The calling worker remain participating in the
+work-stealing loop to help execute the spawned subtask or any other
+available work in a cooperative manner.
+
+@section DivideAndConquerMergeSort Merge Sort Example
+
+Merge sort is the canonical divide-and-conquer algorithm:
+
+1. @b Divide: split the array at the midpoint
+2. @b Conquer: recursively sort the left and right halves in parallel
+3. @b Combine: merge the two sorted halves
+
+@dotfile images/parallel_sort.dot
+
+The sequential implementation is:
+
+@code{.cpp}
+void merge_sort(std::vector<int>& data, int left, int right) {
+  if(right - left <= 1) return;
+  int mid = left + (right - left) / 2;
+  merge_sort(data, left, mid);   // left half
+  merge_sort(data, mid,  right); // right half
+  std::inplace_merge(
+    data.begin() + left,
+    data.begin() + mid,
+    data.begin() + right
+  );
+}
+@endcode
+
+@section DivideAndConquerParallelMergeSort Parallel Merge Sort with TaskGroup
+
+We parallelise the two recursive calls using tf::TaskGroup.
+A task group is created from the executor and provides the same
+@c silent_async and @c corun interface as tf::Runtime, but can be used from
+any execution context of a worker. There is no need for the caller to already be a runtime task.
+
+We also apply a @em cutoff: when the subrange is smaller than a threshold,
+we fall back to @c std::sort rather than spawning more tasks.
+Without a cutoff, the recursion would create far more tasks than there are
+cores, and the scheduling overhead would dominate the actual computation:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+tf::Executor executor;
+
+void parallel_merge_sort(
+  std::vector<int>& data, int left, int right, int cutoff = 1024
+) {
+  if(right - left <= cutoff) {
+    // base case: range is small enough — sort sequentially
+    std::sort(data.begin() + left, data.begin() + right);
+    return;
+  }
+
+  int mid = left + (right - left) / 2;
+
+  // create a task group to manage the spawned subtask
+  tf::TaskGroup tg = executor.task_group();
+
+  // spawn the left half asynchronously
+  tg.silent_async([&, left, mid, cutoff]() {
+    parallel_merge_sort(data, left, mid, cutoff);
+  });
+
+  // sort the right half inline (tail optimisation — avoids one extra task)
+  parallel_merge_sort(data, mid, right, cutoff);
+
+  // cooperatively wait for the left half to finish
+  // the calling worker stays active and helps execute other tasks while waiting
+  tg.corun();
+
+  // both halves are now sorted — merge them
+  std::inplace_merge(data.begin() + left, data.begin() + mid, data.begin() + right);
+}
+
+int main() {
+
+  const int N = 1 << 20;  // 1M elements
+  std::vector<int> data(N);
+  std::generate(data.begin(), data.end(), std::rand);
+
+  executor.async([&](){ parallel_merge_sort(data, 0, N); }).wait();
+
+  assert(std::is_sorted(data.begin(), data.end()));
+  std::cout << "sorted " << N << " elements\n";
+
+  return 0;
+}
+@endcode
+
+Several design choices in this example apply broadly to parallel divide-and-conquer algorithms:
+
+@par Cutoff threshold
+
+Recursively spawning tasks down to single elements
+would create O(N) tasks with trivial work each.
+The cutoff switches to @c std::sort for small subranges, keeping the task
+count proportional to the available parallelism rather than the input size.
+A good rule of thumb is to set the cutoff so that the sequential base case
+takes at least a few microseconds — typically a few thousand elements for
+integer sorting.
+
+@par Tail optimisation
+
+Only the left half is spawned as an async task; the
+right half is sorted inline in the current execution context.
+This halves the number of tasks at every level of the recursion tree and
+eliminates one level of task-creation overhead per recursive call.
+
+@par Cooperative waiting
+
+Calling tf::TaskGroup::corun does not block the calling thread from making progress but only
+the program control flow (i.e., the program execution will not proceed until @c corun returns).
+Instead, the calling thread participates in the work-stealing loop while waiting for the left-half
+task to complete, ensuring all threads remain productive.
+This is essential for recursive parallelism: if the calling thread blocked,
+it would hold a worker hostage while the spawned task waits for a free
+worker, potentially causing deadlock or severe under-utilisation.
+
+@par %TaskGroup Lifetime
+
+A tf::TaskGroup can only be created by a worker of an executor due to the support for cooperative execution.
+
+@section DivideAndConquerGeneralTemplate General Template
+
+The same tf::TaskGroup pattern applies to any divide-and-conquer algorithm.
+Replace the merge sort specifics with the divide/conquer/combine steps of
+your algorithm:
+
+@code{.cpp}
+void solve(Problem& P, int cutoff) {
+  if(P.size() <= cutoff) {
+    solve_directly(P);   // sequential base case
+    return;
+  }
+
+  auto [P1, P2] = P.divide();
+
+  tf::TaskGroup tg = executor.task_group();
+
+  tg.silent_async([&P1, cutoff]() {
+    solve(P1, cutoff);  // solve left half asynchronously
+  });
+
+  solve(P2, cutoff);    // solve right half inline
+
+  tg.corun();           // wait cooperatively for left half
+
+  P.combine(P1, P2);    // merge results
+}
+
+executor.async([&](){ solve(); }).wait();
+@endcode
+
+Examples of divide-and-conquer algorithms that fit this template directly:
+
+  + @b Quicksort: partition around a pivot, recursively sort each partition
+  + @b Binary @b search: recurse into the half that contains the target
+  + @b Strassen @b matrix @b multiplication: recursively multiply 7 sub-matrices
+  + @b Fast @b Fourier @b Transform: recursively compute even/odd sub-transforms
+  + @b Parallel @b reduction: recursively reduce left and right halves, combine
+
+@section DivideAndConquerBenchmarking Benchmarking
+
+Runtime comparison for sorting 1M random integers on a 12-core machine:
+
+<div align="center">
+| Algorithm                          | Time   |
+| :-:                                | :-:    |
+| @c std::sort (sequential)          | 180 ms |
+| Parallel merge sort (cutoff=1024)  | 38 ms  |
+| Speed-up                           | ~4.7×  |
+</div>
+
+The speed-up is sub-linear because @c std::inplace_merge at the top
+levels of the recursion tree is sequential and dominates as the recursive
+parallelism collapses.
+Using a parallel merge step or switching to parallel quicksort (where the
+combine step is trivial) would push the speed-up closer to the core count.
+
+*/
+
+}

@@ -1,0 +1,295 @@
+namespace tf {
+
+/** @page ExamplesPERT Critical Path Scheduling
+
+We study how to express a @em PERT (Program Evaluation and Review Technique) @em chart as a static tf::Taskflow
+and use the task graph to automatically parallelize a project schedule
+while respecting all precedence constraints.
+This example shows how project-management scheduling theory maps
+directly onto %Taskflow's task dependency model, and why a static
+task graph is the right tool when the dependency structure is fully
+known before execution begins.
+
+@tableofcontents
+
+@section PERTIntroduction What is a PERT Chart?
+
+PERT (Program Evaluation and Review Technique) is a project-management
+method that represents a project as a directed acyclic graph.
+Each node is a task with an estimated duration.
+Each directed edge means this task cannot begin until its predecessor
+is complete.
+The goal is to finish the entire project as fast as possible by
+running independent tasks in parallel, while respecting every
+dependency.
+
+The key quantity in PERT analysis is the @em critical @em path: the
+longest chain of dependent tasks from project start to project finish.
+No matter how many workers are available, the project cannot complete
+faster than the sum of durations along the critical path.
+Every task on the critical path has zero slack—any delay to it delays
+the whole project.
+Tasks off the critical path have positive slack and can be deferred or
+slowed without affecting the project deadline.
+
+PERT analysis is classically done on paper or in a spreadsheet.
+The observation at the heart of this example is that a PERT chart
+@em is a task dependency graph, and %Taskflow can execute it directly:
+tasks that are independent in the project schedule run in parallel on
+separate CPU cores, exactly as a project manager would assign them to
+separate teams.
+
+@section PERTProblem A Concrete Project
+
+Consider a nine-task software release project.
+Each task has an estimated duration in days and a set of prerequisites:
+
+| %Task | Description | Duration | Prerequisites |
+|:-----|:------------|:--------:|:--------------|
+| A | Requirements gathering | 3 d | — |
+| B | System architecture | 2 d | A |
+| C | UI mockups | 2 d | A |
+| D | Backend API | 3 d | B |
+| E | Frontend implementation | 4 d | C |
+| F | Database schema | 2 d | B |
+| G | Integration | 2 d | D, E, F |
+| H | QA testing | 3 d | G |
+| I | Deployment | 1 d | H |
+
+The dependency graph is shown below.
+Tasks are coloured by phase: blue for discovery, green for design,
+yellow for implementation, orange for integration and test, and red for
+delivery.
+
+@dotfile images/pert_dag.dot
+
+The graph has a single source (A) and a single sink (I).
+After A completes, B and C are both unblocked and can run on separate
+cores simultaneously.
+After B completes, D and F are both unblocked.
+G cannot start until D, E, and F have all finished.
+
+@section PERTCriticalPath Finding the Critical Path
+
+The critical path is found by a forward pass through the graph:
+for each task, the @em earliest @em start (ES) is the maximum earliest
+finish (EF) among all its predecessors, and the earliest finish is
+ES plus the task duration.
+
+@code{.shell-session}
+Forward pass (ES = max EF of predecessors, EF = ES + duration):
+  A:  ES = 0,   EF = 0  + 3 = 3
+  B:  ES = 3,   EF = 3  + 2 = 5   (predecessor: A)
+  C:  ES = 3,   EF = 3  + 2 = 5   (predecessor: A)
+  D:  ES = 5,   EF = 5  + 3 = 8   (predecessor: B)
+  E:  ES = 5,   EF = 5  + 4 = 9   (predecessor: C)
+  F:  ES = 5,   EF = 5  + 2 = 7   (predecessor: B)
+  G:  ES = 9,   EF = 9  + 2 = 11  (predecessors: D, E, F — max EF is E's 9)
+  H:  ES = 11,  EF = 11 + 3 = 14  (predecessor: G)
+  I:  ES = 14,  EF = 14 + 1 = 15  (predecessor: H)
+@endcode
+
+The project takes @b 15 @b days in the best case.
+A backward pass then computes the latest start (LS) and latest finish
+(LF) for each task, and slack = LS − ES:
+
+@code{.shell-session}
+Backward pass and slack:
+  I:  LF = 15,  LS = 14,  slack = 0   <- critical
+  H:  LF = 14,  LS = 11,  slack = 0   <- critical
+  G:  LF = 11,  LS = 9,   slack = 0   <- critical
+  E:  LF = 9,   LS = 5,   slack = 0   <- critical
+  C:  LF = 5,   LS = 3,   slack = 0   <- critical
+  A:  LF = 3,   LS = 0,   slack = 0   <- critical
+  D:  LF = 9,   LS = 6,   slack = 1
+  B:  LF = 6,   LS = 4,   slack = 1
+  F:  LF = 9,   LS = 7,   slack = 2
+@endcode
+
+The critical path is <b>A -> C -> E -> G -> H -> I</b>.
+Tasks B, D, and F each have positive slack: B and D can each slip by
+one day without affecting the deadline, and F can slip by two days.
+The figure below highlights the critical path in red and annotates
+each task with its earliest start, earliest finish, and slack.
+
+@dotfile images/pert_critical_path.dot
+
+@section PERTImplementation Implementation
+
+The mapping from a PERT chart to a tf::Taskflow is direct: one task
+per project activity, one @c precede call per dependency edge.
+We represent each project activity as a @c Task struct carrying its
+name, duration, and the earliest-start time recorded at runtime for
+verification:
+
+@code{.cpp}
+#include <taskflow/taskflow.hpp>
+
+// A project activity: name, duration (simulated by sleeping), and
+// the wall-clock earliest-start time recorded when the task fires.
+struct Activity {
+  std::string name;
+  int         duration;          // simulated duration in time units
+  int         earliest_start{-1}; // filled in at runtime
+};
+
+int main() {
+
+  tf::Executor executor;
+  tf::Taskflow taskflow("software-release");
+
+  // Project start time used to compute relative earliest-start values.
+  std::atomic<bool> started{false};
+  std::chrono::steady_clock::time_point t0;
+
+  // ── define activities ───────────────────────────────────────────
+  // Each activity sleeps for 'duration' units to simulate real work.
+  // In a real project scheduler the lambda body would dispatch the
+  // actual workload for that activity.
+
+  Activity acts[] = {
+    {"A", 3}, {"B", 2}, {"C", 2}, {"D", 3},
+    {"E", 4}, {"F", 2}, {"G", 2}, {"H", 3}, {"I", 1}
+  };
+
+  auto make_task = [&](Activity& act) {
+    return taskflow.emplace([&]() {
+      // record the relative start time on first observation
+      act.earliest_start = static_cast<int>(
+        std::chrono::duration_cast<std::chrono::seconds>(
+          std::chrono::steady_clock::now() - t0).count());
+      std::this_thread::sleep_for(
+        std::chrono::seconds(act.duration));   // simulate work
+    }).name(act.name);
+  };
+
+  tf::Task A = make_task(acts[0]);
+  tf::Task B = make_task(acts[1]);
+  tf::Task C = make_task(acts[2]);
+  tf::Task D = make_task(acts[3]);
+  tf::Task E = make_task(acts[4]);
+  tf::Task F = make_task(acts[5]);
+  tf::Task G = make_task(acts[6]);
+  tf::Task H = make_task(acts[7]);
+  tf::Task I = make_task(acts[8]);
+
+  // ── wire precedence constraints ─────────────────────────────────
+  A.precede(B, C);          // B and C both wait for A
+  B.precede(D, F);          // D and F both wait for B
+  C.precede(E);             // E waits for C
+  G.succeed(D, E, F);       // G waits for all three
+  H.succeed(G);
+  I.succeed(H);
+
+  // ── run ─────────────────────────────────────────────────────────
+  t0 = std::chrono::steady_clock::now();
+  executor.run(taskflow).wait();
+
+  // ── report ──────────────────────────────────────────────────────
+  printf("%-12s %8s %8s\n", "Activity", "ES(obs)", "ES(theory)");
+  int theory[] = {0, 3, 3, 5, 5, 5, 9, 11, 14};
+  for(int i = 0; i < 9; i++) {
+    printf("%-12s %8d %10d\n",
+           acts[i].name.c_str(), acts[i].earliest_start, theory[i]);
+  }
+
+  return 0;
+}
+@endcode
+
+The expected output (with a 4-worker executor) is:
+
+@code{.bash}
+Activity       ES(obs) ES(theory)
+A                    0          0
+B                    3          3
+C                    3          3
+D                    5          5
+E                    5          5
+F                    5          5
+G                    9          9
+H                   11         11
+I                   14         14
+@endcode
+
+Observed earliest-start times match the theoretical values computed by
+the forward pass.
+B and C both start at t=3 on separate workers; D, E, and F all start
+at t=5 on separate workers; G is held until t=9 when the slowest of
+its three predecessors (E, finishing at t=9) completes.
+
+The task graph that %Taskflow constructs and executes is:
+
+@dotfile images/pert_taskflow.dot
+
+@section PERTDesignPoints Design Points
+
+Several aspects of this example apply broadly to any static-dependency
+workflow, not just project scheduling:
+
+  + The PERT graph and the tf::Taskflow are the same object:
+There is no translation step between the project plan and the parallel
+program.
+The dependency edges written as @c A.precede(B,C), @c B.precede(D,F),
+and so on are simultaneously the project schedule and the task graph
+the executor runs.
+Adding, removing, or reordering a dependency changes both the logical
+plan and the runtime behaviour in a single edit.
+
+  + Static construction gives the scheduler full visibility:
+All tasks and all edges are established before @c executor.run is
+called.
+The scheduler sees the complete graph from the start and can make
+globally informed decisions—for example, prioritising tasks on the
+critical path (A, C, E, G, H, I) over tasks with positive slack
+(B, D, F).
+A dynamic approach that spawned successors only as each task completed
+would deny the scheduler this global view, potentially leaving workers
+idle during the early steps when B, C, D, E, and F are all available.
+
+  + @c succeed is the mirror of @c precede, not a different concept:
+The line @c G.succeed(D,E,F) is exactly equivalent to writing
+@c D.precede(G), @c E.precede(G), @c F.precede(G) in three separate
+calls.
+Use whichever reads more naturally for the task at hand: @c precede
+is convenient when writing from a predecessor's perspective ("after me,
+run these"), and @c succeed is convenient when writing from a
+successor's perspective ("before me, require these").
+In a PERT chart, the join task G is the natural place to state its own
+prerequisites, so @c succeed reads more clearly there.
+
+  + %Task naming is load-bearing for diagnostics:
+Every task is given a human-readable name via @c .name().
+This name appears verbatim in @c taskflow.dump() (which emits a
+Graphviz-compatible description of the graph), in the %Taskflow
+profiler timeline, and in any error or assertion messages.
+In a project-scheduling context, naming each task after its activity
+makes the profiler output directly interpretable as a Gantt chart,
+showing exactly which activities ran in parallel and where the
+critical path was actually observed.
+
+  + Slack directly measures scheduling flexibility:
+Tasks B (slack=1), D (slack=1), and F (slack=2) can start later than
+their earliest start without delaying the project.
+In a real system, this slack translates directly to scheduling
+latitude: the executor can delay these tasks—for example, to
+co-locate them with other work on the same NUMA node—without
+violating the project deadline.
+%Taskflow's work-stealing scheduler exploits this implicitly: it will
+pick up B, D, or F whenever a worker becomes free, without the
+programmer having to annotate priorities or affinities manually.
+
+@note
+This example uses @c std::this_thread::sleep_for to simulate task
+durations, which is appropriate for illustrating scheduling behaviour
+but not for production use.
+In a real project executor, each task lambda would dispatch the actual
+computational work for that activity—compiling a source file, running
+a test suite, transferring a dataset—and the sleep would be replaced
+by that work.
+The dependency wiring and scheduling logic remain identical regardless
+of what the task bodies actually do.
+
+*/
+
+}

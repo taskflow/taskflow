@@ -120,7 +120,7 @@ tf::Task m1 = taskflow1.composed_of(taskflow2);
 tf::Task m1 = taskflow1.emplace(tf::make_module_task(taskflow2));
 @endcode
 
-@attention
+@note
 Similar to tf::Taskflow::composed_of, tf::make_module_task does not assume ownership of 
 the provided taskflow but a soft reference.
 You are responsible for ensuring that the encapsulated taskflow remains valid
@@ -153,7 +153,7 @@ CustomGraph target;
 executor.async(tf::make_module_task(target));
 @endcode
 
-@attention
+@note
 Users are responsible for ensuring the given custom graph remains valid throughout its execution.
 The executor does not assume ownership of the custom graph.
 

@@ -1,0 +1,43 @@
+digraph GCTree {
+  graph [fontname="Helvetica", fontsize=10, ranksep=0.65, nodesep=0.45];
+  node  [fontname="Helvetica", fontsize=9, style=filled, shape=box,
+         height=0.30, margin="0.08,0.04"];
+  edge  [arrowsize=0.55, color="#555555", fontname="Helvetica", fontsize=8];
+
+  // ── level 0: root ─────────────────────────────────────────────────────────
+  root [label="v0=0\n[0 . . . .]", fillcolor="#fde8d0"];
+
+  // ── level 1 ───────────────────────────────────────────────────────────────
+  { rank=same;
+    v1c1 [label="v1=1\n[0 1 . . .]", fillcolor="#fde8d0"];
+  }
+
+  // ── level 2 ───────────────────────────────────────────────────────────────
+  { rank=same;
+    v2c2 [label="v2=2\n[0 1 2 . .]", fillcolor="#fde8d0"];
+  }
+
+  // ── level 3 ───────────────────────────────────────────────────────────────
+  { rank=same;
+    v3c0 [label="v3=0\n[0 1 2 0 .]", fillcolor="#fde8d0"];
+    v3c1 [label="v3=1  PRUNE\n[0 1 2 1 .]\n3 colors ≥ best=3", fillcolor="#f8d7da"];
+    v3c3 [label="v3=3  PRUNE\n[0 1 2 3 .]\n4 colors ≥ best=3", fillcolor="#f8d7da"];
+  }
+
+  // ── level 4: leaves ───────────────────────────────────────────────────────
+  { rank=same;
+    v4c1 [label="v4=1\n[0 1 2 0 1]\n3 colors ★", fillcolor="#d4edda"];
+    v4c2 [label="v4=2\n[0 1 2 0 2]\n3 colors", fillcolor="#fff3cd"];
+    v4c3 [label="v4=3\n[0 1 2 0 3]\n4 colors", fillcolor="#fff3cd"];
+  }
+
+  // ── edges ─────────────────────────────────────────────────────────────────
+  root  -> v1c1  [label="only choice\n(sym. break)"];
+  v1c1  -> v2c2  [label="only choice\n(sym. break)"];
+  v2c2  -> v3c0  [label="try 0"];
+  v2c2  -> v3c1  [label="try 1", style=dashed, color="#cc0000"];
+  v2c2  -> v3c3  [label="try 3", style=dashed, color="#cc0000"];
+  v3c0  -> v4c1  [label="try 1"];
+  v3c0  -> v4c2  [label="try 2"];
+  v3c0  -> v4c3  [label="try 3"];
+}

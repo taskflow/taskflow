@@ -1,0 +1,70 @@
+digraph ParallelReduction {
+
+  rankdir = TB;
+  node [shape=box, style=filled, fontname="Courier New", fontsize=11];
+  edge [arrowsize=0.7];
+
+  // ── input elements (rank 0) ──────────────────────────────────────────────
+  subgraph cluster_input {
+    label     = "input elements";
+    fontsize  = 11;
+    style     = invis;
+    rank      = same;
+
+    e1  [label="1",  fillcolor="#cce5ff"];
+    e2  [label="2",  fillcolor="#cce5ff"];
+    e3  [label="3",  fillcolor="#cce5ff"];
+    e4  [label="4",  fillcolor="#cce5ff"];
+    e5  [label="5",  fillcolor="#cce5ff"];
+    e6  [label="6",  fillcolor="#cce5ff"];
+    e7  [label="7",  fillcolor="#cce5ff"];
+    e8  [label="8",  fillcolor="#cce5ff"];
+  }
+
+  // ── level 1: pairwise reduction ──────────────────────────────────────────
+  subgraph cluster_l1 {
+    label    = "level 1  (parallel)";
+    fontsize = 11;
+    style    = invis;
+    rank     = same;
+
+    l1a [label="1+2=3",   fillcolor="#d4edda"];
+    l1b [label="3+4=7",   fillcolor="#d4edda"];
+    l1c [label="5+6=11",  fillcolor="#d4edda"];
+    l1d [label="7+8=15",  fillcolor="#d4edda"];
+  }
+
+  // ── level 2: second reduction ─────────────────────────────────────────────
+  subgraph cluster_l2 {
+    label    = "level 2  (parallel)";
+    fontsize = 11;
+    style    = invis;
+    rank     = same;
+
+    l2a [label="3+7=10",    fillcolor="#fff3cd"];
+    l2b [label="11+15=26",  fillcolor="#fff3cd"];
+  }
+
+  // ── level 3: final reduction ──────────────────────────────────────────────
+  subgraph cluster_l3 {
+    label    = "final";
+    fontsize = 11;
+    style    = invis;
+    rank     = same;
+
+    l3  [label="10+26=36", fillcolor="#f8d7da", style="filled,bold"];
+  }
+
+  // ── edges ─────────────────────────────────────────────────────────────────
+  e1 -> l1a;  e2 -> l1a;
+  e3 -> l1b;  e4 -> l1b;
+  e5 -> l1c;  e6 -> l1c;
+  e7 -> l1d;  e8 -> l1d;
+
+  l1a -> l2a;  l1b -> l2a;
+  l1c -> l2b;  l1d -> l2b;
+
+  l2a -> l3;
+  l2b -> l3;
+}
+

@@ -5,17 +5,20 @@
 namespace tf {
 
 // Function: make_transform_task
-template <
-  typename B, typename E, typename O, typename C, typename P = DefaultPartitioner,
-  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>* = nullptr
+template <InputIteratorLike B, InputIteratorLike E, typename O, typename C,
+          PartitionerLike P = DefaultPartitioner>
+requires UnaryTransformLike<
+  C, 
+  std::decay_t<std::unwrap_ref_decay_t<B>>,
+  std::decay_t<std::unwrap_ref_decay_t<O>>
 >
 auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B_t = std::decay_t<unwrap_ref_decay_t<B>>;
-  using E_t = std::decay_t<unwrap_ref_decay_t<E>>;
-  using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
+  using B_t = std::decay_t<std::unwrap_ref_decay_t<B>>;
+  using E_t = std::decay_t<std::unwrap_ref_decay_t<E>>;
+  using O_t = std::decay_t<std::unwrap_ref_decay_t<O>>;
   
   return [=] (Runtime& rt) mutable {
 
@@ -26,6 +29,10 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg, end);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -75,18 +82,22 @@ auto make_transform_task(B first1, E last1, O d_first, C c, P part = P()) {
 }
 
 // Function: make_transform_task
-template <
-  typename B1, typename E1, typename B2, typename O, typename C, typename P = DefaultPartitioner,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>* = nullptr
+template <InputIteratorLike B1, InputIteratorLike E1, InputIteratorLike B2, typename O, typename C,
+          PartitionerLike P = DefaultPartitioner>
+requires BinaryTransformLike<
+  C, 
+  std::decay_t<std::unwrap_ref_decay_t<B1>>,
+  std::decay_t<std::unwrap_ref_decay_t<B2>>,
+  std::decay_t<std::unwrap_ref_decay_t<O>>
 >
 auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part = P()) {
   
   using namespace std::string_literals;
 
-  using B1_t = std::decay_t<unwrap_ref_decay_t<B1>>;
-  using E1_t = std::decay_t<unwrap_ref_decay_t<E1>>;
-  using B2_t = std::decay_t<unwrap_ref_decay_t<B2>>;
-  using O_t = std::decay_t<unwrap_ref_decay_t<O>>;
+  using B1_t = std::decay_t<std::unwrap_ref_decay_t<B1>>;
+  using E1_t = std::decay_t<std::unwrap_ref_decay_t<E1>>;
+  using B2_t = std::decay_t<std::unwrap_ref_decay_t<B2>>;
+  using O_t = std::decay_t<std::unwrap_ref_decay_t<O>>;
 
   return [=] (Runtime& rt) mutable {
 
@@ -98,6 +109,10 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
 
     size_t W = rt.executor().num_workers();
     size_t N = std::distance(beg1, end1);
+    
+    if(N == 0) {
+      return;
+    }
 
     // only myself - no need to spawn another graph
     if(W <= 1 || N <= part.chunk_size()) {
@@ -153,8 +168,11 @@ auto make_transform_task(B1 first1, E1 last1, B2 first2, O d_first, C c, P part 
 // ----------------------------------------------------------------------------
 
 // Function: transform
-template <typename B, typename E, typename O, typename C, typename P,
-  std::enable_if_t<is_partitioner_v<std::decay_t<P>>, void>*
+template <InputIteratorLike B, InputIteratorLike E, typename O, typename C, PartitionerLike P>
+requires UnaryTransformLike<
+  C, 
+  std::decay_t<std::unwrap_ref_decay_t<B>>,
+  std::decay_t<std::unwrap_ref_decay_t<O>>
 >
 Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P part) {
   return emplace(
@@ -168,8 +186,18 @@ Task FlowBuilder::transform(B first1, E last1, O d_first, C c, P part) {
   
 // Function: transform
 template <
-  typename B1, typename E1, typename B2, typename O, typename C, typename P,
-  std::enable_if_t<!is_partitioner_v<std::decay_t<C>>, void>*
+  InputIteratorLike B1, 
+  InputIteratorLike E1, 
+  InputIteratorLike B2, 
+  typename O, 
+  typename C, 
+  PartitionerLike P
+>
+requires BinaryTransformLike<
+  C, 
+  std::decay_t<std::unwrap_ref_decay_t<B1>>,
+  std::decay_t<std::unwrap_ref_decay_t<B2>>,
+  std::decay_t<std::unwrap_ref_decay_t<O>>
 >
 Task FlowBuilder::transform(
   B1 first1, E1 last1, B2 first2, O d_first, C c, P part
@@ -181,6 +209,3 @@ Task FlowBuilder::transform(
 
 
 }  // end of namespace tf -----------------------------------------------------
-
-
-

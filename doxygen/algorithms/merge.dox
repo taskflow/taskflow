@@ -1,0 +1,200 @@
+namespace tf {
+
+/** @page ParallelMerge Parallel Merge
+
+%Taskflow provides a function for constructing a task to merge two sorted
+ranges into a single sorted output range in parallel.
+
+@tableofcontents
+
+@section ParallelMergeInclude Include the Header
+
+You need to include the header file, <tt>taskflow/algorithm/merge.hpp</tt>,
+for creating a parallel-merge task.
+
+@code{.cpp}
+#include <taskflow/algorithm/merge.hpp>
+@endcode
+
+@section ParallelMergeMotivation Motivation
+
+The standard library @c std::merge walks both input sequences simultaneously
+from left to right in a single thread, producing a sorted output in O(n+m)
+time.  While optimal for a single core, this sequential walk cannot exploit
+multiple CPU cores — at any point only one comparison is in flight.
+For large inputs (e.g. merging two sorted arrays of tens of millions of
+elements), this leaves the majority of available hardware idle.
+
+%Taskflow's parallel merge divides the output into `W` independent chunks (one
+per worker thread) and uses the @em co-rank technique to identify each
+worker's exact input sub-ranges, allowing all workers to merge their chunks
+simultaneously with no synchronization.
+
+@dotfile images/merge_overview.dot
+
+@section ParallelMergeCreate Create a Parallel-Merge Task
+
+The task created by
+tf::Taskflow::merge(B1 first1, E1 last1, B2 first2, E2 last2, O d_first)
+merges the two sorted ranges <tt>[first1, last1)</tt> and
+<tt>[first2, last2)</tt> into the output range beginning at @c d_first,
+using @c std::less as the comparator.
+It represents the parallel execution of @c std::merge:
+
+@code{.cpp}
+std::merge(first1, last1, first2, last2, d_first);
+@endcode
+
+The following example merges two sorted vectors of one million integers
+using four worker threads:
+
+@code{.cpp}
+#include <taskflow/algorithm/merge.hpp>
+
+tf::Taskflow taskflow;
+tf::Executor executor(4);
+
+std::vector<int> seq1(1000000), seq2(1000000), output(2000000);
+
+// fill and sort seq1 and seq2 ...
+
+taskflow.merge(
+  seq1.begin(), seq1.end(),
+  seq2.begin(), seq2.end(),
+  output.begin()
+);
+
+executor.run(taskflow).wait();
+// output is now the sorted merge of seq1 and seq2
+@endcode
+
+To merge with a custom comparator, pass it as the last argument.
+Both input ranges must be sorted with respect to that comparator:
+
+@code{.cpp}
+// descending order
+std::sort(seq1.begin(), seq1.end(), std::greater<int>{});
+std::sort(seq2.begin(), seq2.end(), std::greater<int>{});
+
+taskflow.merge(
+  seq1.begin(), seq1.end(),
+  seq2.begin(), seq2.end(),
+  output.begin(),
+  std::greater<int>{}
+);
+
+executor.run(taskflow).wait();
+@endcode
+
+@note
+Both input ranges must be sorted with respect to the comparator before
+the merge task runs.  Passing unsorted input is undefined behavior.
+The output range must not overlap either input range.
+Both input iterators must be random-access iterators.
+
+@section ParallelMergeCaptureByReference Capture Iterators by Reference
+
+You can pass iterators by reference using @std_ref to marshal parameter
+updates between dependent tasks.
+This is useful when the ranges are not known at task-graph construction
+time but are initialized by an upstream task.
+
+@code{.cpp}
+std::vector<int> seq1, seq2, output;
+std::vector<int>::iterator beg1, end1, beg2, end2, d_beg;
+
+tf::Task init = taskflow.emplace([&]() {
+  // fill and sort seq1, seq2 at runtime
+  beg1  = seq1.begin();  end1  = seq1.end();
+  beg2  = seq2.begin();  end2  = seq2.end();
+  d_beg = output.begin();
+});
+
+tf::Task merge_task = taskflow.merge(
+  std::ref(beg1), std::ref(end1),
+  std::ref(beg2), std::ref(end2),
+  std::ref(d_beg)
+);
+
+// wrong! iterators are captured by copy at construction time
+// tf::Task merge_task = taskflow.merge(beg1, end1, beg2, end2, d_beg);
+
+init.precede(merge_task);
+executor.run(taskflow).wait();
+@endcode
+
+When @c init finishes, the merge task reads the updated iterators and
+merges the two runtime-defined sequences.
+
+@section ParallelMergeAlgorithm Understanding the Parallel Merge Algorithm
+
+@subsection ParallelMergeAlgorithmOverview Step 1: Flat Output Partitioning
+
+The merged output has @c N = n + m elements (where`n = |seq1|` and `m = |seq2|`).  
+The algorithm divides the output into @c W equal contiguous
+chunks of size `K = N/W`, one per worker thread.
+%Worker @c w is responsible for writing output positions
+<tt>[w*K, (w+1)*K)</tt>.
+The key challenge here is that for each output chunk, which elements of `seq1` and
+`seq2` belong to it?  This is what the co-rank function solves.
+
+@subsection ParallelMergeAlgorithmCorank Step 2: Co-rank to Identify Input Subranges
+
+For a given output position @c rank, `co_rank(rank)` finds `i` and `j` such
+that:
+
+- The first @c rank elements of the merged output consist of exactly @c i
+  elements from @c seq1[0..i) and @c j elements from @c seq2[0..j).
+- These @c i + @c j elements are @em interleaved in sorted order in the
+  output. Note that @c co_rank does not decide how they go in blocks but only identifies
+  @em how many elements come from each sequence. The actual placement of these elements are accomplished via std::merge.
+
+Once a worker knows `(i_start, j_start)` at its chunk's beginning and
+`(i_end, j_end)` at its chunk's end, it can independently merge
+`seq1[i_start..i_end)` with `seq2[j_start..j_end)` and write the result
+directly to its output region, with no communication with other workers.
+
+@image html images/merge_partition.svg width=90%
+
+@subsection ParallelMergeAlgorithmBinarySearch Step 3: How co_rank works? Binary Search!
+
+For a given @c rank, co_rank binary-searches for the unique @c i in the
+range <tt>[max(0, rank-m), min(n, rank)]</tt> such that the partition
+<tt>(seq1[0..i), seq2[0..rank-i))</tt> is valid.
+A partition is @em valid when:
+
+- The last element of seq1's slice does not exceed the first unused element
+  of `seq2`: `seq1[i-1] <= seq2[j]`
+- The last element of seq2's slice does not exceed the first unused element
+  of `seq1`: `seq2[j-1] <= seq1[i]`
+
+Because both sequences are sorted, as @c i increases:
+- `seq1[i-1]` increases (moving right in `seq1`)
+- `seq2[j-1]` decreases (moving left in `seq2`, since `j = rank - i` decreases)
+
+This means the condition @c seq2[j-1] <= @c seq1[i] transitions from
+@c false to @c true exactly once — making binary search applicable.
+The algorithm needs to check only one condition per iteration:
+
+- If @c seq2[j-1] > @c seq1[i]: @c i is too large -> @c high = i
+- Otherwise: @c i is not large enough -> @c low = i + 1
+
+The figure below shows two iterations of the binary search for @c rank=5
+on sequences `seq1=[1,3,5,7,9,11]` and `seq2=[2,4,6,8,10,12]`:
+
+@image html images/merge_corank_search.svg width=90%
+
+The search converges to @c i=3, @c j=2: the first 5 merged elements consist
+of `seq1[0,3)=[1,3,5]` and `seq2[0,2)=[2,4]`, which interleave to `[1,2,3,4,5]`.
+
+@subsection ParallelMergeAlgorithmNoPartitioner Why parallel merge uses no partitioner
+
+Unlike tf::Taskflow::for_each, where users can configure a partitioner to adapt to unequal per-element costs,
+@c std::merge on a chunk of size @c K always costs `O(K)` regardless of the data values.
+There is little load imbalance to mitigate.
+As a result, tf::Taskflow::merge always adopts static partitioning, i.e., `W` chunks of size `N/W` and one per worker.
+which is always the optimal strategy for parallel merge.
+
+*/
+
+}

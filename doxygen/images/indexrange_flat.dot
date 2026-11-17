@@ -1,0 +1,52 @@
+digraph FlatLinearization {
+  rankdir=TB;
+  node [shape=plaintext, fontname="Helvetica", fontsize=12];
+  edge [style=invis];
+
+  title [label="Row-major flat index linearization for a 3x4 IndexRange\nflat = i*4 + j,   size() = 12", fontsize=13];
+
+  grid [label=<
+    <TABLE BORDER="1" CELLBORDER="1" CELLSPACING="0" CELLPADDING="10" BGCOLOR="#FDFEFE">
+      <TR>
+        <TD WIDTH="55" BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>&#160;</B></TD>
+        <TD WIDTH="55" BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>j=0</B></TD>
+        <TD WIDTH="55" BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>j=1</B></TD>
+        <TD WIDTH="55" BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>j=2</B></TD>
+        <TD WIDTH="55" BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>j=3</B></TD>
+      </TR>
+      <TR>
+        <TD BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>i=0</B></TD>
+        <TD BGCOLOR="#AED6F1" ALIGN="CENTER"><B>0</B></TD>
+        <TD BGCOLOR="#AED6F1" ALIGN="CENTER"><B>1</B></TD>
+        <TD BGCOLOR="#AED6F1" ALIGN="CENTER"><B>2</B></TD>
+        <TD BGCOLOR="#AED6F1" ALIGN="CENTER"><B>3</B></TD>
+      </TR>
+      <TR>
+        <TD BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>i=1</B></TD>
+        <TD BGCOLOR="#A9DFBF" ALIGN="CENTER"><B>4</B></TD>
+        <TD BGCOLOR="#A9DFBF" ALIGN="CENTER"><B>5</B></TD>
+        <TD BGCOLOR="#A9DFBF" ALIGN="CENTER"><B>6</B></TD>
+        <TD BGCOLOR="#A9DFBF" ALIGN="CENTER"><B>7</B></TD>
+      </TR>
+      <TR>
+        <TD BGCOLOR="#D5D8DC" ALIGN="CENTER"><B>i=2</B></TD>
+        <TD BGCOLOR="#F9E79F" ALIGN="CENTER"><B>8</B></TD>
+        <TD BGCOLOR="#F9E79F" ALIGN="CENTER"><B>9</B></TD>
+        <TD BGCOLOR="#F9E79F" ALIGN="CENTER"><B>10</B></TD>
+        <TD BGCOLOR="#F9E79F" ALIGN="CENTER"><B>11</B></TD>
+      </TR>
+    </TABLE>
+  >];
+
+  note [label=<
+    <TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0">
+      <TR><TD ALIGN="LEFT"><FONT POINT-SIZE="12" COLOR="#555555">
+        flat 0..3  = row i=0  (one complete inner row)<BR/>
+        flat 4..7  = row i=1  (one complete inner row)<BR/>
+        flat 8..11 = row i=2  (one complete inner row)
+      </FONT></TD></TR>
+    </TABLE>
+  >];
+
+  title -> grid -> note;
+}

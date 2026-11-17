@@ -23,7 +23,7 @@ tf::Executor executor1;     // create an executor with the number of workers
 tf::Executor executor2(4);  // create an executor of 4 worker threads
 @endcode
 
-@attention
+@note
 Creating a tf::Executor has non-negligible overhead. 
 Unless your application requires multiple executors, we recommend creating a single tf::Executor 
 and reusing it to run multiple taskflows.
@@ -62,29 +62,31 @@ and return a tf::Future for users to access the execution status.
 The code below shows several ways to run a taskflow.
 
 @code{.cpp}
- 1: // Declare an executor and a taskflow
- 2: tf::Executor executor;
- 3: tf::Taskflow taskflow;
- 4:
- 5: // Add three tasks into the taskflow
- 6: tf::Task A = taskflow.emplace([] () { std::cout << "This is TaskA\n"; });
- 7: tf::Task B = taskflow.emplace([] () { std::cout << "This is TaskB\n"; });
- 8: tf::Task C = taskflow.emplace([] () { std::cout << "This is TaskC\n"; });
- 9: 
-10: // Build precedence between tasks
-11: A.precede(B, C); 
-12: 
-13: tf::Future<void> fu = executor.run(taskflow);
-14: fu.wait();                // block until the execution completes
-15:
-16: executor.run(taskflow, [](){ std::cout << "end of 1 run"; }).wait();
-17: executor.run_n(taskflow, 4);
-18: executor.wait_for_all();  // block until all associated executions finish
-19: executor.run_n(taskflow, 4, [](){ std::cout << "end of 4 runs"; }).wait();
-20: executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
+// Declare an executor and a taskflow
+tf::Executor executor;
+tf::Taskflow taskflow;
+
+// Add three tasks into the taskflow
+tf::Task A = taskflow.emplace([] () { std::cout << "This is TaskA\n"; });
+tf::Task B = taskflow.emplace([] () { std::cout << "This is TaskB\n"; });
+tf::Task C = taskflow.emplace([] () { std::cout << "This is TaskC\n"; });
+
+// Build precedence between tasks
+A.precede(B, C); 
+
+tf::Future<void> fu = executor.run(taskflow);
+fu.wait();                // block until the execution completes
+
+executor.run(taskflow, [](){ std::cout << "end of 1 run"; }).wait();
+executor.run_n(taskflow, 4);
+executor.wait_for_all();  // block until all associated executions finish
+executor.run_n(taskflow, 4, [](){ std::cout << "end of 4 runs"; }).wait();
+executor.run_until(taskflow, [cnt=0] () mutable { return ++cnt == 10; });
 @endcode
 
-Lines 6–8 create a taskflow consisting of three tasks, A, B, and C. Lines 13–14 execute the taskflow once and block until its completion. Line 16 runs the taskflow once and registers a callback that is invoked when the execution finishes. Lines 17–18 execute the taskflow four times and use tf::Executor::wait_for_all to wait for all executions to complete. Line 19 again runs the taskflow four times but invokes a callback at the end of the fourth execution. Finally, line 20 repeatedly runs the taskflow until the specified predicate returns true.
+Here, we first create a taskflow consisting of three tasks, A, B, and C. 
+Then, we execute the taskflow once and block until its completion through `std::future::wait`.
+Next, we use the `run` series to run the taskflow once, four times, and until the given predicate return `true`.
 
 @section UnderstandTheExecutionOrder Understand the Execution Order
 
@@ -282,7 +284,7 @@ taskflow.emplace([&](){
 });
 @endcode
 
-@attention
+@note
 You must call tf::Executor::corun_until and tf::Executor::corun
 from a worker of the calling executor or an exception will be thrown.
 
@@ -551,7 +553,7 @@ for(size_t n=0; n<num_workers; n++) {
 }
 @endcode
 
-@attention
+@note
 tf::WorkerInterface::scheduler_prologue and tf::WorkerInterface::scheduler_epilogue
 are invoked by each worker simultaneously.
 It is your responsibility to ensure that no data race can occur during their invocation.
