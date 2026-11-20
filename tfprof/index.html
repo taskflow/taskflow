@@ -13,7 +13,7 @@
   --bg:#0d1117; --surface:#161b22; --border:#30363d;
   --text:#e6edf3; --muted:#8b949e; --accent:#58a6ff;
   --row-even:#161b22; --row-odd:#0d1117; --mini-bg:#161b22;
-}
+}m
 html.light {
   --bg:#ffffff; --surface:#f6f8fa; --border:#d0d7de;
   --text:#1f2328; --muted:#636c76; --accent:#0969da;
@@ -71,9 +71,7 @@ body { background:var(--bg); color:var(--text); }
 #tl-section  { position:relative; margin:0 16px; border:1px solid var(--border); border-radius:3px; }
 #tl-labels   { position:absolute; overflow:hidden; }
 .row-label   { position:absolute; left:4px; font-size:15px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-#tl-svg      { position:absolute; display:block; overflow:hidden; }
-#tl-bg rect  { shape-rendering:crispEdges; }
-#tl-segs rect { stroke:none; cursor:pointer; }
+#tl-canvas   { position:absolute; display:block; }
 #tl-xsvg     { position:absolute; display:block; overflow:visible; pointer-events:none; }
 #tl-bsvg     { position:absolute; display:block; overflow:visible; }
 
@@ -83,6 +81,17 @@ body { background:var(--bg); color:var(--text); }
 #mini-section { position:relative; margin:0 16px; border:1px solid var(--border); border-radius:3px; }
 #mini-canvas  { position:absolute; top:0; display:block; }
 #mini-svg     { position:absolute; top:0; left:0; display:block; overflow:visible; }
+
+/* parallelism */
+#par-section { position:relative; margin:0 16px; border:1px solid var(--border); border-radius:3px; }
+#par-svg     { position:absolute; top:0; left:0; display:block; overflow:visible; }
+#par-info    { margin-left:8px; color:var(--text); }
+#par-info .pi-muted { color:var(--muted); }
+.par-area    { fill:var(--accent); fill-opacity:.28; stroke:var(--accent); stroke-width:1.25; }
+.par-cap     { stroke:var(--muted); stroke-dasharray:4 3; stroke-width:1; }
+.par-hover   { stroke:var(--text); stroke-width:1; opacity:.6; pointer-events:none; }
+.par-grid line { stroke:var(--border); stroke-opacity:.5; }
+.par-ylabel  { fill:var(--muted); font-size:13px; font-family:inherit; }
 
 /* executor filter bar */
 #exec-filter-bar {
@@ -139,6 +148,70 @@ body { background:var(--bg); color:var(--text); }
 .exec-pop-header-row span.ph-sort-desc::after { content:' ▼'; }
 #exec-pop-footer { padding:6px 12px; border-top:1px solid var(--border); font-size:14px; color:var(--muted); }
 
+/* section hints */
+.shint { font-weight:400; color:var(--muted); font-size:13px; margin-left:8px; opacity:.85; }
+
+/* summary & insights */
+#summary { margin:10px 16px 4px; border:1px solid var(--border); border-radius:6px; background:var(--surface); }
+#summary > summary { cursor:pointer; padding:9px 12px; font-size:15px; font-weight:700; color:var(--text); }
+#summary > summary:focus-visible { outline:2px solid var(--accent); outline-offset:-2px; }
+#sum-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; padding:2px 12px 12px; }
+.sum-card { border:1px solid var(--border); border-radius:6px; padding:8px 11px; background:var(--bg); }
+.sum-card .k { font-size:13px; color:var(--muted); }
+.sum-card .v { font-size:22px; font-weight:700; color:var(--text); line-height:1.35; }
+.sum-card .s { font-size:12px; color:var(--muted); }
+#sum-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; padding:2px 12px 14px; }
+.sum-h { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.typebar { display:flex; height:14px; border-radius:3px; overflow:hidden; margin-bottom:8px; background:var(--border); }
+.typeleg { display:flex; flex-direction:column; gap:3px; font-size:13px; color:var(--muted); }
+.typeleg b { color:var(--text); font-weight:600; }
+#sum-workers { display:block; width:100%; }
+#sum-workers .wbar { fill:var(--accent); opacity:.75; }
+#sum-workers .wbar:hover { opacity:1; }
+#sum-workers .wavg { stroke:var(--muted); stroke-dasharray:4 3; }
+#sum-workers text { fill:var(--muted); font-size:11px; font-family:inherit; }
+
+/* task search */
+#exec-filter-bar .fb-sep { width:1px; height:22px; background:var(--border); margin:0 6px; }
+#task-search {
+  width:260px; padding:5px 10px; font-size:15px; font-family:inherit;
+  background:var(--bg); border:1px solid var(--border); border-radius:4px;
+  color:var(--text); outline:none;
+}
+#task-search:focus { border-color:var(--accent); }
+#task-search-count { font-size:14px; color:var(--muted); min-width:70px; }
+.btn-sm { padding:3px 10px; font-size:15px; }
+.btn:focus-visible, #theme-btn:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+
+/* task details panel */
+#detail {
+  display:none; position:fixed; right:16px; bottom:16px; z-index:300; width:360px;
+  max-width:calc(100vw - 32px);
+  background:var(--surface); border:1px solid var(--border); border-radius:6px;
+  box-shadow:0 8px 32px rgba(0,0,0,.35); padding:12px 14px; font-size:15px;
+}
+#detail.open { display:block; }
+#detail-head { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+#detail-type { font-weight:700; }
+#detail-close { margin-left:auto; background:none; border:none; color:var(--muted); font-size:22px; line-height:1; cursor:pointer; padding:0 4px; }
+#detail-close:hover { color:var(--text); }
+#detail-name { font-size:17px; font-weight:700; color:var(--text); word-break:break-all; margin-bottom:8px; user-select:text; }
+#detail-body { display:grid; grid-template-columns:auto 1fr; gap:3px 14px; margin-bottom:10px; }
+#detail-body dt { color:var(--muted); }
+#detail-body dd { color:var(--text); text-align:right; user-select:text; white-space:nowrap; }
+#detail-body .dsep { grid-column:1/-1; border-top:1px solid var(--border); margin:4px 0; }
+#detail-actions { display:flex; gap:8px; }
+
+/* shortcuts help */
+#help { display:none; position:fixed; inset:0; z-index:400; background:rgba(0,0,0,.45); align-items:center; justify-content:center; }
+#help.open { display:flex; }
+#help-card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:18px 22px; max-width:calc(100vw - 32px); font-size:15px; color:var(--text); }
+#help-card h3 { font-size:17px; margin-bottom:10px; color:var(--accent); }
+#help-card td { padding:3px 10px 3px 0; vertical-align:top; }
+#help-card td:first-child { color:var(--muted); white-space:nowrap; }
+#help-card kbd { font-family:inherit; font-size:13px; border:1px solid var(--border); border-bottom-width:2px; border-radius:3px; padding:0 5px; background:var(--bg); }
+#help-card .tm { color:var(--muted); margin-top:10px; font-size:13px; }
+
 /* tooltip */
 #tip { position:fixed; z-index:999; padding:9px 13px; font-size:16px; line-height:1.7; background:var(--surface); border:1px solid var(--border); border-radius:4px; pointer-events:none; opacity:0; transition:opacity .1s; max-width:300px; }
 #tip.show { opacity:1; }
@@ -161,7 +234,8 @@ body { background:var(--bg); color:var(--text); }
   <button class="btn" id="btn-reset" style="display:none">Reset Zoom</button>
   <button class="btn" id="btn-back"  style="display:none">← Back</button>
   <div class="sep"></div>
-  <button id="theme-btn" title="Toggle light/dark mode">🌙</button>
+  <button class="btn btn-sm" id="btn-help" title="Keyboard shortcuts (?)" aria-label="Keyboard shortcuts">?</button>
+  <button id="theme-btn" title="Toggle light/dark mode" aria-label="Toggle light/dark mode">🌙</button>
   <div id="status"><a href="https://github.com/taskflow/taskflow" target="_blank" style="color:var(--muted);text-decoration:none;font-weight:700;font-size:15px;">Taskflow Github</a></div>
 </div>
 
@@ -183,25 +257,44 @@ body { background:var(--bg); color:var(--text); }
     <span><span class="lsw" style="background:#4c8eda"></span>static</span>
     <span><span class="lsw" style="background:#e07b39"></span>subflow</span>
     <span><span class="lsw" style="background:#3dbf8a"></span>condition</span>
+    <span><span class="lsw" style="background:#9b6fe0"></span>module</span>
     <span><span class="lsw" style="background:#e06b6b"></span>async</span>
     <span><span class="lsw" style="background:#6e7681"></span>clustered</span>
-    <span style="margin-left:auto;font-size:15px">Brush to zoom · Double-click to go back</span>
+    <span style="margin-left:auto;font-size:15px">Brush or Ctrl+scroll to zoom · Shift+drag to pan · <kbd style="font-family:inherit">?</kbd> shortcuts</span>
   </div>
   <div id="stats">
     <span>Rows: <b id="sw">—</b></span>
     <span>Tasks: <b id="st">—</b></span>
-    <span>Wall: <b id="swt">—</b></span>
+    <span>Wall-clock: <b id="swt">—</b></span>
     <span>Window: <b id="swin">—</b></span>
     <span>Visible: <b id="sv">—</b></span>
   </div>
 
-  <div class="slabel">Execution Timeline</div>
+  <details id="summary" open>
+    <summary>Summary &amp; insights <span class="shint">whole run · click to collapse</span></summary>
+    <div id="sum-cards"></div>
+    <div id="sum-grid">
+      <div>
+        <div class="sum-h">Task time by type</div>
+        <div id="sum-types"></div>
+        <div class="sum-h" style="margin-top:16px">Busy time per worker</div>
+        <svg id="sum-workers" height="84"></svg>
+      </div>
+    </div>
+  </details>
+
+  <div class="slabel">Execution Timeline <span class="shint">each row is a worker thread (E = executor, W = worker, L = nesting level) · each bar is one task run</span></div>
 
   <!-- Executor filter bar -->
   <div id="exec-filter-bar">
     <span id="exec-filter-label">Workers / Levels:</span>
     <button id="exec-filter-btn" class="btn">All <span id="exec-filter-count"></span> ▾</button>
     <button id="exec-filter-clear" class="btn" style="display:none">✕ Clear filter</button>
+    <span class="fb-sep"></span>
+    <input id="task-search" type="search" placeholder="Search tasks…  ( / )" autocomplete="off" aria-label="Search tasks by name">
+    <span id="task-search-count"></span>
+    <button class="btn btn-sm" id="task-prev" title="Previous match (Shift+Enter)" aria-label="Previous match">‹</button>
+    <button class="btn btn-sm" id="task-next" title="Next match (Enter)" aria-label="Next match">›</button>
   </div>
 
   <!-- Executor filter popover -->
@@ -227,14 +320,19 @@ body { background:var(--bg); color:var(--text); }
 
   <div id="tl-section">
     <div id="tl-labels"></div>
-    <svg id="tl-svg"></svg>
+    <canvas id="tl-canvas"></canvas>
     <svg id="tl-xsvg"></svg>
     <svg id="tl-bsvg"></svg>
   </div>
 
   <div class="panel-gap"></div>
 
-  <div class="slabel">Overview</div>
+  <div class="slabel">Parallelism <span id="par-info"></span></div>
+  <div id="par-section"><svg id="par-svg"></svg></div>
+
+  <div class="panel-gap"></div>
+
+  <div class="slabel">Overview <span class="shint">the whole run · drag here to pick the zoom window</span></div>
   <div id="mini-section">
     <canvas id="mini-canvas"></canvas>
     <svg id="mini-svg"></svg>
@@ -246,6 +344,7 @@ body { background:var(--bg); color:var(--text); }
     <input id="rank-n" type="number" value="100" min="1" max="500"
       style="width:60px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:15px;font-family:inherit;border-radius:3px;padding:1px 5px;margin:0 4px;"> tasks by duration
     <span id="rank-count"></span>
+    <span class="shint">· longest single runs in view · click a bar for details</span>
   </div>
   <div id="rank-section"><svg id="rank-svg"></svg></div>
 
@@ -253,6 +352,39 @@ body { background:var(--bg); color:var(--text); }
 </div>
 
 <div id="tip"></div>
+
+<div id="detail" role="dialog" aria-label="Task details">
+  <div id="detail-head"><span id="detail-type"></span>
+    <button id="detail-close" title="Close (Esc)" aria-label="Close details">×</button></div>
+  <div id="detail-name"></div>
+  <dl id="detail-body"></dl>
+  <div id="detail-actions">
+    <button class="btn btn-sm" id="detail-zoom" title="Zoom to task (F)">Zoom to task</button>
+    <button class="btn btn-sm" id="detail-copy">Copy name</button>
+  </div>
+</div>
+
+<div id="help" role="dialog" aria-label="Keyboard shortcuts">
+  <div id="help-card">
+    <h3>Keyboard &amp; mouse</h3>
+    <table>
+      <tr><td><kbd>W</kbd> <kbd>S</kbd> / <kbd>+</kbd> <kbd>-</kbd></td><td>Zoom in / out</td></tr>
+      <tr><td><kbd>A</kbd> <kbd>D</kbd> / <kbd>←</kbd> <kbd>→</kbd></td><td>Pan left / right</td></tr>
+      <tr><td><kbd>Esc</kbd> / <kbd>Backspace</kbd></td><td>Close panel, or go back one zoom step</td></tr>
+      <tr><td><kbd>0</kbd> / <kbd>R</kbd></td><td>Reset zoom</td></tr>
+      <tr><td><kbd>/</kbd></td><td>Search tasks</td></tr>
+      <tr><td><kbd>N</kbd> / <kbd>Shift</kbd>+<kbd>N</kbd></td><td>Next / previous search match</td></tr>
+      <tr><td><kbd>F</kbd></td><td>Zoom to selected task</td></tr>
+      <tr><td><kbd>?</kbd></td><td>Show / hide this help</td></tr>
+      <tr><td>Drag</td><td>Zoom to the brushed range</td></tr>
+      <tr><td>Ctrl/⌘ + scroll, pinch</td><td>Zoom around the cursor</td></tr>
+      <tr><td>Shift + drag, Shift + scroll</td><td>Pan</td></tr>
+      <tr><td>Click a task</td><td>Show its details</td></tr>
+      <tr><td>Double-click</td><td>Go back one zoom step</td></tr>
+    </table>
+    <div class="tm">Press ? or Esc to close</div>
+  </div>
+</div>
 
 <script>
 'use strict';
@@ -272,7 +404,15 @@ const LABEL_W  = 140;
 const XAXIS_H  = 44;   // extra height for two-line tick labels (number + unit)
 const MINI_H   = 36;
 const RANK_H   = 280;
-const MAX_RECTS = 2000;
+const PAR_H    = 120;
+// Level-of-detail drawing (see rowItems): a row shows its individual tasks when
+// at most RAW_TOTAL/rows of them are in view; otherwise neighbours closer than
+// GAP_PX pixels are merged into clusters, using the parser's precomputed levels.
+const RAW_TOTAL = 60000, RAW_MIN = 200, RAW_MAX = 3000, GAP_PX = 0.5;
+const MIXED = 255;          // cluster type: contains several task types
+// "Top tasks": scan the window directly up to this many tasks, otherwise walk
+// the precomputed longest-first list.
+const RANK_SCAN_LIMIT = 300000;
 const BROWSER_MAX_H = 32000;
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -283,8 +423,25 @@ const D = {
   totalRowsH:0, sectionH:0, canvasH:0, scrollTop:0,
   rankData:null,
   drawnRects:null, minSegDur:1,
-  filteredWorkers:null, rowStats:null
+  filteredWorkers:null, rowStats:null,
+  searchKey:'', searchMask:null,   // searchMask: per name id, 1 = matches
+  sel:null,  // selected task: {i: segment index, w: row object}
+  nameId:null, nameStr:null,       // per-task name id; id -> string (0 = anonymous)
+  pdur:null,                       // prefix sum of durations (index order)
+  lodI0:null, lodEnd:null, lodType:null, topIdx:null,
+  searchPref:null, matchCount:0, matchCur:-1, matchPosNum:0,
+  visCount:0, rankVisible:0, fileVer:0, filterVer:0
 };
+
+// Name of task i, or null when it has none.
+function nameOf(i){ return D.nameStr[D.nameId[i]]; }
+// Does task i match the current search?
+function isMatch(i){ return D.searchMask!==null && D.searchMask[D.nameId[i]]===1; }
+
+// Escape trace-provided strings before putting them in innerHTML.
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 // ── DOM ────────────────────────────────────────────────────────────────────
 const elDrop    = document.getElementById('drop-zone');
@@ -294,17 +451,30 @@ const elPText   = document.getElementById('ptext');
 const elPBar    = document.getElementById('pbar');
 const tlSection = document.getElementById('tl-section');
 const tlLabels  = document.getElementById('tl-labels');
-const tlSvg     = document.getElementById('tl-svg');
+const tlCanvas  = document.getElementById('tl-canvas');
 const tlXSvg    = document.getElementById('tl-xsvg');
 const tlBSvg    = document.getElementById('tl-bsvg');
 const miniSect  = document.getElementById('mini-section');
 const miniCanvas= document.getElementById('mini-canvas');
 const miniSvg   = document.getElementById('mini-svg');
 const rankSvg   = document.getElementById('rank-svg');
+const parSect   = document.getElementById('par-section');
+const parSvg    = document.getElementById('par-svg');
+const parInfo   = document.getElementById('par-info');
 const tip       = document.getElementById('tip');
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 // Format a duration/timestamp for tooltips — always shows full value with good precision
+// Wall-clock (elapsed real) time the way systems benchmarks report it:
+// seconds with millisecond precision, e.g. "0.105 s", "12.480 s", "2m 03.512s".
+function fmtWall(us) {
+  const sec = us/1e6;
+  if (sec < 60) return sec.toFixed(3) + ' s';
+  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), r = sec%60;
+  const ss = (r<10?'0':'') + r.toFixed(3) + 's';
+  return h ? `${h}h ${String(m).padStart(2,'0')}m ${ss}` : `${m}m ${ss}`;
+}
+
 function fmtUs(us) {
   if (us >= 60e6)  return (us/60e6).toFixed(2) + ' min';
   if (us >= 1e6)   return (us/1e6).toFixed(3)  + ' s';
@@ -426,11 +596,11 @@ window.addEventListener('scroll', () => {
   D.scrollTop = newScrollTop;
 
   // Reposition timeline SVG and brush to stay in the visible viewport area
-  tlSvg.style.top  = D.scrollTop + 'px';
-  tlBSvg.style.top = D.scrollTop + 'px';
+  tlCanvas.style.top = D.scrollTop + 'px';
+  tlBSvg.style.top    = D.scrollTop + 'px';
 
   // Scroll: only rebind visible rows — drawnRects cache still valid
-  renderTimelineSvg();
+  renderTimelineView();
 }, { passive: true });
 
 // x: microseconds → timeline pixel
@@ -463,7 +633,10 @@ function spawnParser(buf) {
 }
 
 function onParsed(msg) {
-  D.beg=msg.beg; D.end=msg.end; D.type=msg.type; D.names=msg.names; D.workers=msg.workers;
+  D.beg=msg.beg; D.end=msg.end; D.type=msg.type; D.workers=msg.workers;
+  D.nameId=msg.nameId; D.nameStr=msg.nameStr; D.pdur=msg.pdur; D.topIdx=msg.topIdx;
+  D.lodI0=msg.lodI0; D.lodEnd=msg.lodEnd; D.lodType=msg.lodType;
+  D.fileVer++; _drawnRectsX0=null; _miniKey='';
   D.minUs=msg.meta.minUs; D.maxUs=msg.meta.maxUs;
   D.x0=D.minUs; D.x1=D.maxUs; D.xHistory=[];
 
@@ -488,37 +661,119 @@ function onParsed(msg) {
   D.canvasH     = Math.min(D.totalRowsH, Math.floor(BROWSER_MAX_H / dpr));
   D.scrollTop   = 0;
 
+  // Physical worker index per row (same grouping order as the sweep worker).
   const physMap = new Map();
-  msg.workers.forEach(w => physMap.set(w.executorId+'_'+w.workerIdx, true));
+  msg.workers.forEach(w => {
+    const k = w.executorId+'_'+w.workerIdx;
+    if(!physMap.has(k)) physMap.set(k, physMap.size);
+    w.phys = physMap.get(k);
+  });
   D.numPhysicalWorkers = physMap.size;
   document.getElementById('sw').textContent = msg.meta.numWorkers + ' (' + D.numPhysicalWorkers + ' workers)';
   document.getElementById('st').textContent  = msg.meta.totalSegs.toLocaleString();
-  document.getElementById('swt').textContent = fmtUs(D.maxUs-D.minUs);
+  document.getElementById('swt').textContent = fmtWall(D.maxUs-D.minUs);
 
-  buildRank();
+  // Reset per-file UI state
+  D.sel = null; closeDetail();
+  D.searchKey=''; D.searchMask=null; D.searchPref=null; D.matchCount=0; D.matchCur=-1;
+  taskSearch.value=''; updateSearchUI();
+
   D.filteredWorkers = D.workers;
+  spawnSweep();
   initExecFilter();
   showProfiler();
 }
 
 // ── Rank ───────────────────────────────────────────────────────────────────
 function buildRank(){
-  // Only include segments in current zoom window belonging to filtered workers
-  const fw = D.filteredWorkers || D.workers;
-  const a = [];
-  fw.forEach(w => {
-    for(let s=0; s<w.length; s++){
-      const i = w.offset+s;
-      // Only count segments that overlap the current window
-      if(D.end[i] <= D.x0 || D.beg[i] >= D.x1) continue;
-      a.push([i, D.end[i]-D.beg[i]]);
+  // Longest RANK_K tasks overlapping the window on the shown rows.
+  const fw = D.filteredWorkers || D.workers, K = 500, x0=D.x0, x1=D.x1;
+  const ranges = [];
+  let vis = 0;
+  for(const w of fw){
+    const [lo,hi] = rowRange(w, x0, x1);
+    if(hi>lo){ ranges.push(lo,hi); vis += hi-lo; }
+  }
+  D.rankVisible = vis;
+  const dur = i => D.end[i]-D.beg[i];
+  const inWin = i => D.end[i] > x0 && D.beg[i] < x1;
+
+  // Wide window: walk the longest-first list until K hits.
+  if(vis > RANK_SCAN_LIMIT && D.topIdx){
+    const rows = fw===D.workers ? null : new Set(fw);
+    const out = [];
+    for(const i of D.topIdx){
+      if(!inWin(i) || (rows && !rows.has(rowOfSeg(i)))) continue;
+      out.push([i, dur(i)]);
+      if(out.length>=K) break;
     }
-  });
-  a.sort((a,b)=>b[1]-a[1]);
-  D.rankData=a;
+    if(out.length>=K || out.length>=vis){ D.rankData=out; return; }
+  }
+
+  // Otherwise scan the window with a size-K min-heap.
+  const hd=new Float64Array(K), hi_=new Int32Array(K); let hn=0;
+  const up=k=>{ while(k>0){ const p=(k-1)>>1; if(hd[p]<=hd[k]) break;
+    [hd[p],hd[k]]=[hd[k],hd[p]]; [hi_[p],hi_[k]]=[hi_[k],hi_[p]]; k=p; } };
+  const down=k=>{ for(;;){ const l=2*k+1, r=l+1; let m=k;
+    if(l<hn && hd[l]<hd[m]) m=l; if(r<hn && hd[r]<hd[m]) m=r; if(m===k) break;
+    [hd[m],hd[k]]=[hd[k],hd[m]]; [hi_[m],hi_[k]]=[hi_[k],hi_[m]]; k=m; } };
+  for(let r=0;r<ranges.length;r+=2){
+    for(let i=ranges[r];i<ranges[r+1];i++){
+      if(!inWin(i)) continue;
+      const d=dur(i);
+      if(hn<K){ hd[hn]=d; hi_[hn]=i; up(hn++); }
+      else if(d>hd[0]){ hd[0]=d; hi_[0]=i; down(0); }
+    }
+  }
+  const out=[];
+  for(let k=0;k<hn;k++) out.push([hi_[k], hd[k]]);
+  out.sort((a,b)=>b[1]-a[1] || a[0]-b[0]);
+  D.rankData=out;
+}
+
+// Index range [lo,hi) of row w's tasks that overlap [x0,x1] (rows are sorted
+// by begin and their tasks do not overlap, so ends are sorted too).
+function rowRange(w, x0, x1){
+  let lo=w.offset, hi=w.offset+w.length;
+  {let a=lo,b=hi;while(a<b){const m=(a+b)>>1;if(D.end[m]<x0)a=m+1;else b=m;}lo=a;}
+  {let a=lo,b=hi;while(a<b){const m=(a+b)>>1;if(D.beg[m]>x1)b=m;else a=m+1;}hi=a;}
+  return [lo,hi];
 }
 
 // ── Zoom ───────────────────────────────────────────────────────────────────
+function updateZoomButtons(){
+  const zoomed = D.xHistory.length>0 || D.x0>D.minUs || D.x1<D.maxUs;
+  document.getElementById('btn-back').style.display  = D.xHistory.length ? '' : 'none';
+  document.getElementById('btn-reset').style.display = zoomed ? '' : 'none';
+}
+
+// Interactive navigation (wheel, pan, keys). Renders at most once per frame,
+// and records one history entry per gesture (a pause > 500 ms starts a new one).
+let _gestureT=-Infinity, _renderQueued=false;
+function scheduleRender(){
+  if(_renderQueued) return;
+  _renderQueued=true;
+  requestAnimationFrame(()=>{ _renderQueued=false; render(); });
+}
+function setView(x0,x1){
+  const full=D.maxUs-D.minUs;
+  if(!(full>0)) return;
+  const minSpan=Math.max(D.minSegDur/2, 1e-3);
+  const span=Math.min(full, Math.max(minSpan, x1-x0));
+  if(x0<D.minUs) x0=D.minUs;
+  if(x0+span>D.maxUs) x0=D.maxUs-span;
+  x1=x0+span;
+  if(x0===D.x0 && x1===D.x1) return;
+  const now=performance.now();
+  if(now-_gestureT>500) D.xHistory.push([D.x0,D.x1]);
+  _gestureT=now;
+  D.x0=x0; D.x1=x1;
+  updateZoomButtons();
+  scheduleRender();
+}
+function zoomAround(us,f){ setView(us-(us-D.x0)*f, us+(D.x1-us)*f); }
+function panBy(dus){ setView(D.x0+dus, D.x1+dus); }
+
 function zoomTo(x0,x1){
   D.xHistory.push([D.x0,D.x1]);
   D.x0=Math.max(D.minUs, x0);
@@ -548,25 +803,28 @@ function render(){
   applyLayout();
   drawTimeline();
   drawMini();
+  requestPar();
   buildRank();
-  computeRowStats();
   drawRank();
   document.getElementById('swin').textContent=fmtUs(D.x1-D.x0);
-  buildExecList(document.getElementById('exec-search')?.value || '');
+  if(execPopover.classList.contains('open')){
+    computeRowStats();
+    buildExecList(document.getElementById('exec-search')?.value || '');
+  }
 }
 
 // ── Render cache keys ──────────────────────────────────────────────────────
 // drawnRects only needs rebuilding when zoom window or filter changes,
 // not on every scroll. Cache the zoom key to detect changes.
-let _drawnRectsX0 = null, _drawnRectsX1 = null, _drawnRectsFilter = null;
+let _drawnRectsX0 = null, _drawnRectsX1 = null, _drawnRectsFilter = null, _drawnRectsW = 0;
 
 function _zoomChanged() {
   return D.x0 !== _drawnRectsX0 || D.x1 !== _drawnRectsX1 ||
-         (D.filteredWorkers||D.workers) !== _drawnRectsFilter;
+         (D.filteredWorkers||D.workers) !== _drawnRectsFilter || _cW !== _drawnRectsW;
 }
 function _markDrawnRectsCurrent() {
   _drawnRectsX0 = D.x0; _drawnRectsX1 = D.x1;
-  _drawnRectsFilter = D.filteredWorkers||D.workers;
+  _drawnRectsFilter = D.filteredWorkers||D.workers; _drawnRectsW = _cW;
 }
 
 // ── Layout ─────────────────────────────────────────────────────────────────
@@ -574,6 +832,7 @@ function _markDrawnRectsCurrent() {
 // Labels are written here too — once, at their permanent absolute positions.
 let _cW=0;
 let tlAxisG=null, tlBrushG=null, tlBrush=null, dblTimer=null;
+let _labelKey='', _tlCanvasKey='', _miniCanvasKey='', tlCtx=null, miniCtx=null;
 
 function applyLayout(){
   _cW = cW();
@@ -595,6 +854,8 @@ function applyLayout(){
   const LABEL_H = 16;  // fixed px — always readable
   const labelStep = Math.max(1, Math.ceil(LABEL_H / D.rowStride));
 
+  const labelKey = D.fileVer+'|'+D.filterVer+'|'+n;
+  if(labelKey !== _labelKey){ _labelKey = labelKey;
   tlLabels.innerHTML = '';
   for(let ri=0; ri<n; ri += labelStep){
     const el = document.createElement('div');
@@ -604,14 +865,17 @@ function applyLayout(){
     el.style.height     = LABEL_H + 'px';
     el.style.lineHeight = LABEL_H + 'px';
     el.textContent = workers[ri].key;
-    el.title       = workers[ri].key;
+    el.title       = `Executor ${workers[ri].executorId} · Worker ${workers[ri].workerIdx} · Level ${workers[ri].level}`;
     tlLabels.appendChild(el);
   }
+  }
 
-  // tl-svg: capped viewport; rebinds visible slice on scroll when tH > cH
-  tlSvg.style.left = LABEL_W + 'px';
-  tlSvg.style.top  = D.scrollTop + 'px';
-  d3.select(tlSvg).attr('width', _cW).attr('height', cH);
+  // tl-canvas: capped viewport; redraws the visible slice on scroll when tH > cH
+  tlCanvas.style.left = LABEL_W + 'px';
+  tlCanvas.style.top  = D.scrollTop + 'px';
+  const dpr = window.devicePixelRatio || 1;
+  const tlKey = _cW+'x'+cH+'@'+dpr;
+  if(tlKey !== _tlCanvasKey){ _tlCanvasKey = tlKey; tlCtx = setupCanvas(tlCanvas, _cW, cH); }
 
   // tl-xsvg: x-axis strip, always below the full logical rows area
   tlXSvg.style.left = LABEL_W + 'px';
@@ -627,7 +891,8 @@ function applyLayout(){
   const miniH = MINI_H + XAXIS_H;
   miniSect.style.height = miniH + 'px';
   miniCanvas.style.left = LABEL_W + 'px';
-  setupCanvas(miniCanvas, _cW, MINI_H);
+  const miniKey = _cW+'@'+dpr;
+  if(miniKey !== _miniCanvasKey){ _miniCanvasKey = miniKey; miniCtx = setupCanvas(miniCanvas, _cW, MINI_H); }
   d3.select(miniSvg).attr('width', LABEL_W+_cW).attr('height', miniH);
 }
 
@@ -635,90 +900,157 @@ function applyLayout(){
 // Viewport Y for row ri, accounting for scroll offset.
 function viewportY(ri){ return rowY(ri) - D.scrollTop; }
 
-// Pass 1: rebuild drawnRects for all rows — only when zoom/filter changes.
-// This is the expensive O(N × segs_per_worker) pass.
-function rebuildDrawnRects() {
-  const workers = D.filteredWorkers || D.workers;
-  const n = workers.length;
-  D.drawnRects = new Array(n).fill(null).map(()=>[]);
-  let vis = 0;
-  const padY = Math.max(1, Math.floor(D.rowH*0.1));
-  for(let ri=0; ri<n; ri++){
-    const w=workers[ri];
-    let lo=w.offset, hi=w.offset+w.length;
-    {let a=lo,b=hi;while(a<b){const m=(a+b)>>1;if(D.end[m]<D.x0)a=m+1;else b=m;}lo=a;}
-    {let a=lo,b=hi;while(a<b){const m=(a+b)>>1;if(D.beg[m]>D.x1)b=m;else a=m+1;}hi=a;}
-    if(lo>=hi)continue;
-    const cnt=hi-lo; vis+=cnt;
-    const minG=cnt>Math.floor(MAX_RECTS/Math.max(1,n))?.5:-1;
-    let cB=D.beg[lo],cE=D.end[lo],cT=D.type[lo],cl=false,cCnt=1;
-    const flush=()=>{
-      D.drawnRects[ri].push({beg:cB, end:cE, type:cT, clustered:cl, count:cCnt});
-    };
-    for(let s=lo+1;s<hi;s++){
-      const g=xpx(D.beg[s])-xpx(cE);
-      if(g<minG){if(cE<D.end[s])cE=D.end[s];if(cT!==D.type[s])cl=true;cCnt++;}
-      else{flush();cB=D.beg[s];cE=D.end[s];cT=D.type[s];cl=false;cCnt=1;}
-    }
-    flush();
+// ── Level-of-detail row query ──────────────────────────────────────────────
+// Calls emit(beg, end, i0, i1, type) for what row w shows in [x0,x1] at upp
+// µs per pixel. Each item covers the row's tasks [i0,i1); type is MIXED when
+// they differ. If at most rawLimit tasks are in view they are emitted one by
+// one; otherwise tasks closer than GAP_PX pixels are merged, starting from the
+// coarsest precomputed level (w.lod, built by the parser) that is still fine
+// enough, so the work is proportional to what ends up on screen.
+// Returns the number of tasks in view.
+function rowItems(w, x0, x1, upp, rawLimit, emit){
+  const [lo,hi] = rowRange(w, x0, x1);
+  if(lo>=hi) return 0;
+  const raw = hi-lo;
+  if(raw<=rawLimit){
+    for(let s=lo;s<hi;s++) emit(D.beg[s], D.end[s], s, s+1, D.type[s]);
+    return raw;
   }
+  const r = GAP_PX*upp, rowEnd = w.offset+w.length;
+  let lv = null;
+  for(const L of w.lod){ if(L.r<=r) lv=L; else break; }
+  let cB=0, cE=0, cI=-1, cT=0;
+  if(!lv){
+    for(let s=lo;s<hi;s++){
+      const b=D.beg[s];
+      if(cI>=0 && b-cE<r){ if(D.end[s]>cE) cE=D.end[s]; if(D.type[s]!==cT) cT=MIXED; }
+      else{ if(cI>=0) emit(cB,cE,cI,s,cT); cB=b; cE=D.end[s]; cI=s; cT=D.type[s]; }
+    }
+    emit(cB,cE,cI,hi,cT);
+  } else {
+    const I0=D.lodI0, CE=D.lodEnd, CT=D.lodType, top=lv.off+lv.n;
+    let c=lv.off;
+    {let a=c,b=top;while(a<b){const m=(a+b)>>1;if(CE[m]<x0)a=m+1;else b=m;}c=a;}
+    for(;c<top;c++){
+      const i0=I0[c], b=D.beg[i0];
+      if(b>x1) break;
+      if(cI>=0 && b-cE<r){ if(CE[c]>cE) cE=CE[c]; if(CT[c]!==cT) cT=MIXED; }
+      else{ if(cI>=0) emit(cB,cE,cI,i0,cT); cB=b; cE=CE[c]; cI=i0; cT=CT[c]; }
+    }
+    if(cI>=0) emit(cB,cE,cI, c<top ? I0[c] : rowEnd, cT);
+  }
+  return raw;
+}
+
+// Drawn items for the current view, struct-of-arrays; row ri owns
+// items [DR.rowStart[ri], DR.rowStart[ri+1]).
+const DR = { n:0, cap:0, beg:null, end:null, i0:null, i1:null, type:null, rowStart:new Int32Array(1) };
+function drGrow(){
+  const cap=Math.max(8192, DR.cap*2);
+  const grow=(A,T)=>{ const B=new T(cap); if(A) B.set(A.subarray(0,DR.n)); return B; };
+  DR.beg=grow(DR.beg,Float64Array); DR.end=grow(DR.end,Float64Array);
+  DR.i0=grow(DR.i0,Uint32Array); DR.i1=grow(DR.i1,Uint32Array); DR.type=grow(DR.type,Uint8Array);
+  DR.cap=cap;
+}
+function drPush(b,e,i0,i1,t){
+  if(DR.n>=DR.cap) drGrow();
+  const k=DR.n++; DR.beg[k]=b; DR.end[k]=e; DR.i0[k]=i0; DR.i1[k]=i1; DR.type[k]=t;
+}
+
+// Rebuild the drawn items — only when zoom, filter or width change.
+function rebuildDrawnRects() {
+  const workers = D.filteredWorkers || D.workers, n = workers.length;
+  const upp = (D.x1-D.x0)/_cW;
+  const rawLimit = Math.max(RAW_MIN, Math.min(RAW_MAX, Math.floor(RAW_TOTAL/Math.max(1,n))));
+  DR.n = 0; DR.rowStart = new Int32Array(n+1);
+  let vis = 0;
+  for(let ri=0; ri<n; ri++){
+    DR.rowStart[ri] = DR.n;
+    vis += rowItems(workers[ri], D.x0, D.x1, upp, rawLimit, drPush);
+  }
+  DR.rowStart[n] = DR.n;
+  D.visCount = vis;
   _markDrawnRectsCurrent();
   return vis;
 }
 
-// Pass 2: render only visible rows into SVG — fast O(visible × segs) pass.
-// Called on both zoom (after rebuildDrawnRects) and scroll.
-function renderTimelineSvg() {
-  const svg = d3.select(tlSvg);
-  const workers = D.filteredWorkers || D.workers;
-  const n   = workers.length;
+let _themeCache = null;
+function themeColors(){
+  if(!_themeCache){
+    const cs=getComputedStyle(document.documentElement);
+    _themeCache = { even:cs.getPropertyValue('--row-even').trim(), odd:cs.getPropertyValue('--row-odd').trim(),
+                    text:cs.getPropertyValue('--text').trim(), mini:cs.getPropertyValue('--mini-bg').trim(),
+                    font:'12px '+cs.fontFamily };
+  }
+  return _themeCache;
+}
+function typeColor(t){ return t===MIXED ? TCOLORS.clustered : (TCOLORS[TNAMES[t]] || TCOLORS.static); }
+
+// Draw the visible rows onto the timeline canvas. Called on zoom (after
+// rebuildDrawnRects), scroll, selection and search changes.
+function renderTimelineView() {
+  const ctx = tlCtx; if(!ctx || !D.beg) return;
+  const workers = D.filteredWorkers || D.workers, n = workers.length;
+  const W = _cW, H = D.canvasH, th = themeColors(), SP = D.searchPref;
+  ctx.clearRect(0,0,W,H);
 
   const firstRow = Math.max(0, Math.floor((D.scrollTop - PAD_TOP) / D.rowStride));
   const lastRow  = Math.min(n, Math.ceil((D.scrollTop + D.canvasH - PAD_TOP) / D.rowStride));
-
-  const rowBg = [];
-  for(let ri=firstRow; ri<lastRow; ri++){
-    rowBg.push({ri, y:viewportY(ri)});
-  }
-
-  let bgG = svg.select('g#tl-bg');
-  if(bgG.empty()) bgG = svg.append('g').attr('id','tl-bg');
-  bgG.selectAll('rect')
-    .data(rowBg, d=>d.ri)
-    .join('rect')
-      .attr('x', 0)
-      .attr('y', d=>d.y)
-      .attr('width', _cW)
-      .attr('height', D.rowH)
-      .attr('fill', d=>d.ri%2===0 ? 'var(--row-even)' : 'var(--row-odd)');
-
-  // Draw segments for visible rows only — read from drawnRects cache.
   const padY = Math.max(1, Math.floor(D.rowH*0.1));
   const segH = Math.max(1, D.rowH - padY*2);
-  const segData = [];
+  const k2x = (D.x1-D.x0)>0 ? W/(D.x1-D.x0) : 0;
 
   for(let ri=firstRow; ri<lastRow; ri++){
-    if(!D.drawnRects||!D.drawnRects[ri]||!D.drawnRects[ri].length) continue;
-    const rects = D.drawnRects[ri];
-    for(let k=0; k<rects.length; k++){
-      const r = rects[k];
-      segData.push({...r, ri, k, y:viewportY(ri)+padY});
-    }
+    ctx.fillStyle = ri%2===0 ? th.even : th.odd;
+    ctx.fillRect(0, viewportY(ri), W, D.rowH);
   }
 
-  let segG = svg.select('g#tl-segs');
-  if(segG.empty()) segG = svg.append('g').attr('id','tl-segs');
-  segG.selectAll('rect')
-    .data(segData, d=>`${d.ri}:${d.k}:${d.beg}:${d.end}`)
-    .join('rect')
-      .attr('x', d=>Math.floor(xpx(d.beg)))
-      .attr('y', d=>d.y)
-      .attr('width', d=>Math.max(1, Math.ceil(xpx(d.end)-xpx(d.beg))))
-      .attr('height', segH)
-      .attr('rx', 1)
-      .attr('ry', 1)
-      .attr('fill', d=>d.clustered ? TCOLORS.clustered : (TCOLORS[TNAMES[d.type]] || TCOLORS.static))
-      .attr('opacity', .85);
+  let curFill='', curAlpha=-1;
+  const labels=[];
+  for(let ri=firstRow; ri<lastRow; ri++){
+    const y = viewportY(ri)+padY;
+    let lastX1 = -Infinity;
+    for(let k=DR.rowStart[ri]; k<DR.rowStart[ri+1]; k++){
+      let x0 = Math.floor((DR.beg[k]-D.x0)*k2x), x1 = Math.ceil((DR.end[k]-D.x0)*k2x);
+      if(x1<=x0) x1=x0+1;
+      if(x0<-1) x0=-1; if(x1>W+1) x1=W+1;
+      const fill = typeColor(DR.type[k]);
+      const alpha = !SP ? .85 : (SP[DR.i1[k]]-SP[DR.i0[k]]>0 ? 1 : .15);
+      if(x1<=lastX1 && fill===curFill && alpha===curAlpha) continue;   // pixel already painted
+      if(fill!==curFill){ ctx.fillStyle=fill; curFill=fill; }
+      if(alpha!==curAlpha){ ctx.globalAlpha=alpha; curAlpha=alpha; }
+      const w = x1-x0;
+      ctx.fillRect(x0, y, w>=4 ? w-1 : w, segH);     // 1px separator between wide bars
+      if(x1>lastX1) lastX1=x1;
+      if(w>=40 && DR.i1[k]-DR.i0[k]===1) labels.push(k, Math.max(0,x0), Math.min(W,x1), y, alpha);
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  // Task names inside bars that are wide enough to hold them
+  if(labels.length){
+    ctx.font = th.font; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
+    const cw = ctx.measureText('M').width || 7.3;
+    for(let j=0; j<labels.length && j<5*800; j+=5){
+      const k=labels[j], a=labels[j+1], b=labels[j+2], y=labels[j+3];
+      const nm = nameOf(DR.i0[k]); if(!nm) continue;
+      const maxC = Math.floor((b-a-8)/cw); if(maxC<5) continue;
+      ctx.globalAlpha = labels[j+4]<.5 ? .25 : .95;
+      ctx.fillText(nm.length>maxC ? nm.slice(0,maxC-1)+'…' : nm, a+4, y+segH/2);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Selected task outline
+  if(D.sel){
+    const ri = workers.indexOf(D.sel.w), i = D.sel.i;
+    if(ri>=firstRow && ri<lastRow && D.end[i]>=D.x0 && D.beg[i]<=D.x1){
+      const x0 = Math.max(-2, Math.floor(xpx(D.beg[i])));
+      const x1 = Math.min(W+2, Math.max(x0+1, Math.ceil(xpx(D.end[i]))));
+      ctx.strokeStyle = th.text; ctx.lineWidth = 2;
+      ctx.strokeRect(x0-1, viewportY(ri)+padY-2, x1-x0+2, segH+4);
+    }
+  }
 }
 
 function drawTimeline(){
@@ -729,7 +1061,7 @@ function drawTimeline(){
     document.getElementById('sv').textContent=vis.toLocaleString();
   }
 
-  renderTimelineSvg();
+  renderTimelineView();
 
   // x-axis in tl-xsvg
   const xSc=d3.scaleLinear().domain([D.x0,D.x1]).range([0,_cW]);
@@ -743,6 +1075,7 @@ function drawTimeline(){
   // brush in tl-bsvg
   const bsvg=d3.select(tlBSvg);
   tlBrush=d3.brushX().extent([[0,0],[_cW,D.canvasH]])
+    .filter(ev=>!ev.ctrlKey && !ev.shiftKey && !ev.button)
     .on('end',function(ev){
       if(!ev.sourceEvent)return;
       if(ev.selection){
@@ -761,22 +1094,39 @@ function drawTimeline(){
 // ── Draw minimap ───────────────────────────────────────────────────────────
 let mAxisG=null,mBrushG=null,mBrush=null;
 
+// The overview never changes with zoom, so its bars are drawn once into an
+// offscreen canvas (using the same level-of-detail query) and reused.
+let _miniCache=null, _miniKey='';
 function drawMini(){
-  const ctx=miniCanvas.getContext('2d'),W=_cW,H=MINI_H;
-  ctx.clearRect(0,0,W,H);ctx.fillStyle=getComputedStyle(document.documentElement).getPropertyValue('--mini-bg').trim();ctx.fillRect(0,0,W,H);
-  const range=D.maxUs-D.minUs;if(!range)return;
-  const xM=us=>(us-D.minUs)/range*W;
+  const ctx=miniCtx, W=_cW, H=MINI_H; if(!ctx) return;
+  const range=D.maxUs-D.minUs;
   const fw = D.filteredWorkers||D.workers;
-  const rh=Math.max(1,H/fw.length);
-  fw.forEach((w,ri)=>{
-    const y=ri*rh;
-    for(let s=0;s<w.length;s++){
-      const i=w.offset+s,px0=xM(D.beg[i]),pw=Math.max(1,xM(D.end[i])-px0);
-      ctx.fillStyle=TCOLORS[TNAMES[D.type[i]]]||'#4c8eda';ctx.globalAlpha=.6;
-      ctx.fillRect(Math.floor(px0),y,Math.ceil(pw),rh);
+  const dpr = window.devicePixelRatio||1;
+  const key = [D.fileVer, D.filterVer, W, dpr, D.searchKey, document.documentElement.classList.contains('light')].join('|');
+  if(key!==_miniKey){
+    _miniKey = key;
+    const th = themeColors();
+    const c = _miniCache || (_miniCache=document.createElement('canvas'));
+    c.width = Math.round(W*dpr); c.height = Math.round(H*dpr);
+    const g = c.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0);
+    g.fillStyle = th.mini; g.fillRect(0,0,W,H);
+    if(range>0){
+      const rh = H/fw.length, k2x = W/range, SP = D.searchPref;
+      fw.forEach((w,ri)=>{
+        const y = ri*rh;
+        rowItems(w, D.minUs, D.maxUs, range/W, 0, (b,e,i0,i1,t)=>{
+          const x0 = Math.floor((b-D.minUs)*k2x), x1 = Math.max(x0+1, Math.ceil((e-D.minUs)*k2x));
+          g.fillStyle = typeColor(t);
+          g.globalAlpha = !SP ? .6 : (SP[i1]-SP[i0]>0 ? .95 : .1);
+          g.fillRect(x0, y, x1-x0, Math.max(1,rh));
+        });
+      });
+      g.globalAlpha = 1;
     }
-  });
-  ctx.globalAlpha=1;
+  }
+  ctx.clearRect(0,0,W,H);
+  ctx.drawImage(_miniCache, 0, 0, W, H);
+  if(!range) return;
   const xSc=d3.scaleLinear().domain([D.minUs,D.maxUs]).range([LABEL_W,LABEL_W+W]);
   const svg=d3.select(miniSvg);
   const {fmt:miniFmt, unit:miniUnit} = axisTickInfo(D.minUs, D.maxUs);
@@ -795,6 +1145,114 @@ function drawMini(){
   mBrushG.call(mBrush.move,[xSc(D.x0),xSc(D.x1)]);
 }
 
+// ── Parallelism ────────────────────────────────────────────────────────────
+// Average number of busy workers over time, computed off-thread by the sweep
+// worker (#src-sweep). Each physical worker's levels are unioned first, so
+// nested subflow tasks never count one thread twice. With a row filter active,
+// a physical worker is included if any of its rows is selected.
+let sweepW=null, sweepReady=false, sweepSeq=0, parData=null;
+let parGridG=null, parAreaP=null, parCapL=null, parHoverL=null,
+    parXG=null, parYLbl=null, parBrushG=null;
+
+function spawnSweep(){
+  if(sweepW) sweepW.terminate();
+  sweepReady=false; parData=null; parInFlight=false; parPending=false; parInfo.textContent='computing…';
+  D.summary=null; resetSummary();
+  parSect.style.height = (PAR_H+XAXIS_H)+'px';   // reserve space; avoids layout jump
+  sweepW = new Worker(URL.createObjectURL(
+    new Blob([document.getElementById('src-sweep').textContent],{type:'application/javascript'})));
+  sweepW.onmessage = e => {
+    const m = e.data;
+    if(m.type==='ready'){ sweepReady=true; requestPar(); }
+    else if(m.type==='result'){
+      parInFlight=false;
+      if(parPending){ parPending=false; requestPar(); }
+      else if(m.id===sweepSeq){ parData=m; drawPar(); }
+    }
+    else if(m.type==='summary'){ D.summary=m; renderSummary(); }
+  };
+  sweepW.onerror = e => { parInfo.textContent='unavailable ('+e.message+')'; };
+  sweepW.postMessage({type:'init', beg:D.beg, end:D.end, workers:D.workers, minUs:D.minUs, maxUs:D.maxUs});
+}
+
+let parInFlight=false, parPending=false;
+function requestPar(){
+  if(!sweepW || !sweepReady) return;
+  if(parInFlight){ parPending=true; return; }   // send the latest view when the worker is free
+  parInFlight=true;
+  const fw = D.filteredWorkers || D.workers;
+  const phys = fw===D.workers ? null : [...new Set(fw.map(w=>w.phys))];
+  sweepW.postMessage({type:'query', id:++sweepSeq, x0:D.x0, x1:D.x1,
+                      bins:Math.max(1, Math.floor(_cW||cW())), phys});
+}
+
+function drawPar(){
+  const m = parData; if(!m) return;
+  const W=_cW||cW(), H=PAR_H, top=10, n=m.avg.length, cap=Math.max(1,m.n);
+  parSect.style.height = (H+XAXIS_H)+'px';
+  const svg = d3.select(parSvg).attr('width',LABEL_W+W).attr('height',H+XAXIS_H);
+  const xSc = d3.scaleLinear().domain([m.x0,m.x1]).range([LABEL_W,LABEL_W+W]);
+  const ySc = d3.scaleLinear().domain([0,cap]).range([H,top]);
+  const bx  = i => LABEL_W + i*W/n;
+
+  if(!parGridG){
+    parGridG  = svg.append('g').attr('class','axis par-grid');
+    parAreaP  = svg.append('path').attr('class','par-area');
+    parCapL   = svg.append('line').attr('class','par-cap');
+    parHoverL = svg.append('line').attr('class','par-hover').style('display','none');
+    parXG     = svg.append('g').attr('class','axis');
+    parYLbl   = svg.append('text').attr('class','par-ylabel').text('busy workers');
+    parBrushG = svg.append('g').attr('class','brush');
+  }
+
+  const yTicks = ySc.ticks(Math.min(cap,4)).filter(Number.isInteger);
+  parGridG.attr('transform',`translate(${LABEL_W},0)`)
+    .call(d3.axisLeft(ySc).tickValues(yTicks).tickFormat(d3.format('d')).tickSize(-W));
+  parYLbl.attr('x',8).attr('y',top+12);
+
+  const pts = Array.from(m.avg); pts.push(pts[n-1]);
+  parAreaP.attr('d', d3.area().curve(d3.curveStepAfter)
+    .x((_,i)=>bx(i)).y0(H).y1(d=>ySc(d))(pts));
+  parCapL.attr('x1',LABEL_W).attr('x2',LABEL_W+W).attr('y1',ySc(cap)).attr('y2',ySc(cap));
+
+  const {fmt, unit} = axisTickInfo(m.x0, m.x1);
+  parXG.attr('transform',`translate(0,${H+4})`)
+    .call(d3.axisBottom(xSc).ticks(Math.max(2,Math.floor(W/120))).tickFormat(fmt));
+  splitAxisTicks(parXG, unit);
+
+  const span = m.x1-m.x0, avgBusy = span>0 ? m.busy/span : 0;
+  const filtered = (D.filteredWorkers||D.workers)!==D.workers;
+  parInfo.innerHTML =
+    `avg <b>${avgBusy.toFixed(2)}</b> of ${cap} workers busy · ` +
+    `<b>${cpuPct(avgBusy)}</b> of ${cap*100}% utilization` +
+    `<span class="pi-muted"> in window${filtered?' (filtered workers)':''}</span>`;
+
+  // Brush to zoom, double-click to go back — same as the timeline.
+  const brush = d3.brushX().extent([[LABEL_W,0],[LABEL_W+W,H]])
+    .filter(ev=>!ev.ctrlKey && !ev.shiftKey && !ev.button)
+    .on('end', ev => {
+      if(!ev.sourceEvent || !ev.selection) return;
+      const x0=xSc.invert(ev.selection[0]), x1=xSc.invert(ev.selection[1]);
+      parBrushG.call(brush.move,null);
+      if(x1-x0>D.minSegDur/2) zoomTo(x0,x1);
+    });
+  parBrushG.call(brush);
+
+  svg.on('dblclick.par', zoomBack)
+    .on('mouseleave.par', ()=>{ parHoverL.style('display','none'); hideTip(); })
+    .on('mousemove.par', ev => {
+      const [px,py] = d3.pointer(ev, parSvg);
+      if(px<LABEL_W || px>LABEL_W+W || py>H){ parHoverL.style('display','none'); hideTip(); return; }
+      const i = Math.min(n-1, Math.floor((px-LABEL_W)/W*n));
+      parHoverL.style('display',null).attr('x1',px).attr('x2',px).attr('y1',0).attr('y2',H);
+      showTip(ev,
+        `<div class="tt">t = ${fmtUs(xSc.invert(px))}</div>` +
+        `<div>Busy workers: ${m.avg[i].toFixed(2)} / ${cap}</div>` +
+        `<div class="tm">Utilization: ${cpuPct(m.avg[i])} of ${cap*100}%</div>` +
+        `<div class="tm">Bin width: ${fmtUs(span/n)}</div>`);
+    });
+}
+
 // ── Draw rank ──────────────────────────────────────────────────────────────
 let rXG=null,rYG=null,rBarsG=null,rLblG=null;
 
@@ -803,43 +1261,52 @@ function drawRank(){
   const sl=D.rankData.slice(0,N);
   const rankCount = document.getElementById('rank-count');
   if(rankCount) {
-    rankCount.textContent = ` of ${D.rankData.length.toLocaleString()} visible tasks`;
+    rankCount.textContent = ` of ${D.rankVisible.toLocaleString()} visible tasks`;
   }
-  const tW=tlSection.clientWidth-2,mL=LABEL_W,mR=20,mT=16,mB=40,iW=tW-mL-mR,iH=RANK_H-mT-mB;
-  const svg=d3.select(rankSvg).attr('width',tW).attr('height',RANK_H);
+  const tW=tlSection.clientWidth-2,mL=LABEL_W,mR=20,mT=16,iW=tW-mL-mR;
+  // Show task names under the bars (rotated), sized to the bar spacing;
+  // hidden only when bars are too narrow for a readable font.
+  const nameFont = sl.length ? Math.min(13, Math.floor(iW/sl.length*0.9)) : 0;
+  const showNames = nameFont >= 9;
+  const NAME_H = showNames ? 80 : 0, iH = RANK_H-mT-40;
+  const svg=d3.select(rankSvg).attr('width',tW).attr('height',RANK_H+NAME_H);
   const xSc=d3.scaleBand().domain(sl.map((_,i)=>i)).range([mL,mL+iW]).padding(.15);
+  const short = nm => nm.length>14 ? nm.slice(0,13)+'…' : nm;
   const mD=sl.length?sl[0][1]:1;
   const ySc=d3.scaleLinear().domain([0,mD]).range([mT+iH,mT]);
   if(!rXG)rXG=svg.append('g').attr('class','axis');
   if(!rYG)rYG=svg.append('g').attr('class','axis');
   if(!rBarsG)rBarsG=svg.append('g');
   if(!rLblG)rLblG=svg.append('text').attr('fill','#8b949e').attr('font-size',15).attr('text-anchor','middle');
-  rXG.attr('transform',`translate(0,${mT+iH})`).call(d3.axisBottom(xSc).tickFormat(''));
+  rXG.attr('transform',`translate(0,${mT+iH})`)
+    .call(d3.axisBottom(xSc).tickFormat(showNames ? (i=>short(nameOf(sl[i][0])||'(anon)')) : ''));
+  rXG.selectAll('.tick text')
+    .attr('text-anchor', showNames ? 'end' : null)
+    .attr('transform', showNames ? 'translate(-4,4) rotate(-55)' : null)
+    .style('font-size', nameFont+'px');
   rYG.attr('transform',`translate(${mL},0)`).call(d3.axisLeft(ySc).ticks(6).tickFormat(d=>fmtUs(d)).tickSize(-iW));
-  rLblG.attr('transform',`translate(${mL+iW/2},${mT+iH+32})`)
-    .text(`Top ${sl.length} of ${D.rankData.length.toLocaleString()} visible tasks`);
+  rLblG.attr('transform',`translate(${mL+iW/2},${mT+iH+32+NAME_H})`)
+    .text(`Top ${sl.length} of ${D.rankVisible.toLocaleString()} visible tasks`);
   const bars=rBarsG.selectAll('rect').data(sl,(_,i)=>i);
   bars.exit().remove();
   bars.enter().append('rect').attr('rx',1).merge(bars)
     .attr('x',(_,i)=>xSc(i)).attr('width',xSc.bandwidth())
     .attr('y',d=>ySc(d[1])).attr('height',d=>Math.max(1,ySc(0)-ySc(d[1])))
-    .attr('fill',d=>TCOLORS[TNAMES[D.type[d[0]]]]||'#4c8eda').attr('opacity',.8)
+    .attr('fill',d=>TCOLORS[TNAMES[D.type[d[0]]]]||'#4c8eda')
+    .attr('opacity',d=> !D.searchMask ? .8 : (isMatch(d[0]) ? .95 : .15))
     .style('cursor','pointer')
     .on('mouseover',(ev,d)=>{
       const tn=TNAMES[D.type[d[0]]]||'unknown';
-      const nm=D.names[d[0]]||'(anonymous)';
+      const nm=nameOf(d[0])||'(anonymous)';
       showTip(ev,
         `<div class="tt" style="color:${TCOLORS[tn]}">${tn}</div>` +
-        `<div>${nm}</div>` +
+        `<div>${esc(nm)}</div>` +
         `<div class="tm">Duration: ${fmtUs(d[1])}</div>` +
-        `<div style="margin-top:4px;font-size:13px;color:var(--accent)">Click to zoom in</div>`
+        `<div style="margin-top:4px;font-size:13px;color:var(--accent)">Click to zoom in and show details</div>`
       );
     })
     .on('mousemove',moveTip).on('mouseout',hideTip)
-    .on('click',(ev,d)=>{
-      const i=d[0], p=(D.end[i]-D.beg[i])*.5;
-      zoomTo(Math.max(D.minUs, D.beg[i]-p), Math.min(D.maxUs, D.end[i]+p));
-    });
+    .on('click',(ev,d)=>{ selectTask(d[0]); zoomToSeg(d[0]); });
 }
 
 // ── Tooltip ────────────────────────────────────────────────────────────────
@@ -853,64 +1320,71 @@ let _hoveredCluster = null;
 let _lastMoveX = 0, _lastMoveY = 0;
 let _tlPointerDown = null;
 
+// What is under the pointer: {k: drawn item, row, us, f: single task or -1}.
+// f is set when the item is one task, or when the task under the pointer is
+// wide enough (>= 3px) to be told apart from the rest of its cluster.
 function timelineHitFromEvent(ev) {
-  if(!D.drawnRects) return;
+  if(!D.beg || !DR.rowStart) return null;
   const r=tlBSvg.getBoundingClientRect();
   const px=ev.clientX-r.left, py=ev.clientY-r.top;
-  // py is viewport-relative; add scrollTop to get logical Y
-  const logY = py + D.scrollTop;
+  const logY = py + D.scrollTop;                       // py is viewport-relative
   const ri=Math.floor((logY-PAD_TOP)/D.rowStride);
-  const _fw = D.filteredWorkers||D.workers;
-  if(ri<0||ri>=_fw.length||!D.drawnRects[ri]) return null;
+  const fw = D.filteredWorkers||D.workers;
+  if(ri<0 || ri>=fw.length || ri+1>=DR.rowStart.length) return null;
   if((logY-PAD_TOP)%D.rowStride>=D.rowH) return null;
-
-  const us=D.x0+(px/_cW)*(D.x1-D.x0);
-  const rects=D.drawnRects[ri];
-  let hit=null;
-  for(let i=0;i<rects.length;i++){
-    if(rects[i].beg<=us&&rects[i].end>=us){hit=rects[i];break;}
+  const us=D.x0+(px/_cW)*(D.x1-D.x0), tol=hitTol();
+  // last item starting at or before us+tol (items are sorted within a row)
+  let a=DR.rowStart[ri], b=DR.rowStart[ri+1];
+  while(a<b){ const m=(a+b)>>1; if(DR.beg[m]<=us+tol) a=m+1; else b=m; }
+  let k=-1;
+  for(let j=a-1; j>=DR.rowStart[ri] && j>=a-3; j--){ if(DR.end[j]+tol>=us){ k=j; break; } }
+  if(k<0) return null;
+  const row=fw[ri];
+  let f=-1;
+  if(DR.i1[k]-DR.i0[k]===1) f=DR.i0[k];
+  else {
+    const g=segAt(row, us, tol);
+    if(g>=0 && (D.end[g]-D.beg[g])*_cW/(D.x1-D.x0) >= 3) f=g;
   }
-  return hit ? {hit, row:_fw[ri], us} : null;
+  return {k, row, us, f};
 }
 
-function zoomToTimelineHit(hit) {
-  const span = hit.end - hit.beg;
-  const pad = Math.max(D.minSegDur, span * 0.5);
-  zoomTo(Math.max(D.minUs, hit.beg - pad), Math.min(D.maxUs, hit.end + pad));
+function zoomToTimelineHit(beg, end) {
+  const pad = Math.max(D.minSegDur, (end-beg) * 0.15);
+  zoomTo(Math.max(D.minUs, beg - pad), Math.min(D.maxUs, end + pad));
 }
 
 tlBSvg.addEventListener('mousemove',ev=>{
   _lastMoveX=ev.clientX; _lastMoveY=ev.clientY;
   const h = timelineHitFromEvent(ev);
   if(!h){hideTip();_hoveredCluster=null;return;}
-
-  const {hit, row:w, us} = h;
-  if(hit.clustered){
-    _hoveredCluster=hit;
+  const {k, row:w, f} = h;
+  if(f<0){
+    // A cluster of tasks too small to show individually at this zoom
+    _hoveredCluster=k;
+    const i0=DR.i0[k], i1=DR.i1[k], b=DR.beg[k], e=DR.end[k];
+    const busy=D.pdur[i1]-D.pdur[i0], t=DR.type[k];
+    const tn = t===MIXED ? 'mixed types' : (TNAMES[t]||'unknown');
+    const nMatch = D.searchPref ? D.searchPref[i1]-D.searchPref[i0] : 0;
     showTip(ev,
-      `<div class="tt" style="color:${TCOLORS.clustered}">clustered</div>` +
-      `<div class="tm">${hit.count} tasks merged</div>` +
-      `<div class="tm">Worker:   ${w.key}</div>` +
-      `<div class="tm">Span:     ${fmtUs(hit.beg)} → ${fmtUs(hit.end)}</div>` +
-      `<div class="tm">Duration: ${fmtUs(hit.end-hit.beg)}</div>` +
-      `<div style="margin-top:4px;font-size:14px;color:var(--accent)">Click or brush to zoom in</div>`
+      `<div class="tt" style="color:${typeColor(t)}">${(i1-i0).toLocaleString()} tasks</div>` +
+      `<div class="tm">${tn} · merged at this zoom</div>` +
+      `<div class="tm">Worker: ${esc(w.key)}</div>` +
+      `<div class="tm">Span:   ${fmtUs(b)} → ${fmtUs(e)} (${fmtUs(e-b)})</div>` +
+      `<div class="tm">Busy:   ${fmtUs(busy)}${e>b ? ` (${pct(Math.min(1,busy/(e-b)))} of span)` : ''}</div>` +
+      (D.searchPref ? `<div class="tm">Search matches: ${nMatch.toLocaleString()}</div>` : '') +
+      `<div style="margin-top:4px;font-size:13px;color:var(--accent)">Click to zoom in</div>`
     );
   } else {
     _hoveredCluster=null;
-    let f=-1;
-    for(let s=0;s<w.length;s++){
-      const i=w.offset+s;
-      if(D.beg[i]<=us&&D.end[i]>=us){f=i;break;}
-    }
-    if(f===-1){hideTip();return;}
     const tn=TNAMES[D.type[f]]||'unknown';
     showTip(ev,
       `<div class="tt" style="color:${TCOLORS[tn]}">${tn}</div>` +
-      `<div>${D.names[f]||'(anonymous)'}</div>` +
-      `<div class="tm">Worker:   ${w.key}</div>` +
+      `<div>${esc(nameOf(f)||'(anonymous)')}</div>` +
+      `<div class="tm">Worker:   ${esc(w.key)}</div>` +
       `<div class="tm">Duration: ${fmtUs(D.end[f]-D.beg[f])}</div>` +
       `<div class="tm">Start:    ${fmtUs(D.beg[f])}</div>` +
-      `<div style="margin-top:4px;font-size:13px;color:var(--accent)">Click to zoom in</div>`
+      `<div style="margin-top:4px;font-size:13px;color:var(--accent)">Click for details</div>`
     );
   }
 });
@@ -923,7 +1397,9 @@ tlBSvg.addEventListener('click',ev=>{
     if(Math.hypot(dx, dy) > 3) return;
   }
   const h = timelineHitFromEvent(ev);
-  if(h && h.hit) zoomToTimelineHit(h.hit);
+  if(!h) return;
+  if(h.f>=0) selectTask(h.f, h.row);
+  else zoomToTimelineHit(DR.beg[h.k], DR.end[h.k]);
 });
 
 tlBSvg.addEventListener('pointerdown',ev=>{
@@ -931,6 +1407,357 @@ tlBSvg.addEventListener('pointerdown',ev=>{
 });
 
 tlBSvg.addEventListener('mouseleave',hideTip);
+
+// ── Task lookup ────────────────────────────────────────────────────────────
+// Segment on row w covering time us, or the nearest one within tol µs, or -1.
+// Segments in one (worker, level) row are sorted and never overlap.
+function segAt(w, us, tol=0){
+  const lo=w.offset, hi=w.offset+w.length;
+  let a=lo, b=hi;
+  while(a<b){ const m=(a+b)>>1; if(D.beg[m]<=us) a=m+1; else b=m; }
+  if(a-1>=lo && D.end[a-1]>=us) return a-1;
+  let best=-1, bd=tol;
+  if(a-1>=lo && us-D.end[a-1]<=bd){ best=a-1; bd=us-D.end[a-1]; }
+  if(a<hi && D.beg[a]-us<=bd) best=a;
+  return best;
+}
+// Click/hover slack: 2 screen pixels expressed in µs.
+function hitTol(){ return 2*(D.x1-D.x0)/(_cW||cW()); }
+// Row object containing segment i (rows are stored with increasing offsets).
+function rowOfSeg(i){
+  let a=0, b=D.workers.length-1;
+  while(a<b){ const m=(a+b+1)>>1; if(D.workers[m].offset<=i) a=m; else b=m-1; }
+  return D.workers[a];
+}
+function zoomToSeg(i){
+  const span=D.end[i]-D.beg[i], pad=Math.max(D.minSegDur, span*0.5);
+  zoomTo(Math.max(D.minUs, D.beg[i]-pad), Math.min(D.maxUs, D.end[i]+pad));
+}
+
+// ── Task details panel ─────────────────────────────────────────────────────
+const elDetail = document.getElementById('detail');
+function closeDetail(){
+  elDetail.classList.remove('open');
+  if(D.sel){ D.sel=null; if(D.beg) renderTimelineView(); }
+}
+function selectTask(i, w){
+  w = w || rowOfSeg(i);
+  D.sel = {i, w};
+  const tn = TNAMES[D.type[i]]||'unknown', nm = nameOf(i), id = D.nameId[i];
+  const dur = D.end[i]-D.beg[i], wall = D.maxUs-D.minUs;
+
+  // Same-name stats and duration rank over the whole trace
+  let runs=0, tot=0, mx=0, longer=0;
+  for(let k=0;k<D.beg.length;k++){
+    const d=D.end[k]-D.beg[k];
+    if(d>dur) longer++;
+    if(id!==0 && D.nameId[k]===id){ runs++; tot+=d; if(d>mx) mx=d; }
+  }
+
+  const typeEl = document.getElementById('detail-type');
+  typeEl.textContent = tn; typeEl.style.color = TCOLORS[tn]||'var(--text)';
+  document.getElementById('detail-name').textContent = nm || '(anonymous)';
+  const row = (k,v)=>`<dt>${k}</dt><dd>${v}</dd>`;
+  document.getElementById('detail-body').innerHTML =
+    row('Row', esc(w.key)) +
+    row('Start', fmtUs(D.beg[i])) +
+    row('End', fmtUs(D.end[i])) +
+    row('Duration', `<b>${fmtUs(dur)}</b>`) +
+    row('Share of wall time', wall>0 ? (100*dur/wall).toFixed(2)+'%' : '—') +
+    row('Duration rank', `#${(longer+1).toLocaleString()} of ${D.beg.length.toLocaleString()}`) +
+    (nm!=null ? '<div class="dsep"></div>' +
+      row('Runs with this name', runs.toLocaleString()) +
+      row('Total time', fmtUs(tot)) +
+      row('Average', fmtUs(tot/runs)) +
+      row('Longest run', fmtUs(mx)) : '');
+  elDetail.classList.add('open');
+  renderTimelineView();
+}
+document.getElementById('detail-close').addEventListener('click', closeDetail);
+document.getElementById('detail-zoom').addEventListener('click', ()=>{ if(D.sel) zoomToSeg(D.sel.i); });
+document.getElementById('detail-copy').addEventListener('click', ev=>{
+  if(!D.sel) return;
+  const btn = ev.currentTarget;
+  navigator.clipboard?.writeText(nameOf(D.sel.i)||'').then(
+    ()=>{ btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy name',1200); },
+    ()=>{ btn.textContent='Copy failed'; setTimeout(()=>btn.textContent='Copy name',1200); });
+});
+
+// ── Task search ────────────────────────────────────────────────────────────
+// Case-insensitive substring match on task names. Matches stay bright in the
+// timeline, overview and top-tasks chart; everything else is dimmed.
+const taskSearch      = document.getElementById('task-search');
+const taskSearchCount = document.getElementById('task-search-count');
+
+// The mask is per name id, so a search tests each distinct name once. A prefix
+// count of matching tasks (searchPref) answers "how many matches in tasks
+// [i0,i1)" in O(1) — used to dim clusters and to step through matches without
+// ever listing them all.
+function runSearch(q){
+  q = q.trim().toLowerCase();
+  if(q === D.searchKey) return;
+  D.searchKey = q; D.matchCur = -1;
+  if(!q){ D.searchMask = null; D.searchPref = null; }
+  else {
+    const NS=D.nameStr.length, m=new Uint8Array(NS);
+    for(let id=1; id<NS; id++) if(D.nameStr[id].toLowerCase().includes(q)) m[id]=1;
+    const N=D.beg.length, ids=D.nameId, pref=new Uint32Array(N+1);
+    let c=0;
+    for(let i=0;i<N;i++){ pref[i]=c; c+=m[ids[i]]; }
+    pref[N]=c;
+    D.searchMask = m; D.searchPref = pref;
+  }
+  updateMatchCount();
+  render();
+}
+// Number of matches on the shown rows.
+function updateMatchCount(){
+  let n=0;
+  if(D.searchPref) for(const w of (D.filteredWorkers||D.workers))
+    n += D.searchPref[w.offset+w.length]-D.searchPref[w.offset];
+  D.matchCount=n; D.matchCur=-1;
+  updateSearchUI();
+}
+function updateSearchUI(){
+  const n=D.matchCount;
+  taskSearchCount.textContent = !D.searchKey ? '' :
+    n===0 ? 'no matches' :
+    D.matchCur>=0 ? `${D.matchPosNum.toLocaleString()} / ${n.toLocaleString()}` : `${n.toLocaleString()} matches`;
+  taskSearch.style.borderColor = D.searchKey && n===0 ? '#e06b6b' : '';
+}
+// Step to the next (dir>0) or previous match in time order, across the shown
+// rows. Matches are ordered by (begin, index); each row is searched with binary
+// searches on its begin times and on the match prefix counts.
+function jumpMatch(dir){
+  if(!D.matchCount) return;
+  const P=D.searchPref, fw=D.filteredWorkers||D.workers;
+  const lowerBound=(lo,hi,t)=>{ while(lo<hi){ const m=(lo+hi)>>1; if(D.beg[m]<t) lo=m+1; else hi=m; } return lo; };
+  // first position in [lo,hi) ordered after (ab,ai)
+  const after=(lo,hi,ab,ai)=>{ let s=lowerBound(lo,hi,ab); while(s<hi && D.beg[s]===ab && s<=ai) s++; return s; };
+  const find=(ab,ai)=>{
+    let best=-1;
+    for(const w of fw){
+      const lo=w.offset, hi=lo+w.length;
+      if(P[hi]===P[lo]) continue;
+      const s=after(lo,hi,ab,ai);
+      let k=-1;
+      if(dir>0){
+        if(P[hi]>P[s]){ let a=s,b=hi-1; while(a<b){ const m=(a+b)>>1; if(P[m+1]>P[s]) b=m; else a=m+1; } k=a; }
+        if(k>=0 && (best<0 || D.beg[k]<D.beg[best] || (D.beg[k]===D.beg[best] && k<best))) best=k;
+      } else {
+        // candidates are [lo, s') where s' excludes (ab,ai) itself
+        let e=lowerBound(lo,hi,ab); while(e<hi && D.beg[e]===ab && e<ai) e++;
+        if(P[e]>P[lo]){ let a=lo,b=e-1; while(a<b){ const m=(a+b+1)>>1; if(P[m]<P[e]) a=m; else b=m-1; } k=a; }
+        if(k>=0 && (best<0 || D.beg[k]>D.beg[best] || (D.beg[k]===D.beg[best] && k>best))) best=k;
+      }
+    }
+    return best;
+  };
+  const cur=D.matchCur;
+  let best = cur>=0 ? find(D.beg[cur], cur) : -1;
+  if(best<0) best = dir>0 ? find(-Infinity,-1) : find(Infinity,Infinity);   // wrap around
+  if(best<0) return;
+  // 1-based position: matches ordered before it, plus one
+  let pos=1;
+  for(const w of fw){ const lo=w.offset, hi=lo+w.length;
+    let x=lowerBound(lo,hi,D.beg[best]); while(x<hi && D.beg[x]===D.beg[best] && x<best) x++;
+    pos += P[x]-P[lo]; }
+  D.matchCur=best; D.matchPosNum=pos;
+  updateSearchUI();
+  selectTask(best);
+  zoomToSeg(best);
+}
+let _searchTimer=null;
+taskSearch.addEventListener('input', ()=>{
+  clearTimeout(_searchTimer);
+  _searchTimer=setTimeout(()=>{ if(D.beg) runSearch(taskSearch.value); }, 150);
+});
+taskSearch.addEventListener('keydown', ev=>{
+  if(ev.key==='Enter'){
+    ev.preventDefault();
+    clearTimeout(_searchTimer); runSearch(taskSearch.value);
+    jumpMatch(ev.shiftKey?-1:1);
+  } else if(ev.key==='Escape'){
+    if(taskSearch.value){ taskSearch.value=''; runSearch(''); } else taskSearch.blur();
+    ev.stopPropagation();
+  }
+});
+document.getElementById('task-next').addEventListener('click', ()=>jumpMatch(1));
+document.getElementById('task-prev').addEventListener('click', ()=>jumpMatch(-1));
+
+// ── Group runs by task name ────────────────────────────────────────────────
+// Tasks overlapping [x0,x1] on the given rows, grouped by name.
+function groupByName(rows, x0, x1){
+  const NS=D.nameStr.length, runs=new Uint32Array(NS), tot=new Float64Array(NS),
+        mx=new Float64Array(NS), ty=new Uint8Array(NS), ids=D.nameId;
+  let all=0;
+  for(const w of rows){
+    const [lo,hi] = (x0===-Infinity && x1===Infinity) ? [w.offset, w.offset+w.length] : rowRange(w, x0, x1);
+    for(let i=lo;i<hi;i++){
+      const d=D.end[i]-D.beg[i], id=ids[i];
+      if(runs[id]===0) ty[id]=D.type[i];
+      runs[id]++; tot[id]+=d; if(d>mx[id]) mx[id]=d; all+=d;
+    }
+  }
+  const out=[];
+  for(let id=0; id<NS; id++) if(runs[id])
+    out.push({name:D.nameStr[id]||'', type:ty[id], runs:runs[id], tot:tot[id], max:mx[id], avg:tot[id]/runs[id]});
+  return {rows:out, all};
+}
+
+// ── Summary & insights ─────────────────────────────────────────────────────
+const elSummary = document.getElementById('summary');
+try { if(localStorage.getItem('tfprof-summary-open')==='0') elSummary.open=false; } catch(e){}
+elSummary.addEventListener('toggle', ()=>{
+  try { localStorage.setItem('tfprof-summary-open', elSummary.open?'1':'0'); } catch(e){}
+});
+
+function resetSummary(){
+  document.getElementById('sum-cards').innerHTML='';
+  document.getElementById('sum-types').innerHTML='';
+  d3.select('#sum-workers').selectAll('*').remove();
+}
+function pct(x){ return (x>=0.9995 ? '100' : (100*x).toFixed(1))+'%'; }
+// CPU-style utilization (as in top/htop/Activity Monitor): 100% = one fully busy
+// worker, so P workers max out at P×100%.
+function cpuPct(busy){ const v=100*busy; return (v>=100?Math.round(v):v.toFixed(1))+'%'; }
+function renderSummary(){
+  const S=D.summary; if(!S) return;
+  const N=D.beg.length, wall=D.maxUs-D.minUs, P=S.busy.length;
+  let totBusy=0; for(const b of S.busy) totBusy+=b;
+  const avgBusy = wall>0 ? totBusy/wall : 0, util = P ? avgBusy/P : 0;
+
+  // Per-type totals
+  const tc=new Array(8).fill(0), tt=new Array(8).fill(0);
+  let taskTime=0;
+  for(let i=0;i<N;i++){
+    const d=D.end[i]-D.beg[i], t=D.type[i];
+    tc[t]++; tt[t]+=d; taskTime+=d;
+  }
+  const groups=groupByName(D.workers, -Infinity, Infinity).rows.sort((a,b)=>b.tot-a.tot);
+  const verdict = util>=0.8 ? 'good' : util>=0.5 ? 'moderate' : 'low';
+
+  // Cards
+  const card=(k,v,sub,color)=>`<div class="sum-card"><div class="k">${k}</div>`+
+    `<div class="v"${color?` style="color:${color}"`:''}>${v}</div><div class="s">${sub}</div></div>`;
+  const nExec = new Set(D.workers.map(w=>w.executorId)).size;
+  const vColor = util>=0.8 ? '#3dbf8a' : util>=0.5 ? '#f59e0b' : '#e06b6b';
+  document.getElementById('sum-cards').innerHTML =
+    card('Wall-clock time', fmtWall(wall), 'elapsed real time, first task start → last task end') +
+    card('Tasks', N.toLocaleString(), `${groups.length.toLocaleString()} distinct names`) +
+    card('Executors', nExec, nExec===1 ? '1 tf::Executor' : `${nExec} tf::Executor instances`) +
+    card('Workers', P, nExec>1 ? `worker threads across all executors` : `worker threads`) +
+    card('Utilization', `${cpuPct(avgBusy)}<span style="font-size:0.55em;opacity:0.7"> / ${P*100}%</span>`, `${verdict} — 100% = one fully busy worker (${pct(util)} of capacity)`, vColor);
+
+  // Task time by type
+  const order=[...tt.keys()].filter(t=>tc[t]>0).sort((a,b)=>tt[b]-tt[a]);
+  document.getElementById('sum-types').innerHTML =
+    `<div class="typebar">${order.map(t=>`<span title="${TNAMES[t]||'?'}" style="width:${taskTime>0?100*tt[t]/taskTime:0}%;background:${TCOLORS[TNAMES[t]]||'#888'}"></span>`).join('')}</div>` +
+    `<div class="typeleg">${order.map(t=>
+      `<span><span class="lsw" style="background:${TCOLORS[TNAMES[t]]||'#888'}"></span><b>${TNAMES[t]||'?'}</b> · ` +
+      `${tc[t].toLocaleString()} task${tc[t]>1?'s':''} · ${fmtUs(tt[t])} (${pct(taskTime>0?tt[t]/taskTime:0)})</span>`).join('')}</div>`;
+
+  // Busy time per worker
+  const svgEl=document.getElementById('sum-workers');
+  const W=Math.max(120, svgEl.clientWidth||300), H=84, top=6, bot=P<=16?30:16;
+  svgEl.setAttribute('height', H);
+  const svg=d3.select(svgEl).attr('width',null).attr('viewBox',null);
+  svg.selectAll('*').remove();
+  const x=d3.scaleBand().domain(d3.range(P)).range([0,W]).padding(P>32?0.08:0.2);
+  const y=d3.scaleLinear().domain([0,1]).range([H-bot,top]);
+  svg.selectAll('rect').data(Array.from(S.busy)).join('rect').attr('class','wbar')
+    .attr('x',(_,p)=>x(p)).attr('width',x.bandwidth())
+    .attr('y',v=>y(wall>0?v/wall:0)).attr('height',v=>Math.max(1,y(0)-y(wall>0?v/wall:0)))
+    .on('mousemove',(ev,v)=>{ const p=Array.from(S.busy).indexOf(v);
+      showTip(ev,`<div class="tt">${S.keys[p]}</div><div>Busy ${pct(wall>0?v/wall:0)} of the run</div><div class="tm">${fmtUs(v)} in tasks</div>`); })
+    .on('mouseleave',hideTip);
+  svg.append('line').attr('class','wavg').attr('x1',0).attr('x2',W).attr('y1',y(util)).attr('y2',y(util));
+  if(P<=16) svg.selectAll('text.wlbl').data(S.keys).join('text').attr('class','wlbl')
+    .attr('x',(_,p)=>x(p)+x.bandwidth()/2).attr('y',H-bot+13).attr('text-anchor','middle')
+    .text(k=>k.replace(/^E0\./,''));
+  svg.append('text').attr('x',0).attr('y',H-3).text('0%');
+  svg.append('text').attr('x',W).attr('y',H-3).attr('text-anchor','end').text(`dashed = average ${pct(util)}`);
+}
+
+// ── Wheel zoom / pan, Shift+drag pan ───────────────────────────────────────
+// Ctrl/⌘+wheel (and trackpad pinch, which reports ctrlKey) zooms around the
+// cursor; Shift+wheel or horizontal scrolling pans. A plain vertical wheel is
+// left alone so the page still scrolls.
+function attachNav(el, plotLeft){
+  el.addEventListener('wheel', ev=>{
+    if(!D.beg) return;
+    const zoom = ev.ctrlKey || ev.metaKey;
+    const horiz = Math.abs(ev.deltaX) > Math.abs(ev.deltaY);
+    if(!zoom && !ev.shiftKey && !horiz) return;
+    ev.preventDefault();
+    const scale = ev.deltaMode===1 ? 33 : ev.deltaMode===2 ? 400 : 1;
+    const span = D.x1-D.x0;
+    if(zoom){
+      const px = ev.clientX - el.getBoundingClientRect().left - plotLeft;
+      const us = D.x0 + Math.max(0, Math.min(1, px/_cW))*span;
+      zoomAround(us, Math.exp(ev.deltaY*scale*0.002));
+    } else {
+      const d = horiz ? ev.deltaX : ev.deltaY;
+      panBy(d*scale/_cW*span);
+    }
+  }, {passive:false});
+
+  el.addEventListener('pointerdown', ev=>{
+    if(!D.beg || !(ev.shiftKey || ev.button===1)) return;
+    ev.preventDefault();                 // also stops the brush from starting
+    const startX=ev.clientX, x0=D.x0, x1=D.x1, upp=(x1-x0)/_cW;
+    el.setPointerCapture(ev.pointerId);
+    el.style.cursor='grabbing';
+    const move=e=>{ const dx=(e.clientX-startX)*upp; setView(x0-dx, x1-dx); };
+    const up=()=>{
+      el.removeEventListener('pointermove',move);
+      el.removeEventListener('pointerup',up);
+      el.removeEventListener('pointercancel',up);
+      el.style.cursor='';
+    };
+    el.addEventListener('pointermove',move);
+    el.addEventListener('pointerup',up);
+    el.addEventListener('pointercancel',up);
+  }, true);
+}
+attachNav(tlBSvg, 0);
+attachNav(parSvg, LABEL_W);
+
+// ── Keyboard shortcuts ─────────────────────────────────────────────────────
+const elHelp = document.getElementById('help');
+function toggleHelp(force){
+  elHelp.classList.toggle('open', force===undefined ? !elHelp.classList.contains('open') : force);
+}
+document.getElementById('btn-help').addEventListener('click', ()=>toggleHelp());
+elHelp.addEventListener('click', ev=>{ if(ev.target===elHelp) toggleHelp(false); });
+
+document.addEventListener('keydown', ev=>{
+  const t=ev.target;
+  if(t && (t.tagName==='INPUT' || t.tagName==='TEXTAREA' || t.isContentEditable)) return;
+  if(ev.metaKey || ev.ctrlKey || ev.altKey) return;
+  if(ev.key==='?'){ toggleHelp(); ev.preventDefault(); return; }
+  if(ev.key==='Escape' && elHelp.classList.contains('open')){ toggleHelp(false); return; }
+  if(!D.beg || elProf.style.display==='none') return;
+  const span=D.x1-D.x0, mid=(D.x0+D.x1)/2;
+  switch(ev.key){
+    case 'w': case 'W': case '+': case '=': zoomAround(mid, 0.6); break;
+    case 's': case 'S': case '-': case '_': zoomAround(mid, 1/0.6); break;
+    case 'a': case 'A': case 'ArrowLeft':  panBy(-span*0.2); break;
+    case 'd': case 'D': case 'ArrowRight': panBy( span*0.2); break;
+    case 'Escape':
+      if(execPopover.classList.contains('open')) return;
+      if(elDetail.classList.contains('open')) closeDetail(); else zoomBack();
+      break;
+    case 'Backspace': zoomBack(); break;
+    case '0': case 'r': case 'R': zoomReset(); break;
+    case '/': taskSearch.focus(); taskSearch.select(); break;
+    case 'n': jumpMatch(1); break;
+    case 'N': jumpMatch(-1); break;
+    case 'f': case 'F': if(D.sel) zoomToSeg(D.sel.i); break;
+    default: return;
+  }
+  ev.preventDefault();
+});
 
 // ── Worker/level filter ────────────────────────────────────────────────────
 // D.filteredWorkers = subset of D.workers after applying row filter.
@@ -979,15 +1806,13 @@ function computeRowStats() {
   _rowStats = new Map();
   if(!D.workers) return;
   D.workers.forEach((w, rowId) => {
+    const [lo,hi] = rowRange(w, D.x0, D.x1);
     let tasks = 0, active = 0, longest = 0;
-    for(let s=0; s<w.length; s++){
-      const i = w.offset+s;
-      const b = Math.max(D.beg[i], D.x0);
-      const e = Math.min(D.end[i], D.x1);
+    for(let i=lo; i<hi; i++){
+      const b = Math.max(D.beg[i], D.x0), e = Math.min(D.end[i], D.x1);
       if(b >= e) continue;
       const dur = e - b;
-      tasks++;
-      active += dur;
+      tasks++; active += dur;
       if(dur > longest) longest = dur;
     }
     _rowStats.set(rowId, {key:w.key, tasks, active, longest});
@@ -1087,7 +1912,8 @@ function applyExecFilter() {
   D.sectionH   = D.totalRowsH + XAXIS_H;
   D.canvasH    = Math.min(D.totalRowsH, Math.floor(BROWSER_MAX_H / dpr));
   D.scrollTop  = 0;
-  buildRank();
+  D.filterVer++;
+  updateMatchCount();
   render();
 }
 
@@ -1098,6 +1924,7 @@ execFilterBtn.addEventListener('click', e => {
   if (execPopover.classList.contains('open')) {
     execPopover.style.top = (execFilterBtn.offsetTop + execFilterBtn.offsetHeight + 2) + 'px';
     execSearch.value = '';
+    computeRowStats();
     buildExecList('');
     execSearch.focus();
   }
@@ -1138,6 +1965,7 @@ document.getElementById('btn-open').addEventListener('click',()=>document.getEle
 // ── Theme toggle ───────────────────────────────────────────────────────────
 const themeBtn = document.getElementById('theme-btn');
 function applyTheme(light) {
+  _themeCache = null;
   document.documentElement.classList.toggle('light', light);
   themeBtn.textContent = light ? '🌙' : '☀️';
   // Redraw visual layers since row/mini background colors changed
@@ -1158,18 +1986,196 @@ document.getElementById('rank-n').addEventListener('change',()=>drawRank());
 
 
 
+<!-- Sweep Worker (source also in js/sweep.worker.js) -->
+<script id="src-sweep" type="text/plain">
+'use strict';
+// Parallelism sweep worker (inlined in index.html as #src-sweep — keep in sync).
+//
+// init  : {type:'init', beg, end, workers, minUs, maxUs}
+//         Builds, per physical worker (executor, worker), the union of its busy
+//         intervals across all nesting levels. Child tasks of a subflow/recursive
+//         task overlap their parent on the same worker, so the union avoids
+//         counting one thread twice.
+// query : {type:'query', id, x0, x1, bins, phys}
+//         Returns avg[b] = average number of busy workers in bin b (exact, by
+//         time-weighted overlap, at any zoom level), and the total busy time.
+//         phys: optional array of physical-worker indices to include.
+// After init the worker also posts {type:'summary'} for the whole run:
+//         busy[p]    total busy time of physical worker p
+//         keys[p]    its label, e.g. "E0.W3"
+//         low / idle time during which <=1 / 0 workers were busy
+//         stretches  longest [begin,end] stretches with <=1 worker busy
+
+let U = [];   // per physical worker: {b:Float64Array, e:Float64Array} sorted, disjoint
+// Precomputed busy time of all workers over FINE equal slots of the whole run,
+// as a prefix sum. Unfiltered queries whose bins span at least FINE_MIN slots
+// are answered from it in O(bins) — independent of the number of tasks.
+const FINE = 1 << 20, FINE_MIN = 16;
+let fineP = null, fineMin = 0, fineW = 0;
+let K = [];   // per physical worker: label "E<executor>.W<worker>"
+
+function buildUnions(B, E, W) {
+  const groups = new Map();
+  for (const w of W) {
+    const k = w.executorId + '_' + w.workerIdx;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(w);
+  }
+  K = [...groups.values()].map(rows => 'E'+rows[0].executorId+'.W'+rows[0].workerIdx);
+  U = [...groups.values()].map(rows => {
+    let n = 0;
+    for (const r of rows) n += r.length;
+    const idx = new Uint32Array(n);
+    let c = 0;
+    for (const r of rows) for (let s = 0; s < r.length; s++) idx[c++] = r.offset + s;
+    // Segments within one row are already sorted by begin; only merge when
+    // the worker has several levels.
+    if (rows.length > 1) idx.sort((a, b) => B[a] - B[b]);
+    const ub = new Float64Array(n), ue = new Float64Array(n);
+    let m = 0;
+    for (let k = 0; k < n; k++) {
+      const i = idx[k], b = B[i], e = E[i];
+      if (m && b <= ue[m - 1]) { if (e > ue[m - 1]) ue[m - 1] = e; }
+      else { ub[m] = b; ue[m] = e; m++; }
+    }
+    return { b: ub.slice(0, m), e: ue.slice(0, m) };
+  });
+}
+
+function query(x0, x1, bins, phys) {
+  bins = Math.max(1, Math.floor(bins));
+  const avg = new Float32Array(bins);
+  const list = phys || U.map((_, i) => i);
+  const span = x1 - x0;
+  if (!(span > 0)) return { avg, busy: 0, n: list.length };
+  const bw = span / bins;
+  const acc = new Float64Array(bins), diff = new Float64Array(bins + 1);
+  let busy = 0;
+
+  for (const p of list) {
+    const u = U[p];
+    if (!u) continue;
+    const b = u.b, e = u.e;
+    // first interval ending after x0
+    let lo = 0, hi = e.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (e[m] <= x0) lo = m + 1; else hi = m; }
+    for (let k = lo; k < b.length && b[k] < x1; k++) {
+      const s = b[k] > x0 ? b[k] : x0, t = e[k] < x1 ? e[k] : x1;
+      if (t <= s) continue;
+      busy += t - s;
+      const fb = Math.min(bins - 1, Math.floor((s - x0) / bw));
+      const lb = Math.min(bins - 1, Math.floor((t - x0) / bw));
+      if (fb === lb) { acc[fb] += t - s; continue; }
+      acc[fb] += x0 + (fb + 1) * bw - s;
+      acc[lb] += t - (x0 + lb * bw);
+      if (lb > fb + 1) { diff[fb + 1] += bw; diff[lb] -= bw; }  // full middle bins
+    }
+  }
+  let run = 0;
+  for (let i = 0; i < bins; i++) { run += diff[i]; avg[i] = (acc[i] + run) / bw; }
+  return { avg, busy, n: list.length };
+}
+
+// Whole-run summary: sweep over every worker's busy intervals, tracking how
+// many workers are busy, and record the stretches where at most one is.
+function summarize(minUs, maxUs) {
+  const P = U.length, busy = new Float64Array(P);
+  let n = 0;
+  for (const u of U) n += u.b.length;
+  const S = new Float64Array(n), E = new Float64Array(n);
+  let c = 0;
+  U.forEach((u, p) => {
+    for (let k = 0; k < u.b.length; k++) {
+      busy[p] += u.e[k] - u.b[k];
+      S[c] = u.b[k]; E[c] = u.e[k]; c++;
+    }
+  });
+  S.sort(); E.sort();
+  let i = 0, j = 0, cnt = 0, t = minUs, lowStart = minUs, low = 0, idle = 0;
+  const stretches = [];
+  while (i < n || j < n) {
+    const isStart = i < n && (j >= n || S[i] <= E[j]);  // starts first on ties
+    const tt = isStart ? S[i] : E[j];
+    if (cnt <= 1) low += tt - t;
+    if (cnt === 0) idle += tt - t;
+    const prev = cnt;
+    if (isStart) { cnt++; i++; } else { cnt--; j++; }
+    if (prev <= 1 && cnt >= 2 && tt > lowStart) stretches.push([lowStart, tt]);
+    if (prev >= 2 && cnt <= 1) lowStart = tt;
+    t = tt;
+  }
+  if (maxUs > t) { low += maxUs - t; idle += maxUs - t; }
+  if (cnt <= 1 && maxUs > lowStart) stretches.push([lowStart, maxUs]);
+  stretches.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
+  return { busy, keys: K, low, idle, stretches: stretches.slice(0, 5) };
+}
+
+function buildFine(minUs, maxUs) {
+  fineP = null;
+  if (!(maxUs > minUs)) return;
+  fineMin = minUs; fineW = (maxUs - minUs) / FINE;
+  const { avg } = query(minUs, maxUs, FINE, null);   // exact busy workers per slot
+  fineP = new Float64Array(FINE + 1);
+  for (let i = 0; i < FINE; i++) fineP[i + 1] = fineP[i] + avg[i] * fineW;
+}
+// Busy time in [fineMin, t], interpolating linearly inside a slot.
+function fineAt(t) {
+  let u = (t - fineMin) / fineW;
+  if (u <= 0) return 0;
+  if (u >= FINE) return fineP[FINE];
+  const k = Math.floor(u);
+  return fineP[k] + (u - k) * (fineP[k + 1] - fineP[k]);
+}
+function queryFast(x0, x1, bins, phys) {
+  bins = Math.max(1, Math.floor(bins));
+  if (phys || !fineP || !((x1 - x0) / bins >= FINE_MIN * fineW)) return query(x0, x1, bins, phys);
+  const avg = new Float32Array(bins), bw = (x1 - x0) / bins;
+  let prev = fineAt(x0);
+  for (let i = 0; i < bins; i++) {
+    const cur = fineAt(x0 + (i + 1) * bw);
+    avg[i] = (cur - prev) / bw; prev = cur;
+  }
+  return { avg, busy: fineAt(x1) - fineAt(x0), n: U.length };
+}
+
+self.onmessage = ev => {
+  const m = ev.data;
+  if (m.type === 'init') {
+    buildUnions(m.beg, m.end, m.workers);
+    buildFine(m.minUs, m.maxUs);
+    self.postMessage({ type: 'ready', numPhys: U.length });
+    self.postMessage({ type: 'summary', ...summarize(m.minUs, m.maxUs) });
+  } else if (m.type === 'query') {
+    const r = queryFast(m.x0, m.x1, m.bins, m.phys);
+    self.postMessage({ type: 'result', id: m.id, x0: m.x0, x1: m.x1, ...r }, [r.avg.buffer]);
+  }
+};
+</script>
+
 <!-- Parser Worker (source also in js/tfp-parser.worker.js) -->
 <script id="src-parser" type="text/plain">
 'use strict';
+// .tfp parser worker (inlined in index.html as #src-parser — keep in sync).
+//
+// Besides decoding the file it precomputes everything the UI needs to stay
+// fast on traces with millions of tasks:
+//
+//   nameId / nameStr  every distinct task name is decoded once; each task stores
+//                     a small integer id (0 = anonymous) instead of a string.
+//   pdur              prefix sum of task durations in index order, so the busy
+//                     time of any contiguous run of tasks is one subtraction.
+//   lod*              per-row level-of-detail clusters (see buildLod below).
+//   topIdx            indices of the longest tasks, longest first.
+
 function u8(v,o){return v.getUint8(o);}
 function u16(v,o){return v.getUint16(o,true);}
 function u32(v,o){return v.getUint32(o,true);}
 
 // LEB128 varint — matches _tfp_write_varint in C++.
 function readVarint(v, o) {
-  let val=0, shift=0, b;
-  do { b=v.getUint8(o++); val+=(b&0x7F)*Math.pow(2,shift); shift+=7; } while(b&0x80);
-  return {val, o};
+  let r=0, s=1, b;
+  do { b=v.getUint8(o++); r+=(b&0x7f)*s; s*=128; } while(b&0x80);
+  return {val:r, o};
 }
 
 function parse(buf){
@@ -1205,20 +2211,33 @@ function parse(buf){
 
   // ── Allocate output arrays ─────────────────────────────────────────────
   const beg=new Float64Array(tot), end=new Float64Array(tot),
-        tp=new Uint8Array(tot), na=new Array(tot);
+        tp=new Uint8Array(tot), nid=new Uint32Array(tot);
+  const nameStr=[null];          // id 0 = anonymous
+  const byString=new Map();      // name -> id (shared across executors)
   const ws=[]; let c=0, minU=Infinity, maxU=-Infinity;
 
   // ── Pass 2: decode each executor block ────────────────────────────────
   for(let e=0;e<ne;e++){
-    // Executor header
     o+=8;                         // uid (skip)
     o+=8;                         // origin_us (skip — timestamps are origin-relative)
     const sl=u32(v,o); o+=4;      // str_table_len
     const nw=u32(v,o); o+=4;      // num_wl
 
-    // Per-executor string table
+    // Per-executor string table; names are interned by (offset, length).
     const sb=new Uint8Array(buf, o, sl); o+=sl;
-    const nm=(no,nl)=>nl===0?null:dc.decode(sb.subarray(no,no+nl));
+    const local=new Map();
+    const intern=(no,nl)=>{
+      if(nl===0) return 0;
+      const key=no*32+nl;
+      let id=local.get(key);
+      if(id===undefined){
+        const s=dc.decode(sb.subarray(no,no+nl));
+        id=byString.get(s);
+        if(id===undefined){ id=nameStr.length; nameStr.push(s); byString.set(s,id); }
+        local.set(key,id);
+      }
+      return id;
+    };
 
     // Worker-level blocks
     for(let w=0;w<nw;w++){
@@ -1232,7 +2251,7 @@ function parse(buf){
         const b=prevBeg+deltaBeg, en=b+dur; prevBeg=b;
         const no=u32(v,o); o+=4;
         const packed=u8(v,o); o+=1;
-        beg[c]=b; end[c]=en; tp[c]=(packed>>5)&0x07; na[c]=nm(no,packed&0x1F);
+        beg[c]=b; end[c]=en; tp[c]=(packed>>5)&0x07; nid[c]=intern(no,packed&0x1F);
         if(b<minU)minU=b; if(en>maxU)maxU=en; c++;
       }
       ws.push({key:`E${e}.W${wi}.L${lv}`,executorId:e,workerIdx:wi,level:lv,offset:so,length:ns});
@@ -1240,11 +2259,137 @@ function parse(buf){
   }
 
   if(tot===0){minU=0;maxU=0;}
+
+  const pdur=new Float64Array(tot+1);
+  for(let i=0;i<tot;i++) pdur[i+1]=pdur[i]+(end[i]-beg[i]);
+
+  const lod=buildLod(beg,end,tp,ws);
+  const topIdx=longestTasks(beg,end);
+
   return{ok:true,meta:{numWorkers:ws.length,totalSegs:tot,minUs:minU,maxUs:maxU},
-         workers:ws,beg,end,type:tp,names:na};
+         workers:ws,beg,end,type:tp,nameId:nid,nameStr,pdur,topIdx,
+         lodI0:lod.i0,lodEnd:lod.end,lodType:lod.type};
 }
+
+// ── Level-of-detail clustering ──────────────────────────────────────────────
+// Within one (worker, level) row, tasks are sorted and do not overlap. Merging
+// every pair of neighbours whose gap is below a threshold r gives a set of
+// clusters; raising r only ever merges more, so the clusterings form a
+// hierarchy. For each row we store a few levels of that hierarchy, each with at
+// most LOD_RATIO times the clusters of the level below it. At draw time the UI
+// picks the coarsest stored level whose threshold is still below the gap it
+// wants to merge (half a pixel) and finishes merging on the fly. Drawing cost
+// is therefore bounded by a small multiple of the pixels on screen, whatever
+// the trace size, and the stored levels add at most a third of the row size.
+//
+// A cluster is the contiguous task range [i0[k], i0[k+1]) of its row (the
+// last one ends at the row end); we store its first task, its end time and its
+// type (MIXED if it contains several types).
+const LOD_RATIO=0.25, LOD_MIN=256, NB=64, R0=1/1024, MIXED=255;
+
+function gapBucket(g){
+  if(!(g>=R0)) return 0;                        // includes 0 and overlaps
+  let k=Math.floor(Math.log2(g/R0))+1;          // R0·2^(k-1) <= g < R0·2^k
+  while(k>1 && g<R0*Math.pow(2,k-1)) k--;       // guard against log2 rounding
+  while(g>=R0*Math.pow(2,k)) k++;
+  return k<NB ? k : NB-1;
+}
+
+function buildLod(beg,end,tp,rows){
+  // Plan: per row, count gaps per power-of-two bucket. Merging at threshold
+  // r_k = R0·2^k joins every gap in buckets 0..k, so the cluster count at each
+  // threshold is known before building anything.
+  let total=0;
+  const hist=new Float64Array(NB);
+  for(const w of rows){
+    w.lod=[];
+    const n=w.length;
+    if(n<LOD_MIN) continue;
+    hist.fill(0);
+    let maxEnd=end[w.offset];
+    for(let s=w.offset+1;s<w.offset+n;s++){
+      hist[gapBucket(beg[s]-maxEnd)]++;
+      if(end[s]>maxEnd) maxEnd=end[s];
+    }
+    let merged=0, last=n;
+    for(let k=0;k<NB;k++){
+      merged+=hist[k];
+      const cnt=n-merged;
+      if(cnt<=last*LOD_RATIO){ w.lod.push({r:R0*Math.pow(2,k), off:0, n:cnt}); last=cnt; total+=cnt; }
+      if(cnt<=1) break;
+    }
+  }
+
+  const i0=new Uint32Array(total), cend=new Float64Array(total), ctype=new Uint8Array(total);
+  let out=0;
+  for(const w of rows){
+    let src=null;                                // null = raw tasks
+    for(const L of w.lod){
+      L.off=out;
+      const r=L.r;
+      let cI=-1, cE=0, cT=0;
+      const take=(ti0,te,tt)=>{
+        if(cI>=0 && beg[ti0]-cE<r){ if(te>cE) cE=te; if(tt!==cT) cT=MIXED; }
+        else{
+          if(cI>=0){ i0[out]=cI; cend[out]=cE; ctype[out]=cT; out++; }
+          cI=ti0; cE=te; cT=tt;
+        }
+      };
+      if(!src) for(let s=w.offset;s<w.offset+w.length;s++) take(s,end[s],tp[s]);
+      else     for(let k=src.off;k<src.off+src.n;k++) take(i0[k],cend[k],ctype[k]);
+      i0[out]=cI; cend[out]=cE; ctype[out]=cT; out++;
+      L.n=out-L.off;                             // equals the planned count
+      src=L;
+    }
+  }
+  return {i0, end:cend, type:ctype};
+}
+
+// ── Longest tasks ───────────────────────────────────────────────────────────
+// The UI's "top tasks" chart needs the longest tasks inside a time window.
+// For wide windows it walks this list (longest first) and stops after enough
+// hits; for narrow windows it scans the window directly.
+function longestTasks(beg,end){
+  const N=beg.length;
+  if(N===0) return new Uint32Array(0);
+  const T=Math.min(N, Math.max(5000, Math.ceil(N/100)));
+  const d=new Float64Array(N);
+  for(let i=0;i<N;i++) d[i]=end[i]-beg[i];
+  const thr=nthLargest(d.slice(), T);
+  const idx=new Uint32Array(T);
+  let n=0;
+  for(let i=0;i<N && n<T;i++) if(d[i]>thr) idx[n++]=i;
+  for(let i=0;i<N && n<T;i++) if(d[i]===thr) idx[n++]=i;
+  const out=idx.subarray(0,n);
+  out.sort((a,b)=>d[b]-d[a] || a-b);
+  return out.slice();
+}
+
+// k-th largest value (1-based) via iterative quickselect; reorders a.
+function nthLargest(a,k){
+  let lo=0, hi=a.length-1;
+  const target=a.length-k;                       // index in ascending order
+  while(hi>lo){
+    const mid=(lo+hi)>>1;
+    let x=a[lo], y=a[mid], z=a[hi];
+    const p = x<y ? (y<z ? y : (x<z ? z : x)) : (x<z ? x : (y<z ? z : y));
+    let i=lo, j=hi;
+    while(i<=j){
+      while(a[i]<p) i++;
+      while(a[j]>p) j--;
+      if(i<=j){ const t=a[i]; a[i]=a[j]; a[j]=t; i++; j--; }
+    }
+    if(target<=j) hi=j; else if(target>=i) lo=i; else break;
+  }
+  return a[target];
+}
+
 self.onmessage=e=>{
-  try{const r=parse(e.data.buffer);self.postMessage(r,[r.beg.buffer,r.end.buffer,r.type.buffer]);}
+  try{
+    const r=parse(e.data.buffer);
+    self.postMessage(r,[r.beg.buffer,r.end.buffer,r.type.buffer,r.nameId.buffer,r.pdur.buffer,
+                        r.topIdx.buffer,r.lodI0.buffer,r.lodEnd.buffer,r.lodType.buffer]);
+  }
   catch(er){self.postMessage({ok:false,error:er.message});}
 };
 </script>

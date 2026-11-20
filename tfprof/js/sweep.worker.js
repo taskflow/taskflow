@@ -1,87 +1,162 @@
 'use strict';
-let B=null,E=null,W=null,physicalWorkers=null;
-// Pre-computed full-resolution curves (over entire [minUs,maxUs] range)
-let fullWC=null, fullTC=null, fullBins=0, fullMin=0, fullMax=0;
+// Parallelism sweep worker (inlined in index.html as #src-sweep — keep in sync).
+//
+// init  : {type:'init', beg, end, workers, minUs, maxUs}
+//         Builds, per physical worker (executor, worker), the union of its busy
+//         intervals across all nesting levels. Child tasks of a subflow/recursive
+//         task overlap their parent on the same worker, so the union avoids
+//         counting one thread twice.
+// query : {type:'query', id, x0, x1, bins, phys}
+//         Returns avg[b] = average number of busy workers in bin b (exact, by
+//         time-weighted overlap, at any zoom level), and the total busy time.
+//         phys: optional array of physical-worker indices to include.
+// After init the worker also posts {type:'summary'} for the whole run:
+//         busy[p]    total busy time of physical worker p
+//         keys[p]    its label, e.g. "E0.W3"
+//         low / idle time during which <=1 / 0 workers were busy
+//         stretches  longest [begin,end] stretches with <=1 worker busy
 
-const FULL_BINS = 4000;  // high resolution pre-computed curve
+let U = [];   // per physical worker: {b:Float64Array, e:Float64Array} sorted, disjoint
+// Precomputed busy time of all workers over FINE equal slots of the whole run,
+// as a prefix sum. Unfiltered queries whose bins span at least FINE_MIN slots
+// are answered from it in O(bins) — independent of the number of tasks.
+const FINE = 1 << 20, FINE_MIN = 16;
+let fineP = null, fineMin = 0, fineW = 0;
+let K = [];   // per physical worker: label "E<executor>.W<worker>"
 
-function buildFullCurves(minUs, maxUs) {
-  const bins=FULL_BINS, range=maxUs-minUs;
-  if(range<=0){fullWC=new Float32Array(bins);fullTC=new Float32Array(bins);return;}
-  const bu=range/bins;
-  const wc=new Float32Array(bins), td=new Float32Array(bins+1);
-
-  for(let pi=0;pi<physicalWorkers.length;pi++){
-    const wa=new Uint8Array(bins);
-    const wlist=physicalWorkers[pi];
-    for(let wi=0;wi<wlist.length;wi++){
-      const{offset:off,length:len}=W[wlist[wi]];
-      for(let s=0;s<len;s++){
-        const i=off+s,b=B[i],e=E[i];
-        if(e<=minUs||b>=maxUs)continue;
-        const fb=Math.floor((Math.max(b,minUs)-minUs)/bu);
-        const lb=Math.min(bins-1,Math.floor((Math.min(e,maxUs)-minUs-1e-9)/bu));
-        if(fb>lb)continue;
-        for(let bn=fb;bn<=lb;bn++)wa[bn]=1;
-        td[fb]+=1;td[lb+1]-=1;
-      }
-    }
-    for(let bn=0;bn<bins;bn++)if(wa[bn])wc[bn]+=1;
+function buildUnions(B, E, W) {
+  const groups = new Map();
+  for (const w of W) {
+    const k = w.executorId + '_' + w.workerIdx;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(w);
   }
-  const tc=new Float32Array(bins);let r=0;
-  for(let bn=0;bn<bins;bn++){r+=td[bn];tc[bn]=r;}
-  fullWC=wc; fullTC=tc; fullBins=bins; fullMin=minUs; fullMax=maxUs;
+  K = [...groups.values()].map(rows => 'E'+rows[0].executorId+'.W'+rows[0].workerIdx);
+  U = [...groups.values()].map(rows => {
+    let n = 0;
+    for (const r of rows) n += r.length;
+    const idx = new Uint32Array(n);
+    let c = 0;
+    for (const r of rows) for (let s = 0; s < r.length; s++) idx[c++] = r.offset + s;
+    // Segments within one row are already sorted by begin; only merge when
+    // the worker has several levels.
+    if (rows.length > 1) idx.sort((a, b) => B[a] - B[b]);
+    const ub = new Float64Array(n), ue = new Float64Array(n);
+    let m = 0;
+    for (let k = 0; k < n; k++) {
+      const i = idx[k], b = B[i], e = E[i];
+      if (m && b <= ue[m - 1]) { if (e > ue[m - 1]) ue[m - 1] = e; }
+      else { ub[m] = b; ue[m] = e; m++; }
+    }
+    return { b: ub.slice(0, m), e: ue.slice(0, m) };
+  });
 }
 
-// Slice the pre-computed full curves to the query window [x0,x1]
-// and downsample to px output bins — O(FULL_BINS) not O(segments)
-function sliceCurves(x0, x1, px) {
-  const outBins=Math.max(1,Math.floor(px));
-  const wc=new Float32Array(outBins), tc=new Float32Array(outBins);
-  if(!fullWC||fullMax<=fullMin)return{wc,tc};
+function query(x0, x1, bins, phys) {
+  bins = Math.max(1, Math.floor(bins));
+  const avg = new Float32Array(bins);
+  const list = phys || U.map((_, i) => i);
+  const span = x1 - x0;
+  if (!(span > 0)) return { avg, busy: 0, n: list.length };
+  const bw = span / bins;
+  const acc = new Float64Array(bins), diff = new Float64Array(bins + 1);
+  let busy = 0;
 
-  const range=fullMax-fullMin;
-  const bu=range/fullBins;  // microseconds per full bin
-
-  // Map x0,x1 to full bin indices
-  const fb0=Math.max(0,Math.floor((x0-fullMin)/bu));
-  const fb1=Math.min(fullBins-1,Math.floor((x1-fullMin)/bu));
-  const nFull=fb1-fb0+1;
-  if(nFull<=0)return{wc,tc};
-
-  // Average/max full bins into output bins
-  const ratio=nFull/outBins;
-  for(let ob=0;ob<outBins;ob++){
-    const bStart=fb0+Math.floor(ob*ratio);
-    const bEnd=fb0+Math.min(nFull-1,Math.floor((ob+1)*ratio));
-    let maxWC=0, maxTC=0;
-    for(let b=bStart;b<=bEnd;b++){
-      if(fullWC[b]>maxWC)maxWC=fullWC[b];
-      if(fullTC[b]>maxTC)maxTC=fullTC[b];
+  for (const p of list) {
+    const u = U[p];
+    if (!u) continue;
+    const b = u.b, e = u.e;
+    // first interval ending after x0
+    let lo = 0, hi = e.length;
+    while (lo < hi) { const m = (lo + hi) >> 1; if (e[m] <= x0) lo = m + 1; else hi = m; }
+    for (let k = lo; k < b.length && b[k] < x1; k++) {
+      const s = b[k] > x0 ? b[k] : x0, t = e[k] < x1 ? e[k] : x1;
+      if (t <= s) continue;
+      busy += t - s;
+      const fb = Math.min(bins - 1, Math.floor((s - x0) / bw));
+      const lb = Math.min(bins - 1, Math.floor((t - x0) / bw));
+      if (fb === lb) { acc[fb] += t - s; continue; }
+      acc[fb] += x0 + (fb + 1) * bw - s;
+      acc[lb] += t - (x0 + lb * bw);
+      if (lb > fb + 1) { diff[fb + 1] += bw; diff[lb] -= bw; }  // full middle bins
     }
-    wc[ob]=maxWC; tc[ob]=maxTC;
   }
-  return{wc,tc};
+  let run = 0;
+  for (let i = 0; i < bins; i++) { run += diff[i]; avg[i] = (acc[i] + run) / bw; }
+  return { avg, busy, n: list.length };
 }
 
-self.onmessage=e=>{
-  const m=e.data;
-  if(m.type==='init'){
-    B=m.beg;E=m.end;W=m.workers;
-    const map=new Map();
-    for(let wi=0;wi<W.length;wi++){
-      const key=W[wi].executorId+'_'+W[wi].workerIdx;
-      if(!map.has(key))map.set(key,[]);
-      map.get(key).push(wi);
+// Whole-run summary: sweep over every worker's busy intervals, tracking how
+// many workers are busy, and record the stretches where at most one is.
+function summarize(minUs, maxUs) {
+  const P = U.length, busy = new Float64Array(P);
+  let n = 0;
+  for (const u of U) n += u.b.length;
+  const S = new Float64Array(n), E = new Float64Array(n);
+  let c = 0;
+  U.forEach((u, p) => {
+    for (let k = 0; k < u.b.length; k++) {
+      busy[p] += u.e[k] - u.b[k];
+      S[c] = u.b[k]; E[c] = u.e[k]; c++;
     }
-    physicalWorkers=[...map.values()];
-    // Pre-compute full curves in background
-    buildFullCurves(m.minUs, m.maxUs);
-    self.postMessage({type:'ready'});
-    return;
+  });
+  S.sort(); E.sort();
+  let i = 0, j = 0, cnt = 0, t = minUs, lowStart = minUs, low = 0, idle = 0;
+  const stretches = [];
+  while (i < n || j < n) {
+    const isStart = i < n && (j >= n || S[i] <= E[j]);  // starts first on ties
+    const tt = isStart ? S[i] : E[j];
+    if (cnt <= 1) low += tt - t;
+    if (cnt === 0) idle += tt - t;
+    const prev = cnt;
+    if (isStart) { cnt++; i++; } else { cnt--; j++; }
+    if (prev <= 1 && cnt >= 2 && tt > lowStart) stretches.push([lowStart, tt]);
+    if (prev >= 2 && cnt <= 1) lowStart = tt;
+    t = tt;
   }
-  if(m.type==='query'){
-    const{wc,tc}=sliceCurves(m.x0,m.x1,m.px);
-    self.postMessage({type:'result',wc,tc},[wc.buffer,tc.buffer]);
+  if (maxUs > t) { low += maxUs - t; idle += maxUs - t; }
+  if (cnt <= 1 && maxUs > lowStart) stretches.push([lowStart, maxUs]);
+  stretches.sort((a, b) => (b[1] - b[0]) - (a[1] - a[0]));
+  return { busy, keys: K, low, idle, stretches: stretches.slice(0, 5) };
+}
+
+function buildFine(minUs, maxUs) {
+  fineP = null;
+  if (!(maxUs > minUs)) return;
+  fineMin = minUs; fineW = (maxUs - minUs) / FINE;
+  const { avg } = query(minUs, maxUs, FINE, null);   // exact busy workers per slot
+  fineP = new Float64Array(FINE + 1);
+  for (let i = 0; i < FINE; i++) fineP[i + 1] = fineP[i] + avg[i] * fineW;
+}
+// Busy time in [fineMin, t], interpolating linearly inside a slot.
+function fineAt(t) {
+  let u = (t - fineMin) / fineW;
+  if (u <= 0) return 0;
+  if (u >= FINE) return fineP[FINE];
+  const k = Math.floor(u);
+  return fineP[k] + (u - k) * (fineP[k + 1] - fineP[k]);
+}
+function queryFast(x0, x1, bins, phys) {
+  bins = Math.max(1, Math.floor(bins));
+  if (phys || !fineP || !((x1 - x0) / bins >= FINE_MIN * fineW)) return query(x0, x1, bins, phys);
+  const avg = new Float32Array(bins), bw = (x1 - x0) / bins;
+  let prev = fineAt(x0);
+  for (let i = 0; i < bins; i++) {
+    const cur = fineAt(x0 + (i + 1) * bw);
+    avg[i] = (cur - prev) / bw; prev = cur;
+  }
+  return { avg, busy: fineAt(x1) - fineAt(x0), n: U.length };
+}
+
+self.onmessage = ev => {
+  const m = ev.data;
+  if (m.type === 'init') {
+    buildUnions(m.beg, m.end, m.workers);
+    buildFine(m.minUs, m.maxUs);
+    self.postMessage({ type: 'ready', numPhys: U.length });
+    self.postMessage({ type: 'summary', ...summarize(m.minUs, m.maxUs) });
+  } else if (m.type === 'query') {
+    const r = queryFast(m.x0, m.x1, m.bins, m.phys);
+    self.postMessage({ type: 'result', id: m.id, x0: m.x0, x1: m.x1, ...r }, [r.avg.buffer]);
   }
 };
