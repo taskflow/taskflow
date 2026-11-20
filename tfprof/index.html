@@ -1236,7 +1236,7 @@ function drawPar(){
   const filtered = (D.filteredWorkers||D.workers)!==D.workers;
   parInfo.innerHTML =
     `avg <b>${avgBusy.toFixed(2)}</b> of ${cap} workers busy · ` +
-    `<b>${(100*avgBusy/cap).toFixed(1)}%</b> utilization` +
+    `<b>${cpuPct(avgBusy)}</b> of ${cap*100}% utilization` +
     `<span class="pi-muted"> in window${filtered?' (filtered workers)':''}</span>`;
 
   // Brush to zoom, double-click to go back — same as the timeline.
@@ -1260,7 +1260,7 @@ function drawPar(){
       showTip(ev,
         `<div class="tt">t = ${fmtUs(xSc.invert(px))}</div>` +
         `<div>Busy workers: ${m.avg[i].toFixed(2)} / ${cap}</div>` +
-        `<div class="tm">Utilization: ${(100*m.avg[i]/cap).toFixed(1)}%</div>` +
+        `<div class="tm">Utilization: ${cpuPct(m.avg[i])} of ${cap*100}%</div>` +
         `<div class="tm">Bin width: ${fmtUs(span/n)}</div>`);
     });
 }
@@ -1631,6 +1631,9 @@ function resetSummary(){
   d3.select('#sum-workers').selectAll('*').remove();
 }
 function pct(x){ return (x>=0.9995 ? '100' : (100*x).toFixed(1))+'%'; }
+// CPU-style utilization (as in top/htop/Activity Monitor): 100% = one fully busy
+// worker, so P workers max out at P×100%.
+function cpuPct(busy){ const v=100*busy; return (v>=100?Math.round(v):v.toFixed(1))+'%'; }
 function highlightName(nm){ taskSearch.value=nm; runSearch(nm); }
 
 // Task with the largest overlap with [b,e], or -1.
@@ -1676,12 +1679,12 @@ function renderSummary(){
     card('Tasks', N.toLocaleString(), `${groups.length.toLocaleString()} distinct names`) +
     card('Executors', nExec, nExec===1 ? '1 tf::Executor' : `${nExec} tf::Executor instances`) +
     card('Workers', P, nExec>1 ? `worker threads across all executors` : `worker threads`) +
-    card('Utilization', pct(util), `${verdict[0]} — share of worker time spent in tasks`, vColor);
+    card('Utilization', `${cpuPct(avgBusy)}<span style="font-size:0.55em;opacity:0.7"> / ${P*100}%</span>`, `${verdict[0]} — 100% = one fully busy worker (${pct(util)} of capacity)`, vColor);
 
   // Findings
   const F=[];   // {cls, html, label?, act?}
   F.push({cls:verdict[1], html:
-    `Workers were busy <b>${pct(util)}</b> of the time on average (${avgBusy.toFixed(2)} of ${P}).` +
+    `Utilization was <b>${cpuPct(avgBusy)}</b> of a possible ${P*100}% (${avgBusy.toFixed(2)} of ${P} workers busy on average, ${pct(util)} of capacity).` +
     (util<0.8 ? ` About <b>${fmtUs(Math.max(0,P*wall-totBusy))}</b> of worker time went unused.` : '')});
 
   if(P>=2){
