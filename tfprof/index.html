@@ -160,16 +160,8 @@ body { background:var(--bg); color:var(--text); }
 .sum-card .k { font-size:13px; color:var(--muted); }
 .sum-card .v { font-size:22px; font-weight:700; color:var(--text); line-height:1.35; }
 .sum-card .s { font-size:12px; color:var(--muted); }
-#sum-grid { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:24px; padding:2px 12px 14px; }
-@media (max-width:900px){ #sum-grid { grid-template-columns:1fr; } }
+#sum-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:24px; padding:2px 12px 14px; }
 .sum-h { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
-#sum-findings { list-style:none; display:flex; flex-direction:column; gap:9px; }
-#sum-findings li { display:flex; gap:9px; font-size:14px; line-height:1.55; color:var(--text); }
-#sum-findings code { color:var(--accent); font-family:inherit; }
-.fdot { width:9px; height:9px; border-radius:50%; margin-top:7px; flex:none; }
-.f-good { background:#3dbf8a; } .f-warn { background:#f59e0b; } .f-bad { background:#e06b6b; } .f-info { background:var(--accent); }
-.flink { color:var(--accent); cursor:pointer; background:none; border:none; font:inherit; padding:0; margin-left:6px;
-         text-decoration:underline; text-underline-offset:3px; white-space:nowrap; }
 .typebar { display:flex; height:14px; border-radius:3px; overflow:hidden; margin-bottom:8px; background:var(--border); }
 .typeleg { display:flex; flex-direction:column; gap:3px; font-size:13px; color:var(--muted); }
 .typeleg b { color:var(--text); font-weight:600; }
@@ -282,10 +274,6 @@ body { background:var(--bg); color:var(--text); }
     <summary>Summary &amp; insights <span class="shint">whole run · click to collapse</span></summary>
     <div id="sum-cards"></div>
     <div id="sum-grid">
-      <div>
-        <div class="sum-h">What stands out</div>
-        <ul id="sum-findings"><li class="shint">Analyzing…</li></ul>
-      </div>
       <div>
         <div class="sum-h">Task time by type</div>
         <div id="sum-types"></div>
@@ -1626,7 +1614,6 @@ elSummary.addEventListener('toggle', ()=>{
 
 function resetSummary(){
   document.getElementById('sum-cards').innerHTML='';
-  document.getElementById('sum-findings').innerHTML='<li class="shint">Analyzing…</li>';
   document.getElementById('sum-types').innerHTML='';
   d3.select('#sum-workers').selectAll('*').remove();
 }
@@ -1634,40 +1621,21 @@ function pct(x){ return (x>=0.9995 ? '100' : (100*x).toFixed(1))+'%'; }
 // CPU-style utilization (as in top/htop/Activity Monitor): 100% = one fully busy
 // worker, so P workers max out at P×100%.
 function cpuPct(busy){ const v=100*busy; return (v>=100?Math.round(v):v.toFixed(1))+'%'; }
-function highlightName(nm){ taskSearch.value=nm; runSearch(nm); }
-
-// Task with the largest overlap with [b,e], or -1.
-function dominantTask(b,e){
-  let best=-1, bo=0;
-  for(const w of D.workers){
-    const [lo,hi]=rowRange(w,b,e);
-    for(let i=lo;i<hi;i++){
-      const o=Math.min(e,D.end[i])-Math.max(b,D.beg[i]);
-      if(o>bo){ bo=o; best=i; }
-    }
-  }
-  return best;
-}
-
 function renderSummary(){
   const S=D.summary; if(!S) return;
   const N=D.beg.length, wall=D.maxUs-D.minUs, P=S.busy.length;
   let totBusy=0; for(const b of S.busy) totBusy+=b;
   const avgBusy = wall>0 ? totBusy/wall : 0, util = P ? avgBusy/P : 0;
 
-  // Per-type totals, tiny tasks, longest run, anonymous tasks
+  // Per-type totals
   const tc=new Array(8).fill(0), tt=new Array(8).fill(0);
-  let taskTime=0, tiny=0, anon=0, longest=0, li=-1;
+  let taskTime=0;
   for(let i=0;i<N;i++){
     const d=D.end[i]-D.beg[i], t=D.type[i];
     tc[t]++; tt[t]+=d; taskTime+=d;
-    if(d<10) tiny++;
-    if(D.nameId[i]===0) anon++;
-    if(d>longest){ longest=d; li=i; }
   }
   const groups=groupByName(D.workers, -Infinity, Infinity).rows.sort((a,b)=>b.tot-a.tot);
-  const lowShare = wall>0 ? S.low/wall : 0;
-  const verdict = util>=0.8 ? ['good','f-good'] : util>=0.5 ? ['moderate','f-warn'] : ['low','f-bad'];
+  const verdict = util>=0.8 ? 'good' : util>=0.5 ? 'moderate' : 'low';
 
   // Cards
   const card=(k,v,sub,color)=>`<div class="sum-card"><div class="k">${k}</div>`+
@@ -1679,74 +1647,7 @@ function renderSummary(){
     card('Tasks', N.toLocaleString(), `${groups.length.toLocaleString()} distinct names`) +
     card('Executors', nExec, nExec===1 ? '1 tf::Executor' : `${nExec} tf::Executor instances`) +
     card('Workers', P, nExec>1 ? `worker threads across all executors` : `worker threads`) +
-    card('Utilization', `${cpuPct(avgBusy)}<span style="font-size:0.55em;opacity:0.7"> / ${P*100}%</span>`, `${verdict[0]} — 100% = one fully busy worker (${pct(util)} of capacity)`, vColor);
-
-  // Findings
-  const F=[];   // {cls, html, label?, act?}
-  F.push({cls:verdict[1], html:
-    `Utilization was <b>${cpuPct(avgBusy)}</b> of a possible ${P*100}% (${avgBusy.toFixed(2)} of ${P} workers busy on average, ${pct(util)} of capacity).` +
-    (util<0.8 ? ` About <b>${fmtUs(Math.max(0,P*wall-totBusy))}</b> of worker time went unused.` : '')});
-
-  if(P>=2){
-    if(lowShare>=0.05 && S.stretches.length){
-      const [b,e]=S.stretches[0], dom=dominantTask(b,e);
-      const what = dom>=0 && D.end[dom]>b && D.beg[dom]<e
-        ? `, mostly <code>${esc(nameOf(dom)||'(anonymous)')}</code>` : ', with no task running';
-      F.push({cls: lowShare>0.25?'f-bad':lowShare>0.1?'f-warn':'f-info', html:
-        `For <b>${fmtUs(S.low)}</b> (${pct(lowShare)} of the run) at most one worker was busy. ` +
-        `The longest such stretch lasts <b>${fmtUs(e-b)}</b> from ${fmtUs(b)}${what}.`,
-        label:'Zoom to it', act:()=>{
-          const pad=(e-b)*0.25; zoomTo(Math.max(D.minUs,b-pad), Math.min(D.maxUs,e+pad));
-          if(dom>=0) selectTask(dom);
-          tlSection.scrollIntoView({behavior:'smooth', block:'center'});
-        }});
-    } else {
-      F.push({cls:'f-good', html:`Almost no serial sections: two or more workers were busy ${pct(1-lowShare)} of the time.`});
-    }
-    let hi=0, lo=0;
-    S.busy.forEach((v,p)=>{ if(v>S.busy[hi]) hi=p; if(v<S.busy[lo]) lo=p; });
-    const uh=S.busy[hi]/wall, ul=S.busy[lo]/wall;
-    F.push(uh-ul>0.25
-      ? {cls:'f-warn', html:`Work is unevenly spread: worker <code>${S.keys[hi]}</code> was busy ${pct(uh)} of the time, but <code>${S.keys[lo]}</code> only ${pct(ul)}.`}
-      : {cls:'f-good', html:`Work is evenly spread: every worker was busy between ${pct(ul)} and ${pct(uh)} of the time.`});
-  }
-
-  const topNamed=groups.find(g=>g.name);
-  if(topNamed){
-    const g=topNamed;
-    F.push({cls:'f-info', html:
-      `<code>${esc(g.name)}</code> takes the most time: <b>${fmtUs(g.tot)}</b> over ${g.runs.toLocaleString()} run${g.runs>1?'s':''} ` +
-      `(${pct(taskTime>0?g.tot/taskTime:0)} of all task time).`,
-      label:'Highlight', act:()=>highlightName(g.name)});
-  }
-  if(li>=0 && wall>0 && longest/wall>=0.1){
-    F.push({cls: longest/wall>0.25?'f-warn':'f-info', html:
-      `The longest single task, <code>${esc(nameOf(li)||'(anonymous)')}</code>, ran for <b>${fmtUs(longest)}</b> ` +
-      `(${pct(longest/wall)} of the whole run).`,
-      label:'Show it', act:()=>{ selectTask(li); zoomToSeg(li); tlSection.scrollIntoView({behavior:'smooth', block:'center'}); }});
-  }
-  if(N>=100 && tiny/N>=0.2){
-    F.push({cls:'f-warn', html:
-      `<b>${tiny.toLocaleString()}</b> tasks (${pct(tiny/N)}) ran for under 10 µs. Tasks this small can cost more ` +
-      `to schedule than the work they do — consider batching them into fewer, larger tasks.`});
-  }
-  if(N && anon/N>0.5){
-    F.push({cls:'f-info', html:
-      `${pct(anon/N)} of tasks have no name. Naming them with <code>task.name("…")</code> makes this profile much easier to read.`});
-  }
-
-  const ul=document.getElementById('sum-findings');
-  ul.innerHTML='';
-  for(const f of F){
-    const li=document.createElement('li');
-    li.innerHTML=`<span class="fdot ${f.cls}"></span><span>${f.html}</span>`;
-    if(f.act){
-      const btn=document.createElement('button');
-      btn.className='flink'; btn.textContent=f.label; btn.addEventListener('click', f.act);
-      li.lastChild.appendChild(btn);
-    }
-    ul.appendChild(li);
-  }
+    card('Utilization', `${cpuPct(avgBusy)}<span style="font-size:0.55em;opacity:0.7"> / ${P*100}%</span>`, `${verdict} — 100% = one fully busy worker (${pct(util)} of capacity)`, vColor);
 
   // Task time by type
   const order=[...tt.keys()].filter(t=>tc[t]>0).sort((a,b)=>tt[b]-tt[a]);
